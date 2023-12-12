@@ -1,0 +1,224 @@
+import '../../base/FragmentTemplate.dart';
+import '../../base/SingleQuillController.dart';
+import 'ChoicePrefixType.dart';
+
+enum ChoiceType {
+  /// 单选，只有已选选项与答案相匹配的才是正确的，否则是错误的。
+  simple,
+
+  /// 多选-完全匹配，只有已选选项完全与答案相匹配的才是正确的，否则是错误的。
+  multiple_perfect_match,
+}
+
+/// 选择题模板的数据类。
+class ChoiceFragmentTemplate extends FragmentTemplate {
+  final question = SingleQuillController();
+  final choices = <SingleQuillController>[];
+
+  /// 答案选项
+  ///
+  /// [choicesForCorrect.length] 始终等于 [choices.length]，正确选项则为 true，错误选项则为 false。
+  final choicesForCorrect = <bool>[];
+
+  /// 选择类型。
+  ChoiceType choiceType = ChoiceType.simple;
+
+  /// 选项前缀类型。
+  ChoicePrefixType choicePrefixType = ChoicePrefixType.uppercaseLetter;
+
+  /// 选项是否以乱序的方式展示。
+  bool canDisorderly = false;
+
+  /// 随机抽取展示数量的最小值
+  int extractionCountMin = 0;
+
+  /// 随机抽取展示数量的最大值
+  int extractionCountMax = 0;
+
+  /// 至少包含正确数量的最小值
+  int extractionCorrectCountMin = 0;
+
+  /// 至少包含正确数量的最大值
+  int extractionCorrectCountMax = 0;
+
+  double tempExtractionCountMin = 0;
+  double tempExtractionCountMax = 0;
+  double tempExtractionCorrectCountMin = 0;
+  double tempExtractionCorrectCountMax = 0;
+
+  int get choiceCount => choices.isEmpty ? 1 : choices.length;
+
+  int get choiceForCorrectCount {
+    final result = choicesForCorrect.where((element) => element == true).length;
+    return result == 0 ? 1 : result;
+  }
+
+  /// [singleQuillController] 是否为正确选项。
+  ///
+  /// 在多选的情况下，只要答案包含了 [singleQuillController]，返回的也是 true。
+  bool isCorrect(SingleQuillController singleQuillController) {
+    return choicesForCorrect.elementAt(choices.indexOf(singleQuillController));
+  }
+
+  /// 取消勾选全部已选。
+  void cancelAllCorrect() {
+    for (int i = 0; i < choicesForCorrect.length; i++) {
+      choicesForCorrect[i] = false;
+    }
+    extractionCorrectCountMin = 0;
+    extractionCorrectCountMax = 0;
+  }
+
+  /// 取消勾选对 [singleQuillController] 的选择。
+  void _cancelCorrect(SingleQuillController singleQuillController) {
+    choicesForCorrect[choices.indexOf(singleQuillController)] = false;
+    extractionCorrectCountMax--;
+  }
+
+  /// 勾选对 [singleQuillController] 的选择。
+  void _chooseCorrect(SingleQuillController singleQuillController) {
+    if (choiceType == ChoiceType.simple) {
+      cancelAllCorrect();
+      choicesForCorrect[choices.indexOf(singleQuillController)] = true;
+      extractionCorrectCountMin = 1;
+      extractionCorrectCountMax = 1;
+      return;
+    } else if (choiceType == ChoiceType.multiple_perfect_match) {
+      choicesForCorrect[choices.indexOf(singleQuillController)] = true;
+      extractionCorrectCountMax++;
+    } else {
+      throw "未知 $choiceType";
+    }
+  }
+
+  /// 对 [singleQuillController] 的反选。
+  void invertCorrect(SingleQuillController singleQuillController) {
+    if (isCorrect(singleQuillController)) {
+      _cancelCorrect(singleQuillController);
+    } else {
+      _chooseCorrect(singleQuillController);
+    }
+  }
+
+  /// 移除 [singleQuillController] 选项。
+  void removeItem(SingleQuillController singleQuillController) {
+    singleQuillController.dispose();
+    final index = choices.indexOf(singleQuillController);
+    final isCorrectSq = isCorrect(singleQuillController);
+    choices.removeAt(index);
+    choicesForCorrect.removeAt(index);
+
+    if (extractionCountMin < extractionCountMax) {
+      extractionCountMax--;
+    } else if (extractionCountMin == extractionCountMax) {
+      extractionCountMin--;
+      extractionCountMax--;
+    } else {
+      throw "extractionCountMin 不能大于 extractionCountMax！";
+    }
+
+    if (isCorrectSq) {
+      if (extractionCorrectCountMin < extractionCorrectCountMax) {
+        extractionCorrectCountMax--;
+      } else if (extractionCorrectCountMin == extractionCorrectCountMax) {
+        extractionCorrectCountMin--;
+        extractionCorrectCountMax--;
+      } else {
+        throw "extractionCorrectCountMin 不能大于 extractionCorrectCountMax！";
+      }
+    }
+  }
+
+  /// 添加新选项。
+  void addItem(SingleQuillController singleQuillController) {
+    choices.add(singleQuillController);
+    choicesForCorrect.add(false);
+
+    extractionCountMax++;
+
+    /// 如果正确数量的最大值是原来的全部选项数量，则保持现在的正确选项数量与现在的全部选项数量相等。
+    if (extractionCorrectCountMax == extractionCountMax - 1) {
+      extractionCorrectCountMax = extractionCountMax;
+    }
+    dynamicAddFocusListener(singleQuillController);
+  }
+
+  @override
+  FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.choice;
+
+  @override
+  void dispose() {
+    question.dispose();
+    for (var value in choices) {
+      value.dispose();
+    }
+  }
+
+  @override
+  FragmentTemplate emptyInitInstance() => ChoiceFragmentTemplate();
+
+  @override
+  FragmentTemplate emptyTransferableInstance() => ChoiceFragmentTemplate();
+
+  @override
+  List<SingleQuillController> listenSingleEditableQuill() => [question, ...choices];
+
+  @override
+  String getTitle() => question.transferToTitle();
+
+  @override
+  (bool, String) isMustContentEmpty() {
+    if (question.isContentEmpty()) {
+      return (true, "问题不能为空！");
+    }
+    if (choices.isEmpty) {
+      return (true, "必须至少有两个选项");
+    }
+    for (var c in choices) {
+      if (c.isContentEmpty()) {
+        return (true, "选项内容不能为空！");
+      }
+    }
+    if (choicesForCorrect.isEmpty) {
+      return (true, "请至少选择一个正确选项！");
+    }
+    return (false, "...");
+  }
+
+  @override
+  void resetFromJson(Map<String, dynamic> json) {
+    question.resetContent(json["question"]);
+
+    final choicesList = json["choices"] as List<dynamic>;
+    choices.clear();
+    for (var c in choicesList) {
+      choices.add(SingleQuillController()..resetContent(c as String));
+    }
+
+    choicesForCorrect.clear();
+    choicesForCorrect.addAll((json["answers"] as List<dynamic>).map((e) => e as bool));
+
+    choiceType = ChoiceType.values.firstWhere((element) => element.name == (json["choice_type"] as String));
+
+    choicePrefixType = ChoicePrefixType.values.firstWhere((element) => element.name == (json["choice_prefix_type"] as String));
+
+    super.resetFromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final sp = super.toJson();
+    return {
+      "type": fragmentTemplateType.name,
+      "question": question.getContentJsonString(),
+      "choices": choices.map((e) => e.getContentJsonString()).toList(),
+      "answers": choicesForCorrect,
+      "choice_type": choiceType.name,
+      "choice_prefix_type": choicePrefixType.name,
+      sp.keys.first: sp.values.first,
+    };
+  }
+
+  @override
+  bool get initIsShowBottomButton => false;
+}

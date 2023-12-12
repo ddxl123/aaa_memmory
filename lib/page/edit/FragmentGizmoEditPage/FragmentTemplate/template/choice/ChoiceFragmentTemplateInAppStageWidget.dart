@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+
+import '../../base/FragmentTemplateInAppStageWidget.dart';
+import '../../base/SingleQuillPreviewWidget.dart';
+import '../../base/TemplateViewChunkWidget.dart';
+import 'ChoiceFragmentTemplate.dart';
+import 'ChoicePrefixType.dart';
+
+/// 选择题记忆展示状态下的 Widget。
+class ChoiceFragmentTemplateInAppStageWidget extends StatefulWidget {
+  const ChoiceFragmentTemplateInAppStageWidget({
+    super.key,
+    required this.choiceFragmentTemplate,
+  });
+
+  final ChoiceFragmentTemplate choiceFragmentTemplate;
+
+  @override
+  State<ChoiceFragmentTemplateInAppStageWidget> createState() => _ChoiceFragmentTemplateInAppStageWidgetState();
+}
+
+class _ChoiceFragmentTemplateInAppStageWidgetState extends State<ChoiceFragmentTemplateInAppStageWidget> {
+
+  @override
+  Widget build(BuildContext context) {
+    final questionWidget = TemplateViewChunkWidget(
+      chunkTitle: "问题",
+      children: [
+        SingleQuillPreviewWidget(
+          singleQuillController: widget.choiceFragmentTemplate.question,
+        ),
+      ],
+    );
+    final choicesWidget = TemplateViewChunkWidget(
+      chunkTitle: widget.choiceFragmentTemplate.choiceType==ChoiceType.simple?"单选":"多选",
+      children: [
+        for (int i = 0; i < widget.choiceFragmentTemplate.choices.length; i++)
+          Container(
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Row(
+              children: [
+                widget.choiceFragmentTemplate.choicePrefixType == ChoicePrefixType.none
+                    ? Container()
+                    : Container(
+                        width: 30,
+                        child: Text(widget.choiceFragmentTemplate.choicePrefixType.toTypeFrom(i + 1), style: TextStyle(color: Colors.amber)),
+                      ),
+                Expanded(
+                  child: SingleQuillPreviewWidget(
+                    singleQuillController: widget.choiceFragmentTemplate.choices[i],
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+    return FragmentTemplateInAppStageWidget(
+      fragmentTemplate: widget.choiceFragmentTemplate,
+      onTap: () {},
+      columnChildren: [
+        questionWidget,
+        choicesWidget,
+      ],
+    );
+  }
+}
