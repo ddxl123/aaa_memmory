@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../base/FragmentTemplate.dart';
@@ -19,23 +21,56 @@ class QAFragmentTemplateInAppStageWidget extends StatefulWidget {
 class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateInAppStageWidget> {
   bool isShowAnswer = false;
 
+  /// 问答交换时的随机值
+  bool isExchanged = Random().nextBool();
+
+  @override
+  void initState() {
+    super.initState();
+    // 只有在勾选问答可交换时，才赋予随机值，否则直接赋予 false 值
+    if (!widget.qaFragmentTemplate.interchangeable) {
+      isExchanged = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final question = [
-      TemplateViewChunkWidget(
-        chunkTitle: "问题",
-        children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.qaFragmentTemplate.question),
-        ],
-      ),
+    final question = TemplateViewChunkWidget(
+      chunkTitle: "问题${widget.qaFragmentTemplate.interchangeable ? (isExchanged ? " · 问答已交换" : " · 问答未交换") : ""}",
+      children: [
+        SingleQuillPreviewWidget(
+          singleQuillController: isExchanged ? widget.qaFragmentTemplate.answer : widget.qaFragmentTemplate.question,
+        ),
+      ],
+    );
+
+    final answer = TemplateViewChunkWidget(
+      chunkTitle: "答案",
+      children: [
+        SingleQuillPreviewWidget(
+          singleQuillController: isExchanged ? widget.qaFragmentTemplate.question : widget.qaFragmentTemplate.answer,
+        ),
+      ],
+    );
+
+    final startPage = [
+      question,
       TemplateViewExtendChunksWidgets(
         extendChunks: widget.qaFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
-          if (ec.extendChunkDisplayType == ExtendChunkDisplayType.only_start || ec.extendChunkDisplayType == ExtendChunkDisplayType.always) {
+          if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.always) {
             return true;
-          } else {
-            return false;
           }
+          if (isExchanged) {
+            if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.only_start_exchange) {
+              return true;
+            }
+          } else {
+            if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.only_start) {
+              return true;
+            }
+          }
+          return false;
         },
       ),
       const Row(
@@ -47,27 +82,25 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
       ),
     ];
 
-    final answer = [
-      TemplateViewChunkWidget(
-        chunkTitle: "问题",
-        children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.qaFragmentTemplate.question),
-        ],
-      ),
-      TemplateViewChunkWidget(
-        chunkTitle: "答案",
-        children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.qaFragmentTemplate.answer),
-        ],
-      ),
+    final endPage = [
+      question,
+      answer,
       TemplateViewExtendChunksWidgets(
         extendChunks: widget.qaFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
-          if (ec.extendChunkDisplayType == ExtendChunkDisplayType.only_end || ec.extendChunkDisplayType == ExtendChunkDisplayType.always) {
+          if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.always) {
             return true;
-          } else {
-            return false;
           }
+          if (isExchanged) {
+            if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.only_end_exchange) {
+              return true;
+            }
+          } else {
+            if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.only_end) {
+              return true;
+            }
+          }
+          return false;
         },
       ),
     ];
@@ -82,7 +115,7 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
           }
         });
       },
-      columnChildren: isShowAnswer ? answer : question,
+      columnChildren: isShowAnswer ? endPage : startPage,
     );
   }
 }

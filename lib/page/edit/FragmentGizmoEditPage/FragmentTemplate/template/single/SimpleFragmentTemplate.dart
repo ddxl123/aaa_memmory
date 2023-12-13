@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/editable_text.dart';
+
 import '../../base/FragmentTemplate.dart';
 import '../../base/SingleQuillController.dart';
 
@@ -7,9 +9,6 @@ class SimpleFragmentTemplate extends FragmentTemplate {
   FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.single;
 
   final simple = SingleQuillController();
-
-  @override
-  bool isHideExtendChunkTypeOption() => true;
 
   @override
   FragmentTemplate emptyInitInstance() => SimpleFragmentTemplate();
@@ -54,4 +53,13 @@ class SimpleFragmentTemplate extends FragmentTemplate {
 
   @override
   bool get initIsShowBottomButton => true;
+
+  @override
+  void addExtendChunkCallback(TextEditingController textEditingController) {
+    addExtendChunk(
+      chunkName: textEditingController.text,
+      extendsChunkDisplay2Type: null,
+      extendChunkDisplayQAType: null,
+    );
+  }
 }

@@ -36,7 +36,7 @@ class _QAFragmentTemplateEditWidgetState extends State<QAFragmentTemplateEditWid
               style: ButtonStyle(visualDensity: kMinVisualDensity),
               child: Row(
                 children: [
-                  const Text("问答可交换"),
+                  const Text("问答可交换并随机展示"),
                   Checkbox(
                     visualDensity: kMinVisualDensity,
                     value: widget.qaFragmentTemplate.interchangeable,

@@ -19,7 +19,7 @@ enum FragmentTemplateType {
   choice,
 }
 
-enum ExtendChunkDisplayType {
+enum ExtendChunkDisplay2Type {
   /// 仅在未显示答案时显示
   only_start(displayName: "仅在显示问题时显示"),
 
@@ -29,7 +29,28 @@ enum ExtendChunkDisplayType {
   /// 无论有没有显示答案，都显示
   always(displayName: "总是显示");
 
-  const ExtendChunkDisplayType({required this.displayName});
+  const ExtendChunkDisplay2Type({required this.displayName});
+
+  final String displayName;
+}
+
+enum ExtendChunkDisplayQAType {
+  /// 无论有没有显示答案，都显示
+  always(displayName: "总是显示"),
+
+  /// 仅在未显示答案时显示
+  only_start(displayName: "仅在显示问题(问答未交换)时显示"),
+
+  /// 仅在显示答案是显示
+  only_end(displayName: "仅在显示答案(问答未交换)时显示"),
+
+  /// 仅在未显示答案时显示
+  only_start_exchange(displayName: "仅在显示问题(问答已交换)时显示"),
+
+  /// 仅在显示答案是显示
+  only_end_exchange(displayName: "仅在显示答案(问答已交换)时显示");
+
+  const ExtendChunkDisplayQAType({required this.displayName});
 
   final String displayName;
 }
@@ -37,15 +58,39 @@ enum ExtendChunkDisplayType {
 class ExtendChunk {
   ExtendChunk({
     required this.singleQuillController,
-    required this.extendChunkDisplayType,
+    required this.extendChunkDisplay2Type,
+    required this.extendChunkDisplayQAType,
     required this.chunkName,
   });
 
   final SingleQuillController singleQuillController;
 
-  ExtendChunkDisplayType extendChunkDisplayType;
+  ExtendChunkDisplay2Type? extendChunkDisplay2Type;
+
+  ExtendChunkDisplayQAType? extendChunkDisplayQAType;
 
   String chunkName;
+
+  (Enum, List<dynamic>)? get target {
+    if (extendChunkDisplay2Type != null) {
+      return (extendChunkDisplay2Type!, ExtendChunkDisplay2Type.values);
+    }
+    if (extendChunkDisplayQAType != null) {
+      return (extendChunkDisplayQAType!, ExtendChunkDisplayQAType.values);
+    }
+    return null;
+  }
+
+  void resetTarget(dynamic t) {
+    if (extendChunkDisplay2Type != null) {
+      extendChunkDisplay2Type = t;
+      return;
+    }
+    if (extendChunkDisplayQAType != null) {
+      extendChunkDisplayQAType = t;
+      return;
+    }
+  }
 
   void dispose() {
     singleQuillController.dispose();
@@ -54,7 +99,8 @@ class ExtendChunk {
   Map<String, dynamic> toJson() {
     return {
       "chunk_name": chunkName,
-      "extend_chunk_display_type": extendChunkDisplayType.name,
+      "extend_chunk_display_2_type": extendChunkDisplay2Type?.name,
+      "extend_chunk_display_qa_type": extendChunkDisplayQAType?.name,
       "content": singleQuillController.getContentJsonString(),
     };
   }
@@ -62,7 +108,8 @@ class ExtendChunk {
   factory ExtendChunk.fromJson(Map<String, dynamic> json) {
     return ExtendChunk(
       singleQuillController: SingleQuillController()..resetContent(json["content"]),
-      extendChunkDisplayType: ExtendChunkDisplayType.values.firstWhere((element) => element.name == (json["extend_chunk_display_type"] as String)),
+      extendChunkDisplay2Type: ExtendChunkDisplay2Type.values.singleWhereOrNull((element) => element.name == (json["extend_chunk_display_2_type"] as String?)),
+      extendChunkDisplayQAType: ExtendChunkDisplayQAType.values.singleWhereOrNull((element) => element.name == (json["extend_chunk_display_qa_type"] as String?)),
       chunkName: json["chunk_name"] as String,
     );
   }
@@ -91,9 +138,6 @@ abstract class FragmentTemplate {
 
   /// 扩展块。
   final _extendChunks = <ExtendChunk>[];
-
-  /// 是否隐藏扩展块类型的选择。
-  bool isHideExtendChunkTypeOption() => false;
 
   List<ExtendChunk> get extendChunks => _extendChunks;
 
@@ -124,18 +168,23 @@ abstract class FragmentTemplate {
   /// 添加扩展块。
   void addExtendChunk({
     required String chunkName,
-    required ExtendChunkDisplayType extendsChunkDisplayType,
+    required ExtendChunkDisplay2Type? extendsChunkDisplay2Type,
+    required ExtendChunkDisplayQAType? extendChunkDisplayQAType,
   }) {
     final s = SingleQuillController();
     _extendChunks.add(
       ExtendChunk(
         singleQuillController: s,
-        extendChunkDisplayType: extendsChunkDisplayType,
+        extendChunkDisplay2Type: extendsChunkDisplay2Type,
+        extendChunkDisplayQAType: extendChunkDisplayQAType,
         chunkName: chunkName,
       ),
     );
     dynamicAddFocusListener(s);
   }
+
+  /// 调用 [addExtendChunk]。
+  void addExtendChunkCallback(TextEditingController textEditingController);
 
   /// 移除扩展块。
   void removeExtendChunk(ExtendChunk extendChunk) {

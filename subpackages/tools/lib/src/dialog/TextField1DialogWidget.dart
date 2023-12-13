@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 import '../../tools.dart';
@@ -20,6 +21,8 @@ class TextField1DialogWidget extends StatefulWidget {
     this.dialogSize,
     this.textEditingController,
     this.inputDecoration = const InputDecoration(),
+    this.inputFormatters,
+    this.keyboardType,
   }) : super(key: key);
 
   final String? title;
@@ -31,6 +34,8 @@ class TextField1DialogWidget extends StatefulWidget {
   final FutureOr<void> Function(TextEditingController tec)? onOk;
   final FutureOr<void> Function()? onCancel;
   final DialogSize? dialogSize;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
 
   @override
   State<TextField1DialogWidget> createState() => _TextField1DialogWidgetState();
@@ -75,6 +80,8 @@ class _TextField1DialogWidgetState extends State<TextField1DialogWidget> {
                 controller: textEditingController,
                 focusNode: FocusNode()..requestFocus(),
                 decoration: widget.inputDecoration,
+                inputFormatters: widget.inputFormatters,
+                keyboardType: widget.keyboardType,
               ),
             ),
           ],

@@ -32,8 +32,9 @@ class TemplateViewChunkWidget extends StatelessWidget {
                 children: [
                   head ?? Container(),
                   head == null ? Container() : SizedBox(width: 10),
-                  chunkTitle == null ? Container() : Text(chunkTitle!, style: const TextStyle(color: Colors.grey)),
-                  Spacer(),
+                  Expanded(
+                    child: chunkTitle == null ? Container() : Text(chunkTitle!, style: const TextStyle(color: Colors.grey)),
+                  ),
                   ...(action ?? []),
                 ],
               ),

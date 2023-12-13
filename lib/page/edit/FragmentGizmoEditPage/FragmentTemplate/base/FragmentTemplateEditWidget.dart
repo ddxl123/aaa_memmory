@@ -52,18 +52,19 @@ class _FragmentTemplateEditWidgetState extends State<FragmentTemplateEditWidget>
                   (e) {
                     return TemplateViewChunkWidget(
                       action: [
-                        widget.fragmentTemplate.isHideExtendChunkTypeOption()
+                        e.target == null
                             ? Container()
                             : CustomDropdownBodyButton(
-                                initValue: e.extendChunkDisplayType,
-                                items: ExtendChunkDisplayType.values.map(
+                                initValue: e.target!.$1,
+                                textStyle: TextStyle(fontSize: 14, color: Colors.black),
+                                items: e.target!.$2.map(
                                   (e) {
                                     return CustomItem(value: e, text: e.displayName);
                                   },
                                 ).toList(),
                                 onChanged: (v) {
                                   setState(() {
-                                    e.extendChunkDisplayType = v!;
+                                    e.resetTarget(v!);
                                   });
                                 },
                               ),
@@ -140,10 +141,9 @@ class _FragmentTemplateEditWidgetState extends State<FragmentTemplateEditWidget>
                           cancelText: "取消",
                           okText: "创建块",
                           onOk: (c) {
-                            widget.fragmentTemplate.addExtendChunk(chunkName: c.text, extendsChunkDisplayType: ExtendChunkDisplayType.only_end);
+                            widget.fragmentTemplate.addExtendChunkCallback(c);
                             setState(() {});
                             SmartDialog.dismiss(status: SmartStatus.dialog);
-                            Focus.of(context).unfocus();
                           },
                         );
                       },

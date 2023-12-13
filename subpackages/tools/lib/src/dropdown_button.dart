@@ -14,6 +14,7 @@ class CustomDropdownBodyButton<T> extends StatefulWidget {
     required this.onChanged,
     this.itemAlignment = Alignment.center,
     this.isShowUnderLine = true,
+    this.textStyle,
   }) : super(key: key);
 
   final T initValue;
@@ -22,6 +23,9 @@ class CustomDropdownBodyButton<T> extends StatefulWidget {
   final void Function(T? value) onChanged;
   final Alignment itemAlignment;
   final bool isShowUnderLine;
+
+  /// [primaryButton] 和 [items] 会自动使用同一个。
+  final TextStyle? textStyle;
 
   @override
   State<CustomDropdownBodyButton<T>> createState() => _CustomDropdownBodyButtonState<T>();
@@ -41,6 +45,7 @@ class _CustomDropdownBodyButtonState<T> extends State<CustomDropdownBodyButton<T
   @override
   Widget build(BuildContext context) {
     return DropdownButton2<T>(
+      style: widget.textStyle,
       value: widget.initValue,
       isDense: true,
       dropdownStyleData: DropdownStyleData(width: maxWidth, maxHeight: MediaQuery.of(context).size.height / 2),
@@ -57,7 +62,6 @@ class _CustomDropdownBodyButtonState<T> extends State<CustomDropdownBodyButton<T
             alignment: Alignment.center,
             value: e.value,
             child: Container(
-              padding: Theme.of(context).buttonTheme.padding,
               alignment: widget.itemAlignment,
               child: e.item ?? Text(e.text ?? ""),
             ),

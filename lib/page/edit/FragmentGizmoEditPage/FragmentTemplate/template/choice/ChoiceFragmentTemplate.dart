@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/editable_text.dart';
+
 import '../../base/FragmentTemplate.dart';
 import '../../base/SingleQuillController.dart';
 import 'ChoicePrefixType.dart';
@@ -10,6 +12,24 @@ enum ChoiceType {
   multiple_perfect_match,
 }
 
+enum RequiredType {
+  /// 无必须展示选项
+  not_enabled("无必须展示选项"),
+
+  /// 占比
+  proportion("占比"),
+
+  /// 自动
+  automatic("自动"),
+
+  /// 强制
+  force("强制");
+
+  const RequiredType(this.displayText);
+
+  final String displayText;
+}
+
 /// 选择题模板的数据类。
 class ChoiceFragmentTemplate extends FragmentTemplate {
   final question = SingleQuillController();
@@ -17,8 +37,13 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
 
   /// 答案选项
   ///
-  /// [choicesForCorrect.length] 始终等于 [choices.length]，正确选项则为 true，错误选项则为 false。
+  /// [choicesForCorrect.length] 始终等于 [choices.length]，正确选项为 true，错误选项为 false。
   final choicesForCorrect = <bool>[];
+
+  /// 必须展示选项
+  ///
+  /// [choicesForRequired.length] 始终等于 [choices.length]，必须展示选项为 true，非必须展示选项为 false。
+  final choicesForRequired = <bool>[];
 
   /// 选择类型。
   ChoiceType choiceType = ChoiceType.simple;
@@ -30,68 +55,84 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
   bool canDisorderly = false;
 
   /// 随机抽取展示数量的最小值
-  int extractionCountMin = 0;
+  int extractionCountMin = 2;
 
   /// 随机抽取展示数量的最大值
   int extractionCountMax = 0;
 
-  /// 至少包含正确数量的最小值
-  int extractionCorrectCountMin = 0;
+  /// 正确选项数量占比
+  ///
+  /// 限制在 0.0-1.0 范围。
+  double correctProportion = 0.5;
 
-  /// 至少包含正确数量的最大值
-  int extractionCorrectCountMax = 0;
+  /// 必须展示类型
+  RequiredType requiredType = RequiredType.not_enabled;
 
-  double tempExtractionCountMin = 0;
-  double tempExtractionCountMax = 0;
-  double tempExtractionCorrectCountMin = 0;
-  double tempExtractionCorrectCountMax = 0;
-
-  int get choiceCount => choices.isEmpty ? 1 : choices.length;
-
-  int get choiceForCorrectCount {
-    final result = choicesForCorrect.where((element) => element == true).length;
-    return result == 0 ? 1 : result;
+  /// 选项是否足够启用乱序
+  bool get isChoiceCountEnough {
+    final result = choices.length > 1;
+    // 当数量不足够时，自动关闭乱序。
+    if (!result) {
+      canDisorderly = false;
+    }
+    return result;
   }
 
+  String get extractionCountText => extractionCountMin == extractionCountMax ? extractionCountMin.toString() : "$extractionCountMin-$extractionCountMax";
+
   /// [singleQuillController] 是否为正确选项。
-  ///
-  /// 在多选的情况下，只要答案包含了 [singleQuillController]，返回的也是 true。
   bool isCorrect(SingleQuillController singleQuillController) {
     return choicesForCorrect.elementAt(choices.indexOf(singleQuillController));
   }
 
-  /// 取消勾选全部已选。
+  /// [singleQuillController] 是否为必须展示选项。
+  bool isRequired(SingleQuillController singleQuillController) {
+    return choicesForRequired.elementAt(choices.indexOf(singleQuillController));
+  }
+
+  /// 将全部选项设置为未勾选。
   void cancelAllCorrect() {
     for (int i = 0; i < choicesForCorrect.length; i++) {
       choicesForCorrect[i] = false;
     }
-    extractionCorrectCountMin = 0;
-    extractionCorrectCountMax = 0;
   }
 
-  /// 取消勾选对 [singleQuillController] 的选择。
+  /// 将全部必须展示选项设置为未勾选。
+  void cancelAllRequired() {
+    for (int i = 0; i < choicesForRequired.length; i++) {
+      choicesForRequired[i] = false;
+    }
+  }
+
+  /// 取消勾选对 [singleQuillController] 的选项。
   void _cancelCorrect(SingleQuillController singleQuillController) {
     choicesForCorrect[choices.indexOf(singleQuillController)] = false;
-    extractionCorrectCountMax--;
   }
 
-  /// 勾选对 [singleQuillController] 的选择。
+  /// 取消勾选对 [singleQuillController] 的必须展示选项。
+  void _cancelRequired(SingleQuillController singleQuillController) {
+    choicesForRequired[choices.indexOf(singleQuillController)] = false;
+  }
+
+  /// 勾选对 [singleQuillController] 的选项。
   void _chooseCorrect(SingleQuillController singleQuillController) {
     if (choiceType == ChoiceType.simple) {
       cancelAllCorrect();
       choicesForCorrect[choices.indexOf(singleQuillController)] = true;
-      extractionCorrectCountMin = 1;
-      extractionCorrectCountMax = 1;
       return;
     } else if (choiceType == ChoiceType.multiple_perfect_match) {
       choicesForCorrect[choices.indexOf(singleQuillController)] = true;
-      extractionCorrectCountMax++;
     } else {
       throw "未知 $choiceType";
     }
   }
 
-  /// 对 [singleQuillController] 的反选。
+  /// 勾选对 [singleQuillController] 的必须展示选项。
+  void _chooseRequired(SingleQuillController singleQuillController) {
+    choicesForRequired[choices.indexOf(singleQuillController)] = true;
+  }
+
+  /// 对 [singleQuillController] 选项的反选。
   void invertCorrect(SingleQuillController singleQuillController) {
     if (isCorrect(singleQuillController)) {
       _cancelCorrect(singleQuillController);
@@ -100,32 +141,30 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
     }
   }
 
+  /// 对 [singleQuillController] 必须展示选项的反选。
+  void invertRequired(SingleQuillController singleQuillController) {
+    if (isRequired(singleQuillController)) {
+      _cancelRequired(singleQuillController);
+    } else {
+      _chooseRequired(singleQuillController);
+    }
+  }
+
   /// 移除 [singleQuillController] 选项。
   void removeItem(SingleQuillController singleQuillController) {
     singleQuillController.dispose();
     final index = choices.indexOf(singleQuillController);
-    final isCorrectSq = isCorrect(singleQuillController);
     choices.removeAt(index);
     choicesForCorrect.removeAt(index);
+    choicesForRequired.removeAt(index);
 
     if (extractionCountMin < extractionCountMax) {
       extractionCountMax--;
     } else if (extractionCountMin == extractionCountMax) {
-      extractionCountMin--;
-      extractionCountMax--;
-    } else {
-      throw "extractionCountMin 不能大于 extractionCountMax！";
-    }
-
-    if (isCorrectSq) {
-      if (extractionCorrectCountMin < extractionCorrectCountMax) {
-        extractionCorrectCountMax--;
-      } else if (extractionCorrectCountMin == extractionCorrectCountMax) {
-        extractionCorrectCountMin--;
-        extractionCorrectCountMax--;
-      } else {
-        throw "extractionCorrectCountMin 不能大于 extractionCorrectCountMax！";
+      if (extractionCountMin != 2) {
+        extractionCountMin--;
       }
+      extractionCountMax--;
     }
   }
 
@@ -133,13 +172,12 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
   void addItem(SingleQuillController singleQuillController) {
     choices.add(singleQuillController);
     choicesForCorrect.add(false);
+    choicesForRequired.add(false);
 
-    extractionCountMax++;
-
-    /// 如果正确数量的最大值是原来的全部选项数量，则保持现在的正确选项数量与现在的全部选项数量相等。
-    if (extractionCorrectCountMax == extractionCountMax - 1) {
-      extractionCorrectCountMax = extractionCountMax;
+    if (extractionCountMax == choices.length - 1) {
+      extractionCountMax++;
     }
+
     dynamicAddFocusListener(singleQuillController);
   }
 
@@ -195,12 +233,20 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
       choices.add(SingleQuillController()..resetContent(c as String));
     }
 
-    choicesForCorrect.clear();
-    choicesForCorrect.addAll((json["answers"] as List<dynamic>).map((e) => e as bool));
-
     choiceType = ChoiceType.values.firstWhere((element) => element.name == (json["choice_type"] as String));
-
     choicePrefixType = ChoicePrefixType.values.firstWhere((element) => element.name == (json["choice_prefix_type"] as String));
+
+    canDisorderly = json["can_disorderly"] as bool;
+    extractionCountMin = json["extraction_count_min"] as int;
+    extractionCountMax = json["extraction_count_max"] as int;
+    correctProportion = json["correct_proportion"] as double;
+    requiredType = RequiredType.values.firstWhere((element) => element.name == (json["required_type"] as String));
+
+    choicesForRequired.clear();
+    choicesForRequired.addAll((json["choices_for_required"] as List<dynamic>).map((e) => e as bool));
+
+    choicesForCorrect.clear();
+    choicesForCorrect.addAll((json["choices_for_correct"] as List<dynamic>).map((e) => e as bool));
 
     super.resetFromJson(json);
   }
@@ -212,13 +258,28 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
       "type": fragmentTemplateType.name,
       "question": question.getContentJsonString(),
       "choices": choices.map((e) => e.getContentJsonString()).toList(),
-      "answers": choicesForCorrect,
       "choice_type": choiceType.name,
       "choice_prefix_type": choicePrefixType.name,
+      "can_disorderly": canDisorderly,
+      "extraction_count_min": extractionCountMin,
+      "extraction_count_max": extractionCountMax,
+      "correct_proportion": correctProportion,
+      "required_type": requiredType.name,
+      "choices_for_required": choicesForRequired,
+      "choices_for_correct": choicesForCorrect,
       sp.keys.first: sp.values.first,
     };
   }
 
   @override
   bool get initIsShowBottomButton => false;
+
+  @override
+  void addExtendChunkCallback(TextEditingController textEditingController) {
+    addExtendChunk(
+      chunkName: textEditingController.text,
+      extendsChunkDisplay2Type: ExtendChunkDisplay2Type.only_end,
+      extendChunkDisplayQAType: null,
+    );
+  }
 }
