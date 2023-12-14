@@ -10,7 +10,8 @@ class FragmentTemplateInAppStageWidget extends StatefulWidget {
   const FragmentTemplateInAppStageWidget({
     super.key,
     required this.fragmentTemplate,
-    required this.onTap,
+    this.onTap,
+    this.onDoubleTap,
     required this.columnChildren,
     this.moreChildren,
     this.bottomSheet,
@@ -18,7 +19,8 @@ class FragmentTemplateInAppStageWidget extends StatefulWidget {
 
   final FragmentTemplate fragmentTemplate;
 
-  final FutureOr<void> Function() onTap;
+  final FutureOr<void> Function()? onTap;
+  final FutureOr<void> Function()? onDoubleTap;
 
   final List<Widget> columnChildren;
 
@@ -36,6 +38,7 @@ class _FragmentTemplateInAppStageWidgetState extends State<FragmentTemplateInApp
     return Scaffold(
       body: GestureDetector(
         onTap: widget.onTap,
+        onDoubleTap: widget.onDoubleTap,
         child: Column(
           children: [
             Expanded(

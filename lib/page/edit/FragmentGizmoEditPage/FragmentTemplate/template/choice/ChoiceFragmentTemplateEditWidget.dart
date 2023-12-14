@@ -218,7 +218,7 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("仅抽取 ${wc.extractionCountText} 个选项进行展示："),
+                                Text("仅抽取 ${wc.getExtractionCountText} 个选项进行展示："),
                                 wc.choices.length == 2
                                     ? Container()
                                     : SizedBox(
@@ -236,7 +236,7 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
                                                 onChanged: (SfRangeValues value) {
                                                   wc.extractionCountMin = (value.start as double).toInt();
                                                   wc.extractionCountMax = (value.end as double).toInt();
-                                                  r(() {});
+                                                  setState(() {});
                                                 },
                                                 showDividers: true,
                                               ),
@@ -251,7 +251,14 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
                                     children: [
                                       Text("其中正确选项数量占比："),
                                       SizedBox(width: 10),
-                                      Text(widget.choiceFragmentTemplate.correctProportion.toString()),
+                                      widget.choiceFragmentTemplate.choiceType == ChoiceType.simple
+                                          ? Text("单选有且仅有一个", style: TextStyle(color: Colors.grey))
+                                          : (widget.choiceFragmentTemplate.isFullChoice
+                                              ? Text("已满选", style: TextStyle(color: Colors.grey))
+                                              : Text(
+                                                  widget.choiceFragmentTemplate.correctProportion.toString(),
+                                                  style: TextStyle(decoration: TextDecoration.underline),
+                                                )),
                                     ],
                                   ),
                                   onTap: () async {
@@ -281,37 +288,39 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
                         ),
                       ),
                       SizedBox(height: 10),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: CustomDropdownBodyButton(
-                                primaryButton: Row(
-                                  children: [
-                                    Text("必须展示方式："),
-                                    Spacer(),
-                                    Text(widget.choiceFragmentTemplate.requiredType.displayText),
-                                    Icon(Icons.arrow_right_outlined, color: Colors.grey),
-                                  ],
-                                ),
-                                initValue: widget.choiceFragmentTemplate.requiredType,
-                                items: RequiredType.values.map(
-                                  (e) {
-                                    return CustomItem(value: e, text: e.displayText);
-                                  },
-                                ).toList(),
-                                onChanged: (v) {
-                                  setState(() {
-                                    widget.choiceFragmentTemplate.requiredType = v!;
-                                  });
-                                },
+                      widget.choiceFragmentTemplate.isFullChoice
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomDropdownBodyButton(
+                                      primaryButton: Row(
+                                        children: [
+                                          Text("必须展示方式："),
+                                          Spacer(),
+                                          Text(widget.choiceFragmentTemplate.requiredType.displayText),
+                                          Icon(Icons.arrow_right_outlined, color: Colors.grey),
+                                        ],
+                                      ),
+                                      initValue: widget.choiceFragmentTemplate.requiredType,
+                                      items: RequiredType.values.map(
+                                        (e) {
+                                          return CustomItem(value: e, text: e.displayText);
+                                        },
+                                      ).toList(),
+                                      onChanged: (v) {
+                                        setState(() {
+                                          widget.choiceFragmentTemplate.requiredType = v!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
+                      widget.choiceFragmentTemplate.isFullChoice ? Container() : SizedBox(height: 10),
                       widget.choiceFragmentTemplate.requiredType != RequiredType.not_enabled
                           ? Row(
                               children: [

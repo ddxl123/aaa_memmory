@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/src/widgets/editable_text.dart';
 
 import '../../base/FragmentTemplate.dart';
@@ -16,14 +17,11 @@ enum RequiredType {
   /// 无必须展示选项
   not_enabled("无必须展示选项"),
 
-  /// 占比
-  proportion("占比"),
+  /// 占比优先
+  proportion_first("占比优先"),
 
-  /// 自动
-  automatic("自动"),
-
-  /// 强制
-  force("强制");
+  /// 必须优先
+  required_first("必须优先");
 
   const RequiredType(this.displayText);
 
@@ -68,6 +66,12 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
   /// 必须展示类型
   RequiredType requiredType = RequiredType.not_enabled;
 
+  /// 展示时所选择的答案，不存储数据。
+  final selectedChoices = <SingleQuillController>[];
+
+  /// 展示时的选项，不存储数据。
+  final displayChoices = <SingleQuillController>[];
+
   /// 选项是否足够启用乱序
   bool get isChoiceCountEnough {
     final result = choices.length > 1;
@@ -78,7 +82,49 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
     return result;
   }
 
-  String get extractionCountText => extractionCountMin == extractionCountMax ? extractionCountMin.toString() : "$extractionCountMin-$extractionCountMax";
+  String get getExtractionCountText => extractionCountMin == extractionCountMax ? extractionCountMin.toString() : "$extractionCountMin-$extractionCountMax";
+
+  bool get isFullChoice => extractionCountMin == extractionCountMax && extractionCountMin == choices.length;
+
+  /// 已选选项是否与正确选项相匹配
+  bool get isAnswerCorrect => setEquals(selectedChoices.toSet(), getCorrectChoices.toSet());
+
+  /// 获取 所选择的选项 和 正确的选项 所对应的字符串
+  (List<String>, List<String>) getSelectedAndCorrectChoicePrefixType() {
+    final selecteds = <String>[];
+    final corrects = <String>[];
+    for (var dc in displayChoices) {
+      if (selectedChoices.contains(dc)) {
+        selecteds.add(choicePrefixType.toTypeFrom(displayChoices.indexOf(dc) + 1));
+      }
+      if (getCorrectChoices.contains(dc)) {
+        corrects.add(choicePrefixType.toTypeFrom(displayChoices.indexOf(dc) + 1));
+      }
+    }
+    return (selecteds, corrects);
+  }
+
+  /// 获取正确选项的 [SingleQuillController]，只回去正确的选项，非正确的选项不进行获取。
+  List<SingleQuillController> get getCorrectChoices {
+    final indexResult = <int>[];
+    for (int i = 0; i < choicesForCorrect.length; i++) {
+      if (choicesForCorrect[i]) {
+        indexResult.add(i);
+      }
+    }
+    return indexResult.map((e) => choices[e]).toList();
+  }
+
+  /// 获取必选选项的 [SingleQuillController]。
+  List<SingleQuillController> get getRequiredChoices {
+    final indexResult = <int>[];
+    for (int i = 0; i < choicesForRequired.length; i++) {
+      if (choicesForRequired[i]) {
+        indexResult.add(i);
+      }
+    }
+    return indexResult.map((e) => choices[e]).toList();
+  }
 
   /// [singleQuillController] 是否为正确选项。
   bool isCorrect(SingleQuillController singleQuillController) {

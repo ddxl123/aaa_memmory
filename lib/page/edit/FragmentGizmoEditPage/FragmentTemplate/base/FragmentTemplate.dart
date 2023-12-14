@@ -20,14 +20,14 @@ enum FragmentTemplateType {
 }
 
 enum ExtendChunkDisplay2Type {
+  /// 无论有没有显示答案，都显示
+  always(displayName: "总是显示"),
+
   /// 仅在未显示答案时显示
   only_start(displayName: "仅在显示问题时显示"),
 
   /// 仅在显示答案是显示
-  only_end(displayName: "仅在显示答案时显示"),
-
-  /// 无论有没有显示答案，都显示
-  always(displayName: "总是显示");
+  only_end(displayName: "仅在显示答案时显示");
 
   const ExtendChunkDisplay2Type({required this.displayName});
 

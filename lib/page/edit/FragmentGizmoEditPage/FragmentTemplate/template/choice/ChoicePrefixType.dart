@@ -15,6 +15,10 @@ enum ChoicePrefixType {
 
   final String displayName;
 
+  /// 将 [number] 转换成对应类型的字符串。
+  ///
+  /// 传入的 [number] 是要转换的序号。
+  ///
   /// AI 提示词：dart语言，将任意阿拉伯数字转换为圆圈数字(例如①)，如果超出，则使用阿拉伯数字自身
   String toTypeFrom(int number) {
     if (number < 1) {
