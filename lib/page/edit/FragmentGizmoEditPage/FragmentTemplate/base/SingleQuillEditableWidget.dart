@@ -1,3 +1,8 @@
+import 'dart:math';
+import 'dart:ui';
+
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/custom_embeds/BlankEmbed.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
@@ -6,7 +11,11 @@ import 'SingleQuillController.dart';
 
 /// 单个可编辑的输入框 Widget。
 class SingleQuillEditableWidget extends StatelessWidget {
-  const SingleQuillEditableWidget({super.key, required this.singleQuillController, required this.isEditable});
+  const SingleQuillEditableWidget({
+    super.key,
+    required this.singleQuillController,
+    required this.isEditable,
+  });
 
   final SingleQuillController singleQuillController;
   final bool isEditable;
@@ -36,6 +45,12 @@ class SingleQuillEditableWidget extends StatelessWidget {
         embedBuilders: [
           ...FlutterQuillEmbeds.editorBuilders(),
         ],
+        customStyleBuilder: (Attribute attribute) {
+          if (attribute.key == BlankAttribute.blank) {
+            return BlankAttribute.textStyle;
+          }
+          return TextStyle();
+        },
       ),
     );
   }

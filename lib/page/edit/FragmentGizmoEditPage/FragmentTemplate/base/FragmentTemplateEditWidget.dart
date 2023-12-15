@@ -4,7 +4,7 @@ import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 
-import '../../custom_embeds/DemoEmbed.dart';
+import '../../custom_embeds/BlankEmbed.dart';
 import 'FragmentTemplate.dart';
 import 'SingleQuillEditableWidget.dart';
 import 'TemplateViewChunkWidget.dart';
@@ -162,7 +162,7 @@ class _FragmentTemplateEditWidgetState extends State<FragmentTemplateEditWidget>
                   multiRowsDisplay: false,
                   embedButtons: [
                     ...FlutterQuillEmbeds.toolbarButtons(),
-                    (controller, toolbarIconSize, iconTheme, dialogTheme) => DemoToolBar(controller),
+                    (controller, toolbarIconSize, iconTheme, dialogTheme) => BlankToolBar(controller),
                   ],
                 ),
               ),

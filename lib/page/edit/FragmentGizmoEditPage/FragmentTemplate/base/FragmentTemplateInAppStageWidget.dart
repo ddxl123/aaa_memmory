@@ -36,6 +36,7 @@ class _FragmentTemplateInAppStageWidgetState extends State<FragmentTemplateInApp
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // TODO: 使用 Listener 以减少双击的时间间隔。
       body: GestureDetector(
         onTap: widget.onTap,
         onDoubleTap: widget.onDoubleTap,

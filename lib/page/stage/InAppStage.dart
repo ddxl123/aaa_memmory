@@ -1,3 +1,7 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplateInAppStageWidget.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplateInAppStageWidget.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
 
@@ -127,6 +131,16 @@ class _InAppStageState extends State<InAppStage> {
                 simple: () {
                   return SimpleFragmentTemplateInAppStageWidget(
                     simpleFragmentTemplate: c.currentPerformerAb(abw)!.fragmentTemplate as SimpleFragmentTemplate,
+                  );
+                },
+                trueFalse: () {
+                  return TFFragmentTemplateInAppStageWidget(
+                    tfFragmentTemplate: c.currentPerformerAb(abw)!.fragmentTemplate as TFFragmentTemplate,
+                  );
+                },
+                blank: () {
+                  return BlankFragmentTemplateInAppStageWidget(
+                    blankFragmentTemplate: c.currentPerformerAb(abw)!.fragmentTemplate as BlankFragmentTemplate,
                   );
                 },
               );

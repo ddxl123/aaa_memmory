@@ -1,3 +1,7 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplatePreviewWidget.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplatePreviewWidget.dart';
 import 'package:flutter/material.dart';
 
 import '../../edit/FragmentGizmoEditPage/FragmentTemplate/base/FragmentTemplate.dart';
@@ -34,6 +38,12 @@ class _SingleFragmentTemplatePageState extends State<SingleFragmentTemplatePage>
         },
         simple: () {
           return SimpleFragmentTemplatePreviewWidget(simpleFragmentTemplate: widget.fragmentTemplate as SimpleFragmentTemplate);
+        },
+        trueFalse: () {
+          return TFFragmentTemplatePreviewWidget(tfFragmentTemplate: widget.fragmentTemplate as TFFragmentTemplate);
+        },
+        blank: () {
+          return BlankFragmentTemplatePreviewWidget(blankFragmentTemplate: widget.fragmentTemplate as BlankFragmentTemplate);
         },
       ),
     );

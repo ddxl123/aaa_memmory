@@ -6,7 +6,7 @@ import '../../base/SingleQuillController.dart';
 /// 问答题模板的数据类。
 class QAFragmentTemplate extends FragmentTemplate {
   @override
-  FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.questionAnswer;
+  FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.question_answer;
 
   final question = SingleQuillController();
   final answer = SingleQuillController();

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import '../../../../stage/InAppStageAbController.dart';
@@ -10,13 +12,19 @@ import 'SingleQuillController.dart';
 
 enum FragmentTemplateType {
   /// 单面
-  single,
+  simple,
 
   /// 问答
-  questionAnswer,
+  question_answer,
 
   /// 选择
   choice,
+
+  /// 判断
+  true_false,
+
+  /// 填空
+  blank,
 }
 
 enum ExtendChunkDisplay2Type {
@@ -246,6 +254,8 @@ abstract class FragmentTemplate {
       questionAnswer: () => QAFragmentTemplate()..resetFromJson(contentJson),
       choice: () => ChoiceFragmentTemplate()..resetFromJson(contentJson),
       simple: () => SimpleFragmentTemplate()..resetFromJson(contentJson),
+      trueFalse: () => TFFragmentTemplate()..resetFromJson(contentJson),
+      blank: () => BlankFragmentTemplate()..resetFromJson(contentJson),
     );
   }
 
@@ -254,14 +264,20 @@ abstract class FragmentTemplate {
     required R Function() simple,
     required R Function() questionAnswer,
     required R Function() choice,
+    required R Function() trueFalse,
+    required R Function() blank,
   }) {
     switch (type) {
-      case FragmentTemplateType.questionAnswer:
+      case FragmentTemplateType.question_answer:
         return questionAnswer();
       case FragmentTemplateType.choice:
         return choice();
-      case FragmentTemplateType.single:
+      case FragmentTemplateType.simple:
         return simple();
+      case FragmentTemplateType.true_false:
+        return trueFalse();
+      case FragmentTemplateType.blank:
+        return blank();
       default:
         throw "未处理类型：$type";
     }
@@ -272,14 +288,20 @@ abstract class FragmentTemplate {
     required Future<R> Function() simple,
     required Future<R> Function() questionAnswer,
     required Future<R> Function() choice,
+    required Future<R> Function() trueFalse,
+    required Future<R> Function() blank,
   }) async {
     switch (type) {
-      case FragmentTemplateType.questionAnswer:
+      case FragmentTemplateType.question_answer:
         return await questionAnswer();
       case FragmentTemplateType.choice:
         return await choice();
-      case FragmentTemplateType.single:
+      case FragmentTemplateType.simple:
         return await simple();
+      case FragmentTemplateType.true_false:
+        return await trueFalse();
+      case FragmentTemplateType.blank:
+        return await blank();
       default:
         throw "未处理类型：$type";
     }

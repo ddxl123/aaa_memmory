@@ -31,7 +31,7 @@ class DemoEmbedBuilder extends q.EmbedBuilder {
 }
 
 class DemoToolBar extends StatefulWidget {
-  DemoToolBar(this.quillController);
+  const DemoToolBar(this.quillController, {super.key});
 
   final q.QuillController quillController;
 
@@ -43,7 +43,7 @@ class _DemoToolBarState extends State<DemoToolBar> {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      child: Text("data"),
+      child: Text("demo"),
       onPressed: () {
         final index = widget.quillController.selection.baseOffset;
         final length = widget.quillController.selection.extentOffset - index;
@@ -55,3 +55,4 @@ class _DemoToolBarState extends State<DemoToolBar> {
     );
   }
 }
+

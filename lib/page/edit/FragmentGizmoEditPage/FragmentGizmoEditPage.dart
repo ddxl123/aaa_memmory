@@ -1,3 +1,6 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplateEditWidget.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../push_page/push_page.dart';
 import 'FragmentGizmoEditPageAbController.dart';
 import 'FragmentTemplate/base/FragmentTemplate.dart';
+import 'FragmentTemplate/template/blank/BlankFragmentTemplateEditWidget.dart';
 import 'FragmentTemplate/template/choice/ChoiceFragmentTemplate.dart';
 import 'FragmentTemplate/template/choice/ChoiceFragmentTemplateEditWidget.dart';
 import 'FragmentTemplate/template/question_answer/QAFragmentTemplate.dart';
@@ -117,6 +121,18 @@ class FragmentGizmoEditPage extends StatelessWidget {
                     simple: () {
                       return SimpleFragmentTemplateEditWidget(
                         simpleFragmentTemplate: c.currentPerformerAb(abw).fragmentTemplate as SimpleFragmentTemplate,
+                        isEditable: c.isEditable(abw),
+                      );
+                    },
+                    trueFalse: () {
+                      return TFFragmentTemplateEditWidget(
+                        tfFragmentTemplate: c.currentPerformerAb(abw).fragmentTemplate as TFFragmentTemplate,
+                        isEditable: c.isEditable(abw),
+                      );
+                    },
+                    blank: () {
+                      return BlankFragmentTemplateEditWidget(
+                        blankFragmentTemplate: c.currentPerformerAb(abw).fragmentTemplate as BlankFragmentTemplate,
                         isEditable: c.isEditable(abw),
                       );
                     },

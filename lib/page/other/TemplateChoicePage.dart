@@ -1,3 +1,5 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
 import 'package:flutter/material.dart';
 
 import '../edit/FragmentGizmoEditPage/FragmentTemplate/template/choice/ChoiceFragmentTemplate.dart';
@@ -23,7 +25,7 @@ class SingleTemplateChoicePage extends StatelessWidget {
         Expanded(
           child: Card(
             elevation: 2,
-            margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: GestureDetector(
               onTap: onTap,
               child: Padding(
@@ -90,14 +92,14 @@ class TemplateChoice extends StatelessWidget {
               title: "判断题",
               explain: "只有对与错",
               onTap: () {
-                Navigator.pop(context, ChoiceFragmentTemplate());
+                Navigator.pop(context, TFFragmentTemplate());
               },
             ),
             SingleTemplateChoicePage(
               title: "填空题",
               explain: "将挖空部分隐藏",
               onTap: () {
-                Navigator.pop(context, ChoiceFragmentTemplate());
+                Navigator.pop(context, BlankFragmentTemplate());
               },
             ),
           ],

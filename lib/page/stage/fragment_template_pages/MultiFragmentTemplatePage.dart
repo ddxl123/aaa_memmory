@@ -1,3 +1,7 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplatePreviewWidget.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplatePreviewWidget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +132,12 @@ class _MultiFragmentTemplatePageState extends State<MultiFragmentTemplatePage> {
             },
             simple: () {
               return SimpleFragmentTemplatePreviewWidget(simpleFragmentTemplate: ft as SimpleFragmentTemplate);
+            },
+            trueFalse: () {
+              return TFFragmentTemplatePreviewWidget(tfFragmentTemplate: ft as TFFragmentTemplate);
+            },
+            blank: () {
+              return BlankFragmentTemplatePreviewWidget(blankFragmentTemplate: ft as BlankFragmentTemplate);
             },
           );
         },

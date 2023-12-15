@@ -4,43 +4,43 @@ import '../../base/FragmentTemplate.dart';
 import '../../base/SingleQuillController.dart';
 
 /// 单面模板
-class SimpleFragmentTemplate extends FragmentTemplate {
+class BlankFragmentTemplate extends FragmentTemplate {
   @override
-  FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.simple;
+  FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.blank;
 
-  final simple = SingleQuillController();
-
-  @override
-  FragmentTemplate emptyInitInstance() => SimpleFragmentTemplate();
+  final blank = SingleQuillController();
 
   @override
-  FragmentTemplate emptyTransferableInstance() => SimpleFragmentTemplate();
+  FragmentTemplate emptyInitInstance() => BlankFragmentTemplate();
 
   @override
-  String getTitle() => simple.transferToTitle();
+  FragmentTemplate emptyTransferableInstance() => BlankFragmentTemplate();
 
   @override
-  List<SingleQuillController> listenSingleEditableQuill() => [simple];
+  String getTitle() => blank.transferToTitle();
+
+  @override
+  List<SingleQuillController> listenSingleEditableQuill() => [blank];
 
   @override
   Map<String, dynamic> toJson() {
     final sp = super.toJson();
     return {
       "type": fragmentTemplateType.name,
-      "simple": simple.getContentJsonString(),
+      "blank": blank.getContentJsonString(),
       sp.keys.first: sp.values.first,
     };
   }
 
   @override
   void resetFromJson(Map<String, dynamic> json) {
-    simple.resetContent(json["simple"]);
+    blank.resetContent(json["blank"]);
     super.resetFromJson(json);
   }
 
   @override
   (bool, String) isMustContentEmpty() {
-    if (simple.isContentEmpty()) {
+    if (blank.isContentEmpty()) {
       return (true, "主内容不能为空！");
     }
     return (false, "...");
@@ -48,17 +48,17 @@ class SimpleFragmentTemplate extends FragmentTemplate {
 
   @override
   void dispose() {
-    simple.dispose();
+    blank.dispose();
   }
 
   @override
-  bool get initIsShowBottomButton => true;
+  bool get initIsShowBottomButton => false;
 
   @override
   void addExtendChunkCallback(TextEditingController textEditingController) {
     addExtendChunk(
       chunkName: textEditingController.text,
-      extendsChunkDisplay2Type: null,
+      extendsChunkDisplay2Type: ExtendChunkDisplay2Type.only_end,
       extendChunkDisplayQAType: null,
     );
   }
