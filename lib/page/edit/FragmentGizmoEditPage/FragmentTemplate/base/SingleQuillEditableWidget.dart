@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/base/FragmentTemplate.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/custom_embeds/BlankEmbed.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +17,12 @@ class SingleQuillEditableWidget extends StatelessWidget {
     super.key,
     required this.singleQuillController,
     required this.isEditable,
+    required this.fragmentTemplate,
   });
 
   final SingleQuillController singleQuillController;
   final bool isEditable;
+  final FragmentTemplate fragmentTemplate;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +47,14 @@ class SingleQuillEditableWidget extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         scrollable: false,
         embedBuilders: [
+          if (fragmentTemplate is BlankFragmentTemplate) BlankEmbedBuilder(blankFragmentTemplate: fragmentTemplate as BlankFragmentTemplate),
           ...FlutterQuillEmbeds.editorBuilders(),
         ],
         customStyleBuilder: (Attribute attribute) {
-          if (attribute.key == BlankAttribute.blank) {
-            return BlankAttribute.textStyle;
+          if (attribute.key == BlankHideAttribute.blank_hide) {
+            return BlankHideAttribute.textStyle;
           }
-          return TextStyle();
+          return const TextStyle();
         },
       ),
     );

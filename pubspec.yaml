@@ -104,6 +104,8 @@ dependencies:
   image_cropper: ^5.0.1
   # 滑动条
   syncfusion_flutter_sliders: ^23.2.7
+  # 列表可拖拽交换
+  reorderables: ^0.6.0
 
   like_button: ^2.0.5
 

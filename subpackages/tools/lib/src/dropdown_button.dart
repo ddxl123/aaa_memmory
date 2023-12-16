@@ -65,7 +65,6 @@ class _CustomDropdownBodyButtonState<T> extends State<CustomDropdownBodyButton<T
               alignment: widget.itemAlignment,
               child: e.item ?? Text(e.text ?? ""),
             ),
-            onTap: e.onTap,
           ),
         ),
       ],
@@ -80,7 +79,6 @@ class CustomItem<T> {
   /// 如果 [item] 不为 null，则 [text] 无效。
   String? text;
   Widget? item;
-  void Function()? onTap;
 
-  CustomItem({required this.value, this.text, this.item, this.onTap});
+  CustomItem({required this.value, this.text, this.item});
 }

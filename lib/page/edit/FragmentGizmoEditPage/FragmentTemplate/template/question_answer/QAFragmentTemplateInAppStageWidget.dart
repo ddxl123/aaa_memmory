@@ -39,6 +39,7 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
       chunkTitle: "问题${widget.qaFragmentTemplate.interchangeable ? (isExchanged ? " · 问答已交换" : " · 问答未交换") : ""}",
       children: [
         SingleQuillPreviewWidget(
+          fragmentTemplate: widget.qaFragmentTemplate,
           singleQuillController: isExchanged ? widget.qaFragmentTemplate.answer : widget.qaFragmentTemplate.question,
         ),
       ],
@@ -48,6 +49,7 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
       chunkTitle: "答案",
       children: [
         SingleQuillPreviewWidget(
+          fragmentTemplate: widget.qaFragmentTemplate,
           singleQuillController: isExchanged ? widget.qaFragmentTemplate.question : widget.qaFragmentTemplate.answer,
         ),
       ],
@@ -56,6 +58,7 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
     final startPage = [
       question,
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: widget.qaFragmentTemplate,
         extendChunks: widget.qaFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.always) {
@@ -86,6 +89,7 @@ class _QAFragmentTemplateInAppStageWidgetState extends State<QAFragmentTemplateI
       question,
       answer,
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: widget.qaFragmentTemplate,
         extendChunks: widget.qaFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplayQAType == ExtendChunkDisplayQAType.always) {

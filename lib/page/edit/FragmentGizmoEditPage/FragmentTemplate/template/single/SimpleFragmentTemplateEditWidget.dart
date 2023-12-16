@@ -32,6 +32,7 @@ class _SimpleFragmentTemplateEditWidgetState extends State<SimpleFragmentTemplat
           chunkTitle: "单面碎片",
           children: [
             SingleQuillEditableWidget(
+              fragmentTemplate: widget.simpleFragmentTemplate,
               singleQuillController: widget.simpleFragmentTemplate.simple,
               isEditable: widget.isEditable,
             ),

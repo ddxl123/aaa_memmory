@@ -1,3 +1,4 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as q;
 import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
@@ -125,6 +126,7 @@ class _FragmentTemplateEditWidgetState extends State<FragmentTemplateEditWidget>
                         SingleQuillEditableWidget(
                           singleQuillController: e.singleQuillController,
                           isEditable: widget.isEditable,
+                          fragmentTemplate: widget.fragmentTemplate,
                         ),
                       ],
                     );
@@ -162,7 +164,12 @@ class _FragmentTemplateEditWidgetState extends State<FragmentTemplateEditWidget>
                   multiRowsDisplay: false,
                   embedButtons: [
                     ...FlutterQuillEmbeds.toolbarButtons(),
-                    (controller, toolbarIconSize, iconTheme, dialogTheme) => BlankToolBar(controller),
+                    if (widget.fragmentTemplate is BlankFragmentTemplate)
+                      (controller, toolbarIconSize, iconTheme, dialogTheme) {
+                        return BlankToolBar(
+                          blankFragmentTemplate: widget.fragmentTemplate as BlankFragmentTemplate,
+                        );
+                      }
                   ],
                 ),
               ),

@@ -16,7 +16,7 @@ class DialogSize {
 /// 一个可扩展的 dialog widget。
 class DialogWidget extends StatelessWidget {
   const DialogWidget({
-    Key? key,
+    super.key,
     this.title,
     this.topRightAction,
     this.bottomLiftAction,
@@ -28,7 +28,7 @@ class DialogWidget extends StatelessWidget {
     this.dialogSize,
     this.mainVerticalWidgetsAlignment,
     this.fullPadding = const EdgeInsets.fromLTRB(30, 20, 30, 5),
-  }) : super(key: key);
+  });
   final String? title;
   final Widget? topRightAction;
   final Widget? bottomLiftAction;

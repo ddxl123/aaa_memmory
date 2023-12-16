@@ -37,6 +37,7 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
           chunkTitle: "问题",
           children: [
             SingleQuillEditableWidget(
+              fragmentTemplate: widget.choiceFragmentTemplate,
               singleQuillController: widget.choiceFragmentTemplate.question,
               isEditable: widget.isEditable,
             ),
@@ -132,7 +133,11 @@ class _ChoiceFragmentTemplateEditWidgetState extends State<ChoiceFragmentTemplat
                             ),
                             widget.choiceFragmentTemplate.choicePrefixType == ChoicePrefixType.none ? Container() : const Text("  "),
                             Expanded(
-                              child: SingleQuillEditableWidget(singleQuillController: e, isEditable: widget.isEditable),
+                              child: SingleQuillEditableWidget(
+                                fragmentTemplate: widget.choiceFragmentTemplate,
+                                singleQuillController: e,
+                                isEditable: widget.isEditable,
+                              ),
                             ),
                             Checkbox(
                               value: widget.choiceFragmentTemplate.isCorrect(e),

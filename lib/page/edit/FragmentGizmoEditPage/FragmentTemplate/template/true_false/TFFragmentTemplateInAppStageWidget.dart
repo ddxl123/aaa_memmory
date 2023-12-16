@@ -34,7 +34,10 @@ class _TFFragmentTemplateInAppStageWidgetState extends State<TFFragmentTemplateI
       TemplateViewChunkWidget(
         chunkTitle: "问题",
         children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.tfFragmentTemplate.trueFalse),
+          SingleQuillPreviewWidget(
+            fragmentTemplate: widget.tfFragmentTemplate,
+            singleQuillController: widget.tfFragmentTemplate.trueFalse,
+          ),
           SizedBox(height: 10),
           Row(
             children: [
@@ -97,6 +100,7 @@ class _TFFragmentTemplateInAppStageWidgetState extends State<TFFragmentTemplateI
         ],
       ),
       TemplateViewExtendChunksWidgets(
+          fragmentTemplate: widget.tfFragmentTemplate,
           extendChunks: widget.tfFragmentTemplate.extendChunks,
           displayWhere: (ExtendChunk ec) {
             if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.only_start || ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {
@@ -124,7 +128,10 @@ class _TFFragmentTemplateInAppStageWidgetState extends State<TFFragmentTemplateI
       TemplateViewChunkWidget(
         chunkTitle: "问题",
         children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.tfFragmentTemplate.trueFalse),
+          SingleQuillPreviewWidget(
+            fragmentTemplate: widget.tfFragmentTemplate,
+            singleQuillController: widget.tfFragmentTemplate.trueFalse,
+          ),
           SizedBox(height: 10),
           Row(
             children: [
@@ -169,6 +176,7 @@ class _TFFragmentTemplateInAppStageWidgetState extends State<TFFragmentTemplateI
         ],
       ),
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: widget.tfFragmentTemplate,
         extendChunks: widget.tfFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.only_end || ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {

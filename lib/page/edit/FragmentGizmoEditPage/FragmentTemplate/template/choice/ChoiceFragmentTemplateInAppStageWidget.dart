@@ -158,6 +158,7 @@ class _ChoiceFragmentTemplateInAppStageWidgetState extends State<ChoiceFragmentT
       chunkTitle: "问题",
       children: [
         SingleQuillPreviewWidget(
+          fragmentTemplate: t,
           singleQuillController: t.question,
         ),
       ],
@@ -219,6 +220,7 @@ class _ChoiceFragmentTemplateInAppStageWidgetState extends State<ChoiceFragmentT
                       ),
                 Expanded(
                   child: SingleQuillPreviewWidget(
+                    fragmentTemplate: t,
                     singleQuillController: t.displayChoices[i],
                   ),
                 ),
@@ -276,6 +278,7 @@ class _ChoiceFragmentTemplateInAppStageWidgetState extends State<ChoiceFragmentT
       questionWidget,
       choicesWidget,
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: t,
         extendChunks: t.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {
@@ -297,6 +300,7 @@ class _ChoiceFragmentTemplateInAppStageWidgetState extends State<ChoiceFragmentT
       questionWidget,
       choicesWidget,
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: t,
         extendChunks: t.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {

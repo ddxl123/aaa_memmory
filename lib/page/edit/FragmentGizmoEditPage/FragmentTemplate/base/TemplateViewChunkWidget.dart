@@ -51,12 +51,14 @@ class TemplateViewChunkWidget extends StatelessWidget {
 class TemplateViewExtendChunksWidgets extends StatelessWidget {
   const TemplateViewExtendChunksWidgets({
     super.key,
+    required this.fragmentTemplate,
     required this.extendChunks,
     required this.displayWhere,
   });
 
-  final List<ExtendChunk> extendChunks;
+  final FragmentTemplate fragmentTemplate;
 
+  final List<ExtendChunk> extendChunks;
   final bool Function(ExtendChunk ec) displayWhere;
 
   @override
@@ -69,7 +71,7 @@ class TemplateViewExtendChunksWidgets extends StatelessWidget {
             return TemplateViewChunkWidget(
               chunkTitle: e.chunkName,
               children: [
-                SingleQuillPreviewWidget(singleQuillController: e.singleQuillController),
+                SingleQuillPreviewWidget(singleQuillController: e.singleQuillController, fragmentTemplate: fragmentTemplate),
               ],
             );
           } else {

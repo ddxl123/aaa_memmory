@@ -11,11 +11,12 @@ import '../../tools.dart';
 /// 带有一个 [TextField] 的对话框。
 class TextField1DialogWidget extends StatefulWidget {
   const TextField1DialogWidget({
-    Key? key,
+    super.key,
     this.title,
     this.text,
     required this.cancelText,
     required this.okText,
+    this.mainVerticalColumns,
     this.onOk,
     this.onCancel,
     this.dialogSize,
@@ -23,12 +24,18 @@ class TextField1DialogWidget extends StatefulWidget {
     this.inputDecoration = const InputDecoration(),
     this.inputFormatters,
     this.keyboardType,
-  }) : super(key: key);
+    this.autoFocus = false,
+    this.topRightAction,
+    this.okTextStyle,
+    this.isRemoveOkTextStyle = false,
+    this.isHideTextField = false,
+  });
 
   final String? title;
   final String? text;
   final String cancelText;
   final String okText;
+  final List<Widget>? mainVerticalColumns;
   final InputDecoration inputDecoration;
   final TextEditingController? textEditingController;
   final FutureOr<void> Function(TextEditingController tec)? onOk;
@@ -36,6 +43,11 @@ class TextField1DialogWidget extends StatefulWidget {
   final DialogSize? dialogSize;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
+  final bool autoFocus;
+  final Widget? topRightAction;
+  final TextStyle? okTextStyle;
+  final bool isRemoveOkTextStyle;
+  final bool isHideTextField;
 
   @override
   State<TextField1DialogWidget> createState() => _TextField1DialogWidgetState();
@@ -61,6 +73,7 @@ class _TextField1DialogWidgetState extends State<TextField1DialogWidget> {
     return DialogWidget(
       title: widget.title,
       dialogSize: widget.dialogSize,
+      topRightAction: widget.topRightAction,
       mainVerticalWidgets: [
         ...[
           widget.text == null ? Container() : const SizedBox(height: 10),
@@ -71,21 +84,24 @@ class _TextField1DialogWidgetState extends State<TextField1DialogWidget> {
                   children: [Expanded(child: Text(widget.text!))],
                 ),
         ],
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                maxLines: 10,
-                minLines: 1,
-                controller: textEditingController,
-                focusNode: FocusNode()..requestFocus(),
-                decoration: widget.inputDecoration,
-                inputFormatters: widget.inputFormatters,
-                keyboardType: widget.keyboardType,
+        ...widget.mainVerticalColumns ?? [],
+        widget.isHideTextField
+            ? Container()
+            : Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      maxLines: 10,
+                      minLines: 1,
+                      controller: textEditingController,
+                      focusNode: widget.autoFocus ? (FocusNode()..requestFocus()) : FocusNode(),
+                      decoration: widget.inputDecoration,
+                      inputFormatters: widget.inputFormatters,
+                      keyboardType: widget.keyboardType,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ],
       bottomHorizontalButtonWidgets: [
         const SizedBox(width: 50),
@@ -101,7 +117,10 @@ class _TextField1DialogWidgetState extends State<TextField1DialogWidget> {
         ),
         const SizedBox(width: 10),
         TextButton(
-          child: Text(widget.okText, style: const TextStyle(color: Colors.red)),
+          child: Text(
+            widget.okText,
+            style: widget.isRemoveOkTextStyle ? null : (widget.okTextStyle ?? const TextStyle(color: Colors.red)),
+          ),
           onPressed: () async {
             // TODO: 输入空字符后点击确定，会抛出异常。
             await widget.onOk?.call(textEditingController);

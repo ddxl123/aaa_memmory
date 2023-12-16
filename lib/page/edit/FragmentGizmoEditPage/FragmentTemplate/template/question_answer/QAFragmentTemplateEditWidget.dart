@@ -68,6 +68,7 @@ class _QAFragmentTemplateEditWidgetState extends State<QAFragmentTemplateEditWid
           chunkTitle: "问题",
           children: [
             SingleQuillEditableWidget(
+              fragmentTemplate: widget.qaFragmentTemplate,
               singleQuillController: widget.qaFragmentTemplate.question,
               isEditable: widget.isEditable,
             ),
@@ -77,6 +78,7 @@ class _QAFragmentTemplateEditWidgetState extends State<QAFragmentTemplateEditWid
           chunkTitle: "答案",
           children: [
             SingleQuillEditableWidget(
+              fragmentTemplate: widget.qaFragmentTemplate,
               singleQuillController: widget.qaFragmentTemplate.answer,
               isEditable: widget.isEditable,
             ),

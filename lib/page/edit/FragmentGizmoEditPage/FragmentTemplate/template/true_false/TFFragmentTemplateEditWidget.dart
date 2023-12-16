@@ -32,6 +32,7 @@ class _TFFragmentTemplateEditWidgetState extends State<TFFragmentTemplateEditWid
           chunkTitle: "问题",
           children: [
             SingleQuillEditableWidget(
+              fragmentTemplate: widget.tfFragmentTemplate,
               singleQuillController: widget.tfFragmentTemplate.trueFalse,
               isEditable: widget.isEditable,
             ),

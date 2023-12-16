@@ -34,20 +34,25 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
     t = widget.blankFragmentTemplate;
     widget.blankFragmentTemplate.inAppStageAbController?.isShowBottomButtonAb.refreshEasy((oldValue) => true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // 将文档转换为Delta对象
-      Delta delta = t.blank.quillController.document.toDelta();
-      // 创建一个变量，用于累加每个Operation对象的长度
-      int offset = 0;
-
-      // 遍历Delta对象的ops属性，检查每个Operation对象的attributes属性
-      for (Operation op in delta.operations) {
-        if (op.attributes != null && op.attributes!.containsKey(BlankAttribute.blank)) {
-          t.blank.quillController.formatText(offset, op.length!, const TextTransparentAttribute(true));
-        }
-        // 累加当前Operation对象的长度，以便计算下一个Operation对象的位置
-        offset += op.length!;
-      }
+      handleBlank(true);
     });
+  }
+
+  /// 隐藏或显示全部挖空
+  void handleBlank(bool isHide) {
+    // 将文档转换为Delta对象
+    Delta delta = t.blank.quillController.document.toDelta();
+    // 创建一个变量，用于累加每个Operation对象的长度
+    int offset = 0;
+
+    // 遍历Delta对象的ops属性，检查每个Operation对象的attributes属性
+    for (Operation op in delta.operations) {
+      if (op.attributes != null && op.attributes!.containsKey(BlankHideAttribute.blank_hide)) {
+        t.blank.quillController.formatText(offset, op.length!, TextTransparentAttribute(isHide ? true : null));
+      }
+      // 累加当前Operation对象的长度，以便计算下一个Operation对象的位置
+      offset += op.length!;
+    }
   }
 
   @override
@@ -58,6 +63,7 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
         children: [
           SingleQuillPreviewWidget(
             qeKey: editorKey,
+            fragmentTemplate: widget.blankFragmentTemplate,
             singleQuillController: widget.blankFragmentTemplate.blank,
             onTapUp: (TapUpDetails details, _) {
               final qc = t.blank.quillController;
@@ -71,12 +77,13 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
                   if (leaf.style.attributes.containsKey(TextTransparentAttribute.textTransparent)) {
                     qc.formatText(leaf.offset, leaf.length, const TextTransparentAttribute(null));
                   } else {
-                    if (leaf.style.attributes.containsKey(BlankAttribute.blank)) {
+                    if (leaf.style.attributes.containsKey(BlankHideAttribute.blank_hide)) {
                       qc.formatText(leaf.offset, leaf.length, const TextTransparentAttribute(true));
                     }
                   }
                 }
               }
+              FocusScope.of(context).unfocus();
               return true;
             },
           ),
@@ -90,6 +97,7 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
         ],
       ),
       TemplateViewExtendChunksWidgets(
+          fragmentTemplate: widget.blankFragmentTemplate,
           extendChunks: widget.blankFragmentTemplate.extendChunks,
           displayWhere: (ExtendChunk ec) {
             if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.only_start || ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {
@@ -103,10 +111,14 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
       TemplateViewChunkWidget(
         chunkTitle: "填空",
         children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.blankFragmentTemplate.blank),
+          SingleQuillPreviewWidget(
+            singleQuillController: widget.blankFragmentTemplate.blank,
+            fragmentTemplate: widget.blankFragmentTemplate,
+          ),
         ],
       ),
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: widget.blankFragmentTemplate,
         extendChunks: widget.blankFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) {
           if (ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.only_end || ec.extendChunkDisplay2Type == ExtendChunkDisplay2Type.always) {
@@ -122,6 +134,11 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
       onDoubleTap: () {
         setState(() {
           isShowAnswer = !isShowAnswer;
+          if (isShowAnswer) {
+            handleBlank(false);
+          } else {
+            handleBlank(true);
+          }
         });
       },
       columnChildren: isShowAnswer ? endPage : startPage,

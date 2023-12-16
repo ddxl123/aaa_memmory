@@ -29,10 +29,14 @@ class _SimpleFragmentTemplateInAppStageWidgetState extends State<SimpleFragmentT
       TemplateViewChunkWidget(
         chunkTitle: "单面碎片",
         children: [
-          SingleQuillPreviewWidget(singleQuillController: widget.simpleFragmentTemplate.simple),
+          SingleQuillPreviewWidget(
+            fragmentTemplate: widget.simpleFragmentTemplate,
+            singleQuillController: widget.simpleFragmentTemplate.simple,
+          ),
         ],
       ),
       TemplateViewExtendChunksWidgets(
+        fragmentTemplate: widget.simpleFragmentTemplate,
         extendChunks: widget.simpleFragmentTemplate.extendChunks,
         displayWhere: (ExtendChunk ec) => true,
       ),
