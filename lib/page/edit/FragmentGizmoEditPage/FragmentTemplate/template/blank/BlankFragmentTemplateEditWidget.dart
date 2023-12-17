@@ -52,43 +52,59 @@ class _BlankFragmentTemplateEditWidgetState extends State<BlankFragmentTemplateE
             SizedBox(height: 10),
             Column(
               children: [
-                t.choices.isEmpty
-                    ? Container()
-                    : Row(
-                        children: [
-                          SizedBox(width: 10),
-                          Text("选项前缀类型："),
-                          Spacer(),
-                          CustomDropdownBodyButton(
-                            initValue: t.choicePrefixType,
-                            items: ChoicePrefixType.values.map(
-                              (e) {
-                                return CustomItem(value: e, text: e.displayName);
-                              },
-                            ).toList(),
-                            onChanged: (v) {
-                              t.choicePrefixType = v!;
-                              setState(() {});
-                            },
-                          ),
-                        ],
+                if (t.choices.isNotEmpty)
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text("选项前缀类型："),
+                      Spacer(),
+                      CustomDropdownBodyButton(
+                        initValue: t.choicePrefixType,
+                        items: ChoicePrefixType.values.map(
+                          (e) {
+                            return CustomItem(value: e, text: e.displayName);
+                          },
+                        ).toList(),
+                        onChanged: (v) {
+                          t.choicePrefixType = v!;
+                          setState(() {});
+                        },
                       ),
-                t.choices.isEmpty
-                    ? Container()
-                    : Row(
-                        children: [
-                          SizedBox(width: 10),
-                          Text("选项是否乱序："),
-                          Spacer(),
-                          Checkbox(
-                            value: t.canDisorder,
-                            onChanged: (v) {
-                              t.canDisorder = v!;
-                              setState(() {});
-                            },
-                          ),
-                        ],
+                    ],
+                  ),
+                SizedBox(height: 5),
+                if (t.choices.isNotEmpty)
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text("选项是否乱序："),
+                      Spacer(),
+                      Checkbox(
+                        visualDensity: kMinVisualDensity,
+                        value: t.canDisorder,
+                        onChanged: (v) {
+                          t.canDisorder = v!;
+                          setState(() {});
+                        },
                       ),
+                    ],
+                  ),
+                if (t.choices.isNotEmpty)
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text("选择时是否弹出选项："),
+                      Spacer(),
+                      Checkbox(
+                        visualDensity: kMinVisualDensity,
+                        value: t.isShowChoicesForChoice,
+                        onChanged: (v) {
+                          t.isShowChoicesForChoice = v!;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ReorderableColumn(
                   onReorder: (int oldIndex, int newIndex) {
                     final target = t.choices.removeAt(oldIndex);

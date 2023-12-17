@@ -22,7 +22,7 @@ class BlankFragmentTemplateInAppStageWidget extends StatefulWidget {
 }
 
 class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTemplateInAppStageWidget> {
-  bool isShowAnswer = false;
+  bool isShowEnd = false;
 
   late final BlankFragmentTemplate t;
 
@@ -32,27 +32,10 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
   void initState() {
     super.initState();
     t = widget.blankFragmentTemplate;
-    widget.blankFragmentTemplate.inAppStageAbController?.isShowBottomButtonAb.refreshEasy((oldValue) => true);
+    t.inAppStageAbController?.isShowBottomButtonAb.refreshEasy((oldValue) => true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      handleBlank(true);
+      t.changeAllShowForBlankNodeTemp(isShow: false);
     });
-  }
-
-  /// 隐藏或显示全部挖空
-  void handleBlank(bool isHide) {
-    // 将文档转换为Delta对象
-    Delta delta = t.blank.quillController.document.toDelta();
-    // 创建一个变量，用于累加每个Operation对象的长度
-    int offset = 0;
-
-    // 遍历Delta对象的ops属性，检查每个Operation对象的attributes属性
-    for (Operation op in delta.operations) {
-      if (op.attributes != null && op.attributes!.containsKey(BlankHideAttribute.blank_hide)) {
-        t.blank.quillController.formatText(offset, op.length!, TextTransparentAttribute(isHide ? true : null));
-      }
-      // 累加当前Operation对象的长度，以便计算下一个Operation对象的位置
-      offset += op.length!;
-    }
   }
 
   @override
@@ -65,27 +48,6 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
             qeKey: editorKey,
             fragmentTemplate: widget.blankFragmentTemplate,
             singleQuillController: widget.blankFragmentTemplate.blank,
-            onTapUp: (TapUpDetails details, _) {
-              final qc = t.blank.quillController;
-              // 将点击位置转换为原本的光标位置
-              final textPosition = editorKey.currentState?.editableTextKey.currentState?.renderEditor.getPositionForOffset(details.globalPosition);
-              if (textPosition != null) {
-                // 获取点击位置的块
-                final leaf = qc.queryNode(textPosition.offset);
-                if (leaf != null) {
-                  // 进行显示或隐藏
-                  if (leaf.style.attributes.containsKey(TextTransparentAttribute.textTransparent)) {
-                    qc.formatText(leaf.offset, leaf.length, const TextTransparentAttribute(null));
-                  } else {
-                    if (leaf.style.attributes.containsKey(BlankHideAttribute.blank_hide)) {
-                      qc.formatText(leaf.offset, leaf.length, const TextTransparentAttribute(true));
-                    }
-                  }
-                }
-              }
-              FocusScope.of(context).unfocus();
-              return true;
-            },
           ),
           SizedBox(height: 10),
         ],
@@ -133,15 +95,15 @@ class _BlankFragmentTemplateInAppStageWidgetState extends State<BlankFragmentTem
       fragmentTemplate: widget.blankFragmentTemplate,
       onDoubleTap: () {
         setState(() {
-          isShowAnswer = !isShowAnswer;
-          if (isShowAnswer) {
-            handleBlank(false);
+          isShowEnd = !isShowEnd;
+          if (isShowEnd) {
+            t.changeAllShowForBlankNodeTemp(isShow: true);
           } else {
-            handleBlank(true);
+            t.changeAllShowForBlankNodeTemp(isShow: false);
           }
         });
       },
-      columnChildren: isShowAnswer ? endPage : startPage,
+      columnChildren: isShowEnd ? endPage : startPage,
     );
   }
 }

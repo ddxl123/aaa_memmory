@@ -18,9 +18,9 @@ import 'FragmentTemplate/template/single/SimpleFragmentTemplate.dart';
 import 'FragmentTemplate/template/single/SimpleFragmentTemplateEditWidget.dart';
 
 /// 创建或编辑。
-class FragmentGizmoEditPage extends StatelessWidget {
+class FragmentGizmoEditPage extends StatefulWidget {
   const FragmentGizmoEditPage({
-    Key? key,
+    super.key,
     required this.initFragment,
     required this.initFragmentTemplate,
     required this.initSomeBefore,
@@ -28,7 +28,7 @@ class FragmentGizmoEditPage extends StatelessWidget {
     required this.enterDynamicFragmentGroups,
     required this.isEditableAb,
     required this.isTailNew,
-  }) : super(key: key);
+  });
 
   final Fragment? initFragment;
 
@@ -45,15 +45,20 @@ class FragmentGizmoEditPage extends StatelessWidget {
   final bool isTailNew;
 
   @override
+  State<FragmentGizmoEditPage> createState() => _FragmentGizmoEditPageState();
+}
+
+class _FragmentGizmoEditPageState extends State<FragmentGizmoEditPage> {
+  @override
   Widget build(BuildContext context) {
     return AbBuilder<FragmentGizmoEditPageAbController>(
       putController: FragmentGizmoEditPageAbController(
-        initFragment: initFragment,
-        initFragmentTemplate: initFragmentTemplate,
-        initSomeBefore: initSomeBefore,
-        initSomeAfter: initSomeAfter,
-        enterDynamicFragmentGroups: enterDynamicFragmentGroups,
-        isEditable: isEditableAb,
+        initFragment: widget.initFragment,
+        initFragmentTemplate: widget.initFragmentTemplate,
+        initSomeBefore: widget.initSomeBefore,
+        initSomeAfter: widget.initSomeAfter,
+        enterDynamicFragmentGroups: widget.enterDynamicFragmentGroups,
+        isEditable: widget.isEditableAb,
       ),
       builder: (controller, abw) {
         return Scaffold(
@@ -76,8 +81,15 @@ class FragmentGizmoEditPage extends StatelessWidget {
       actions: [
         TextButton(
           child: const Icon(Icons.remove_red_eye_outlined),
-          onPressed: () {
-            pushToSingleFragmentTemplateView(context: c.context, fragmentTemplate: c.currentPerformerAb().fragmentTemplate);
+          onPressed: () async {
+            await pushToSingleFragmentTemplateView(
+              context: c.context,
+              fragmentTemplate: FragmentTemplate.newInstanceFromFragmentContent(
+                fragmentContent: c.currentPerformerAb().fragmentTemplate.toFragmentContent(),
+                performType: PerformType.preview,
+              ),
+            );
+            setState(() {});
           },
         ),
         CustomDropdownBodyButton(
@@ -197,7 +209,7 @@ class FragmentGizmoEditPage extends StatelessWidget {
                       icon: c.isExistLast(abw) ? const FaIcon(FontAwesomeIcons.chevronLeft, color: Colors.blue) : const FaIcon(FontAwesomeIcons.chevronLeft, color: Colors.grey),
                       onPressed: () {
                         if (c.isExistLast()) {
-                          c.goTo(lastOrNext: LastOrNext.last, isTailNew: isTailNew);
+                          c.goTo(lastOrNext: LastOrNext.last, isTailNew: widget.isTailNew);
                         }
                       },
                     );
@@ -210,7 +222,7 @@ class FragmentGizmoEditPage extends StatelessWidget {
                       icon: c.isExistNext(abw) ? const FaIcon(FontAwesomeIcons.chevronRight, color: Colors.blue) : const FaIcon(FontAwesomeIcons.chevronRight, color: Colors.grey),
                       onPressed: () {
                         if (c.isExistNext()) {
-                          c.goTo(lastOrNext: LastOrNext.next, isTailNew: isTailNew);
+                          c.goTo(lastOrNext: LastOrNext.next, isTailNew: widget.isTailNew);
                         }
                       },
                     );

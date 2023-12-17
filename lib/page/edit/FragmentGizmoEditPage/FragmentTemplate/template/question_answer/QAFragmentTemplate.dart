@@ -5,6 +5,8 @@ import '../../base/SingleQuillController.dart';
 
 /// 问答题模板的数据类。
 class QAFragmentTemplate extends FragmentTemplate {
+  QAFragmentTemplate({required super.performType});
+
   @override
   FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.question_answer;
 
@@ -15,10 +17,10 @@ class QAFragmentTemplate extends FragmentTemplate {
   bool interchangeable = false;
 
   @override
-  FragmentTemplate emptyInitInstance() => QAFragmentTemplate();
+  FragmentTemplate createEmptyInitInstance(PerformType performType) => QAFragmentTemplate(performType: performType);
 
   @override
-  FragmentTemplate emptyTransferableInstance() => QAFragmentTemplate()..interchangeable = interchangeable;
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType) => QAFragmentTemplate(performType: performType)..interchangeable = interchangeable;
 
   @override
   String getTitle() => question.transferToTitle();

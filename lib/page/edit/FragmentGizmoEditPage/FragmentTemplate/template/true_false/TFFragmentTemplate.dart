@@ -5,6 +5,8 @@ import '../../base/SingleQuillController.dart';
 
 /// 单面模板
 class TFFragmentTemplate extends FragmentTemplate {
+  TFFragmentTemplate({required super.performType});
+
   @override
   FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.true_false;
 
@@ -23,10 +25,10 @@ class TFFragmentTemplate extends FragmentTemplate {
   bool? answerTemp;
 
   @override
-  FragmentTemplate emptyInitInstance() => TFFragmentTemplate();
+  FragmentTemplate createEmptyInitInstance(PerformType performType) => TFFragmentTemplate(performType: performType);
 
   @override
-  FragmentTemplate emptyTransferableInstance() => TFFragmentTemplate();
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType) => TFFragmentTemplate(performType: performType);
 
   @override
   String getTitle() => trueFalse.transferToTitle();

@@ -1,3 +1,4 @@
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/base/FragmentTemplate.dart';
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
 import 'package:flutter/material.dart';
@@ -71,35 +72,35 @@ class TemplateChoice extends StatelessWidget {
               title: "单面碎片",
               explain: "只有一面",
               onTap: () {
-                Navigator.pop(context, SimpleFragmentTemplate());
+                Navigator.pop(context, SimpleFragmentTemplate(performType: PerformType.edit));
               },
             ),
             SingleTemplateChoicePage(
               title: "问答题",
               explain: "有问有答",
               onTap: () {
-                Navigator.pop(context, QAFragmentTemplate());
+                Navigator.pop(context, QAFragmentTemplate(performType: PerformType.edit));
               },
             ),
             SingleTemplateChoicePage(
               title: "选择题",
               explain: "单选或多选",
               onTap: () {
-                Navigator.pop(context, ChoiceFragmentTemplate());
+                Navigator.pop(context, ChoiceFragmentTemplate(performType: PerformType.edit));
               },
             ),
             SingleTemplateChoicePage(
               title: "判断题",
               explain: "只有对与错",
               onTap: () {
-                Navigator.pop(context, TFFragmentTemplate());
+                Navigator.pop(context, TFFragmentTemplate(performType: PerformType.edit));
               },
             ),
             SingleTemplateChoicePage(
               title: "填空题",
               explain: "将挖空部分隐藏",
               onTap: () {
-                Navigator.pop(context, BlankFragmentTemplate());
+                Navigator.pop(context, BlankFragmentTemplate(performType: PerformType.edit));
               },
             ),
           ],

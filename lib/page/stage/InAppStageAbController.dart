@@ -20,7 +20,10 @@ class Performer {
     required this.fragmentMemoryInfo,
     required this.inAppStageAbController,
   }) {
-    fragmentTemplate = FragmentTemplate.newInstanceFromContent(fragment.content);
+    fragmentTemplate = FragmentTemplate.newInstanceFromFragmentContent(
+      fragmentContent: fragment.content,
+      performType: PerformType.preview,
+    );
     fragmentTemplate.inAppStageAbController = inAppStageAbController;
     inAppStageAbController.isShowBottomButtonAb.lateAssign(fragmentTemplate.initIsShowBottomButton);
   }

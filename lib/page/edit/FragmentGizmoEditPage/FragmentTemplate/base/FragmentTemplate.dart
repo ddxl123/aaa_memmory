@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/blank/BlankFragmentTemplate.dart';
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/true_false/TFFragmentTemplate.dart';
+import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import '../../../../stage/InAppStageAbController.dart';
@@ -25,6 +26,14 @@ enum FragmentTemplateType {
 
   /// 填空
   blank,
+}
+
+enum PerformType {
+  /// 编辑状态
+  edit,
+
+  /// 预览状态
+  preview,
 }
 
 enum ExtendChunkDisplay2Type {
@@ -125,7 +134,9 @@ class ExtendChunk {
 
 /// 碎片模板的数据基类。
 abstract class FragmentTemplate {
-  FragmentTemplate() {
+  FragmentTemplate({
+    required this.performType,
+  }) {
     listenSingleEditableQuill().forEach(
       (e) {
         e.focusNode.addListener(
@@ -138,6 +149,8 @@ abstract class FragmentTemplate {
       },
     );
   }
+
+  final PerformType performType;
 
   FragmentTemplateType get fragmentTemplateType;
 
@@ -203,18 +216,22 @@ abstract class FragmentTemplate {
   String getTitle();
 
   /// 创建当前对象的崭新的空实例。
-  FragmentTemplate emptyInitInstance();
+  FragmentTemplate createEmptyInitInstance(PerformType performType);
 
   /// 创建当前对象的可传递空实例。
   ///
   /// 在创建碎片时，下一次创建要保留的配置数据。
-  FragmentTemplate emptyTransferableInstance();
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType);
 
   /// 子类必须使用，不然存储时会漏掉。
   @mustCallSuper
   Map<String, dynamic> toJson() {
     return {"extend_chunks": _extendChunks.map((e) => e.toJson()).toList()};
   }
+
+  String toFragmentContent() => jsonEncode(toJson());
+
+  void resetFromFragmentContent(String fragmentContent) => resetFromJson(jsonDecode(fragmentContent));
 
   /// 重新设置当前对象的数据。
   ///
@@ -245,17 +262,18 @@ abstract class FragmentTemplate {
   /// [extendChunks] 由 [addExtendChunk] 进行添加操作。
   List<SingleQuillController> listenSingleEditableQuill();
 
-  static FragmentTemplate newInstanceFromContent(String content) {
-    final Map<String, dynamic> contentJson = jsonDecode(content);
+  /// 将 [Fragment.content] 转换成 [FragmentTemplate]。
+  static FragmentTemplate newInstanceFromFragmentContent({required String fragmentContent, required PerformType performType}) {
+    final Map<String, dynamic> contentJson = jsonDecode(fragmentContent);
     // 出现 type 异常有可能是 toJson 时没有写 type 字段。
     final type = FragmentTemplateType.values.firstWhere((element) => element.name == (contentJson["type"] as String));
     return templateSwitch(
       type,
-      questionAnswer: () => QAFragmentTemplate()..resetFromJson(contentJson),
-      choice: () => ChoiceFragmentTemplate()..resetFromJson(contentJson),
-      simple: () => SimpleFragmentTemplate()..resetFromJson(contentJson),
-      trueFalse: () => TFFragmentTemplate()..resetFromJson(contentJson),
-      blank: () => BlankFragmentTemplate()..resetFromJson(contentJson),
+      questionAnswer: () => QAFragmentTemplate(performType: performType)..resetFromJson(contentJson),
+      choice: () => ChoiceFragmentTemplate(performType: performType)..resetFromJson(contentJson),
+      simple: () => SimpleFragmentTemplate(performType: performType)..resetFromJson(contentJson),
+      trueFalse: () => TFFragmentTemplate(performType: performType)..resetFromJson(contentJson),
+      blank: () => BlankFragmentTemplate(performType: performType)..resetFromJson(contentJson),
     );
   }
 

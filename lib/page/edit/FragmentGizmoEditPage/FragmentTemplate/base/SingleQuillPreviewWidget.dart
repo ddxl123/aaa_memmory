@@ -44,15 +44,6 @@ class SingleQuillPreviewWidget extends StatelessWidget {
           ...FlutterQuillEmbeds.editorBuilders(),
         ],
         onTapUp: onTapUp,
-        customStyleBuilder: (Attribute attribute) {
-          if (attribute.key == BlankHideAttribute.blank_hide) {
-            return BlankHideAttribute.textStyle;
-          }
-          if (attribute.key == TextTransparentAttribute.textTransparent) {
-            return TextTransparentAttribute.textStyle;
-          }
-          return TextStyle();
-        },
       ),
     );
   }

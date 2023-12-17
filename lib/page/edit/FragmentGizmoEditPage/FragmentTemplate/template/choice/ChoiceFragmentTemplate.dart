@@ -30,6 +30,8 @@ enum RequiredType {
 
 /// 选择题模板的数据类。
 class ChoiceFragmentTemplate extends FragmentTemplate {
+  ChoiceFragmentTemplate({required super.performType});
+
   final question = SingleQuillController();
   final choices = <SingleQuillController>[];
 
@@ -239,10 +241,10 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
   }
 
   @override
-  FragmentTemplate emptyInitInstance() => ChoiceFragmentTemplate();
+  FragmentTemplate createEmptyInitInstance(PerformType performType) => ChoiceFragmentTemplate(performType: performType);
 
   @override
-  FragmentTemplate emptyTransferableInstance() => ChoiceFragmentTemplate();
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType) => ChoiceFragmentTemplate(performType: performType);
 
   @override
   List<SingleQuillController> listenSingleEditableQuill() => [question, ...choices];

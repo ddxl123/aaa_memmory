@@ -1,6 +1,8 @@
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/template/choice/ChoicePrefixType.dart';
+import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/custom_embeds/BlankEmbed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/editable_text.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 
@@ -25,10 +27,24 @@ class BlankChoice {
   }
 }
 
+class BlankNodeTemp {
+  BlankNodeTemp({
+    required this.node,
+    required this.isShow,
+    required this.tempAnswer,
+  });
+
+  Node node;
+  bool isShow;
+  String tempAnswer;
+}
+
 /// 单面模板
 ///
 /// 答案在 [BlankData] 中。
 class BlankFragmentTemplate extends FragmentTemplate {
+  BlankFragmentTemplate({required super.performType});
+
   @override
   FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.blank;
 
@@ -41,11 +57,17 @@ class BlankFragmentTemplate extends FragmentTemplate {
   /// 是否乱序
   bool canDisorder = false;
 
-  @override
-  FragmentTemplate emptyInitInstance() => BlankFragmentTemplate();
+  /// 当为 选择类型 时，是否弹出选项进行选择，true-是，false-将以 隐藏/显示 的方式。
+  bool isShowChoicesForChoice = false;
+
+  /// [BlankEmbedBuilder.build] 中的 [Node] 的临时数据存放对象，因为每次重建 Widget 都会产生新的 [BlankEmbedBuilder]，因此只能这样存放。
+  final blankNodeTemps = <BlankNodeTemp>[];
 
   @override
-  FragmentTemplate emptyTransferableInstance() => BlankFragmentTemplate();
+  FragmentTemplate createEmptyInitInstance(PerformType performType) => BlankFragmentTemplate(performType: performType);
+
+  @override
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType) => BlankFragmentTemplate(performType: performType);
 
   @override
   String getTitle() => blank.transferToTitle();
@@ -62,6 +84,7 @@ class BlankFragmentTemplate extends FragmentTemplate {
       "choices": choices.map((e) => e.toJson()).toList(),
       "choice_prefix_type": choicePrefixType.displayName,
       "can_disorder": canDisorder,
+      "is_show_choices_for_choice": isShowChoicesForChoice,
       sp.keys.first: sp.values.first,
     };
   }
@@ -74,6 +97,7 @@ class BlankFragmentTemplate extends FragmentTemplate {
       ..addAll((json["choices"] as List<dynamic>).map((e) => BlankChoice.fromJson(e)));
     choicePrefixType = ChoicePrefixType.values.singleWhere((element) => element.displayName == (json["choice_prefix_type"] as String));
     canDisorder = json["can_disorder"] as bool;
+    isShowChoicesForChoice = json["is_show_choices_for_choice"] as bool;
     super.resetFromJson(json);
   }
 
@@ -152,5 +176,29 @@ class BlankFragmentTemplate extends FragmentTemplate {
         );
       },
     );
+  }
+
+  BlankNodeTemp getBlankNodeTemp({required Node node}) => blankNodeTemps.singleWhere((element) => element.node == node);
+
+  void addBlankNodeTemp({required Node node}) {
+    if (!blankNodeTemps.any((element) => element.node == node)) {
+      blankNodeTemps.add(BlankNodeTemp(node: node, isShow: true, tempAnswer: ""));
+    }
+  }
+
+  /// 改变显示或隐藏的状态。
+  ///
+  /// 若 [isShow] 为 null，则为反选。
+  void changeBlankNodeTemp({required Node node, required bool? isShow}) {
+    final n = blankNodeTemps.singleWhere((element) => element.node == node);
+    n.isShow = isShow ?? (!n.isShow);
+  }
+
+  bool isShowForBlankNodeTemp({required Node node}) => blankNodeTemps.singleWhere((element) => element.node == node).isShow;
+
+  void changeAllShowForBlankNodeTemp({required bool isShow}) {
+    for (var blankNodeTemp in blankNodeTemps) {
+      blankNodeTemp.isShow = isShow;
+    }
   }
 }

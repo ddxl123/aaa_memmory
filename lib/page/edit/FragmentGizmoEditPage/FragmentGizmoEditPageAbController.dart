@@ -45,9 +45,9 @@ class FragmentPerformer {
         dynamicFragmentGroups
           ..clear()
           ..addAll(recent.dynamicFragmentGroups);
-        fragmentTemplate = recent.fragmentTemplate.emptyTransferableInstance();
+        fragmentTemplate = recent.fragmentTemplate.createEmptyTransferableInstance(PerformType.edit);
       } else {
-        fragmentTemplate = fragmentTemplate.emptyInitInstance();
+        fragmentTemplate = fragmentTemplate.createEmptyInitInstance(PerformType.edit);
       }
     } else {
       print("-111---------------");
@@ -62,7 +62,7 @@ class FragmentPerformer {
       await queryFragment.handleCode(
         code90101: (String showMessage, SingleRowQueryVo vo) async {
           fragment = Fragment.fromJson(vo.row);
-          fragmentTemplate.resetFromJson(jsonDecode(fragment!.content));
+          fragmentTemplate.resetFromFragmentContent(fragment!.content);
         },
         otherException: (a, b, c) async {
           logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
@@ -140,7 +140,7 @@ class FragmentPerformer {
         path: HttpPath.POST__NO_LOGIN_REQUIRED_FRAGMENT_HANDLE_INSERT_FRAGMENT,
         dtoData: FragmentInsertFragmentDto(
           fragment: Crt.fragmentEntity(
-            content: jsonEncode(fragmentTemplate.toJson()),
+            content: fragmentTemplate.toFragmentContent(),
             creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
             father_fragment_id: null,
             title: fragmentTemplate.getTitle(),
@@ -166,7 +166,7 @@ class FragmentPerformer {
       );
     } else {
       final newF = fragment!
-        ..content = jsonEncode(fragmentTemplate.toJson())
+        ..content = fragmentTemplate.toFragmentContent()
         // 因为本身就是 now
         ..title = fragmentTemplate.getTitle()
         ..be_sep_publish = false;
@@ -297,9 +297,23 @@ class FragmentGizmoEditPageAbController extends AbController {
 
     await initPerformer.reload(fragmentGizmoEditPageAbController: this, recent: null);
 
-    records.addAll(initSomeBefore.map((e) => FragmentPerformer(fragment: e, fragmentTemplate: FragmentTemplate.newInstanceFromContent(e.content))));
+    records.addAll(
+      initSomeBefore.map(
+        (e) => FragmentPerformer(
+          fragment: e,
+          fragmentTemplate: FragmentTemplate.newInstanceFromFragmentContent(fragmentContent: e.content, performType: PerformType.edit),
+        ),
+      ),
+    );
     records.add(initPerformer);
-    records.addAll(initSomeAfter.map((e) => FragmentPerformer(fragment: e, fragmentTemplate: FragmentTemplate.newInstanceFromContent(e.content))));
+    records.addAll(
+      initSomeAfter.map(
+        (e) => FragmentPerformer(
+          fragment: e,
+          fragmentTemplate: FragmentTemplate.newInstanceFromFragmentContent(fragmentContent: e.content, performType: PerformType.edit),
+        ),
+      ),
+    );
 
     currentPerformerAb.lateAssign(initPerformer);
   }
@@ -376,7 +390,7 @@ class FragmentGizmoEditPageAbController extends AbController {
         records.add(
           FragmentPerformer(
             fragment: null,
-            fragmentTemplate: currentPerformerAb().fragmentTemplate.emptyTransferableInstance(),
+            fragmentTemplate: currentPerformerAb().fragmentTemplate.createEmptyTransferableInstance(PerformType.edit),
           ),
         );
       }

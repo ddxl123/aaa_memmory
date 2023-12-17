@@ -50,12 +50,6 @@ class SingleQuillEditableWidget extends StatelessWidget {
           if (fragmentTemplate is BlankFragmentTemplate) BlankEmbedBuilder(blankFragmentTemplate: fragmentTemplate as BlankFragmentTemplate),
           ...FlutterQuillEmbeds.editorBuilders(),
         ],
-        customStyleBuilder: (Attribute attribute) {
-          if (attribute.key == BlankHideAttribute.blank_hide) {
-            return BlankHideAttribute.textStyle;
-          }
-          return const TextStyle();
-        },
       ),
     );
   }

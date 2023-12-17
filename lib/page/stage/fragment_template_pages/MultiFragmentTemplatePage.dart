@@ -101,7 +101,10 @@ class _MultiFragmentTemplatePageState extends State<MultiFragmentTemplatePage> {
                 pushToFragmentEditView(
                   context: context,
                   initFragmentAb: current!,
-                  initFragmentTemplate: FragmentTemplate.newInstanceFromContent(current!.content),
+                  initFragmentTemplate: FragmentTemplate.newInstanceFromFragmentContent(
+                    fragmentContent: current!.content,
+                    performType: PerformType.edit,
+                  ),
                   initSomeBefore: [],
                   initSomeAfter: [],
                   enterDynamicFragmentGroups: null,
@@ -121,7 +124,10 @@ class _MultiFragmentTemplatePageState extends State<MultiFragmentTemplatePage> {
           if (current == null) {
             return Container();
           }
-          final ft = FragmentTemplate.newInstanceFromContent(current.content);
+          final ft = FragmentTemplate.newInstanceFromFragmentContent(
+            fragmentContent: current.content,
+            performType: PerformType.preview,
+          );
           return FragmentTemplate.templateSwitch(
             ft.fragmentTemplateType,
             questionAnswer: () {

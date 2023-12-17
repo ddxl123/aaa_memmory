@@ -5,16 +5,18 @@ import '../../base/SingleQuillController.dart';
 
 /// 单面模板
 class SimpleFragmentTemplate extends FragmentTemplate {
+  SimpleFragmentTemplate({required super.performType});
+
   @override
   FragmentTemplateType get fragmentTemplateType => FragmentTemplateType.simple;
 
   final simple = SingleQuillController();
 
   @override
-  FragmentTemplate emptyInitInstance() => SimpleFragmentTemplate();
+  FragmentTemplate createEmptyInitInstance(PerformType performType) => SimpleFragmentTemplate(performType: performType);
 
   @override
-  FragmentTemplate emptyTransferableInstance() => SimpleFragmentTemplate();
+  FragmentTemplate createEmptyTransferableInstance(PerformType performType) => SimpleFragmentTemplate(performType: performType);
 
   @override
   String getTitle() => simple.transferToTitle();
