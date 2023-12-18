@@ -142,10 +142,13 @@ int timeDifference({required DateTime target, required DateTime start}) {
 /// x秒 转换成 x天x时x分x秒。
 ///
 /// 例如，601秒 转化成 1时0分1秒。
-String time2TextTime({required int longSeconds}) {
+String time2TextTime({required int longSeconds, bool canNegative = false}) {
   // 如果参数小于0，抛出异常
   if (longSeconds < 0) {
-    throw ArgumentError('longSeconds must be non-negative');
+    if (canNegative) {
+      return "$longSeconds秒";
+    }
+    throw ArgumentError('longSeconds 必须是一个非负数');
   }
   // 计算年、月、天、小时、分钟和秒数
   // 假设一个月有30天，也就是2592000秒
@@ -170,11 +173,11 @@ String time2TextTime({required int longSeconds}) {
   }
   if (days > 0) {
     result += '${days}天';
-    result += hours > 0 ? '${hours}时' : '';
+    result += hours > 0 ? '${hours}小时' : '';
     return result;
   }
   if (hours > 0) {
-    result += '${hours}时';
+    result += '${hours}小时';
     result += minutes > 0 ? '${minutes}分' : '';
     return result;
   }

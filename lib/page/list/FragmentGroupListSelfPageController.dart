@@ -16,6 +16,18 @@ enum ReuseOrDownload {
   download,
 }
 
+enum FragmentGroupViewType {
+  /// 简单
+  simple(display: "简单视图"),
+
+  /// 文件夹
+  folder(display: "文件夹视图");
+
+  const FragmentGroupViewType({required this.display});
+
+  final String display;
+}
+
 class FragmentGroupListSelfPageController extends FragmentGroupListViewAbController {
   FragmentGroupListSelfPageController({required super.enterUserId, required super.enterFragmentGroupId});
 
@@ -28,6 +40,8 @@ class FragmentGroupListSelfPageController extends FragmentGroupListViewAbControl
   ///
   /// 与 [selectedSurfaceFragmentGroupsMap] 不会被同时选择。
   final selectedFragmentsMap = <int, List<Unit<Fragment, RFragment2FragmentGroup>>>{}.ab;
+
+  final fragmentGroupViewType = FragmentGroupViewType.simple.ab;
 
   bool isSelectedUnit({required Unit<Fragment, RFragment2FragmentGroup> unit, Abw? abw}) {
     return selectedFragmentsMap(abw)[unit.unitEntity.id]?.where((element) => element.unitREntity.id == unit.unitREntity.id).isNotEmpty == true;

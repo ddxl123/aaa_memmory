@@ -33,21 +33,6 @@ Future<void> pushToMemoryModelGizmoEditPage({
   );
 }
 
-Future<void> pushToMemoryGroupGizmoEditPageOfModify({
-  required BuildContext context,
-  required int memoryGroupId,
-}) async {
-  await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => MemoryGroupGizmoEditPage(
-        editPageType: MemoryGroupGizmoEditPageType.modify,
-        memoryGroupId: memoryGroupId,
-      ),
-    ),
-  );
-}
-
 /// 返回选择的模板类型。
 ///
 /// 返回 null 表示取消选择。

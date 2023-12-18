@@ -48,14 +48,21 @@ class _CustomDropdownBodyButtonState<T> extends State<CustomDropdownBodyButton<T
       style: widget.textStyle,
       value: widget.initValue,
       isDense: true,
-      dropdownStyleData: DropdownStyleData(width: maxWidth, maxHeight: MediaQuery.of(context).size.height / 2),
+      dropdownStyleData: DropdownStyleData(
+        width: maxWidth,
+        maxHeight: MediaQuery.of(context).size.height / 2,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [BoxShadow(color: Theme.of(context).primaryColor, spreadRadius: -1, blurRadius: 3)],
+        ),
+      ),
       customButton: widget.primaryButton == null
           ? null
           : Container(
               child: widget.primaryButton,
             ),
       underline: const SizedBox(),
-      barrierColor: Colors.black26,
+      barrierColor: Colors.black12,
       items: [
         ...widget.items.map(
           (e) => DropdownMenuItem<T>(
@@ -63,7 +70,11 @@ class _CustomDropdownBodyButtonState<T> extends State<CustomDropdownBodyButton<T
             value: e.value,
             child: Container(
               alignment: widget.itemAlignment,
-              child: e.item ?? Text(e.text ?? ""),
+              child: e.item ??
+                  Text(
+                    e.text ?? "",
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
             ),
           ),
         ),

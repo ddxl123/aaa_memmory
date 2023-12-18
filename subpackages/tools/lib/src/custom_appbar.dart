@@ -16,6 +16,11 @@ class CustomTabAppBar extends StatelessWidget implements PreferredSizeWidget {
           Expanded(
             // flex: 2,
             child: TabBar(
+              indicator: UnderlineTabIndicator(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 5),
+                insets: EdgeInsets.fromLTRB(8, 0, 8, 5),
+              ),
               isScrollable: true,
               indicatorWeight: 5,
               controller: tabController,

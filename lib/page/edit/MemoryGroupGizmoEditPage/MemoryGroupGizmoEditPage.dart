@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../edit_page_type.dart';
-import 'BasicConfigWidget.dart';
 import 'CurrentCircleWidget.dart';
 import 'MemoryGroupGizmoEditPageAbController.dart';
 
@@ -19,35 +18,31 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       putController: MemoryGroupGizmoEditPageAbController(memoryGroupId: memoryGroupId),
       builder: (putController, putAbw) {
-        return Scaffold(
-          appBar: _appBar(),
-          body: _body(),
-          floatingActionButton: _floatingActionButton(),
-          floatingActionButtonLocation: FloatingRoundCornerButtonLocation(context: context, offset: const Offset(0, -30)),
-        );
-      },
-    );
-  }
-
-  AppBar _appBar() {
-    return AppBar(
-      backgroundColor: Colors.white12,
-      leading: _appBarLeadingWidget(),
-      title: _appBarTitleWidget(),
-      actions: [_appBarRightButtonWidget()],
-    );
-  }
-
-  Widget _body() {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return const CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          slivers: [
-            BasicConfigWidget(),
+        return DialogWidget(
+          fullPadding: EdgeInsets.zero,
+          topKeepWidget: Row(
+            children: [
+              _appBarLeadingWidget(),
+              const Spacer(),
+              _appBarRightButtonWidget(),
+            ],
+          ),
+          mainVerticalWidgets: const [
             CurrentCircleWidget(),
           ],
+          bottomHorizontalButtonWidgets: [],
+          stackChildren: [
+            Positioned(
+              bottom: 10,
+              child: _floatingActionButton(),
+            ),
+          ],
         );
+        // return Scaffold(
+        //   body: const CurrentCircleWidget(),
+        //   floatingActionButton: _floatingActionButton(),
+        //   floatingActionButtonLocation: FloatingRoundCornerButtonLocation(context: context, offset: const Offset(0, -30)),
+        // );
       },
     );
   }
@@ -127,7 +122,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
         return IconButton(
-          icon: const FaIcon(FontAwesomeIcons.chevronLeft, color: Colors.red),
+          icon: const Icon(FontAwesomeIcons.xmark, color: Colors.red),
           onPressed: () {
             c.abBack();
           },

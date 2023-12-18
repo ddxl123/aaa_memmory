@@ -121,7 +121,9 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
                                         visualDensity: kMinVisualDensity,
                                       ),
                                       child: c.groupChain(abw)[index](innerAbw).getDynamicGroupEntity(innerAbw) == null
-                                          ? Icon(Icons.circle, size: 5)
+                                          ? Row(
+                                              children: [Text("- "), Icon(Icons.circle, size: 5), Text(" -")],
+                                            )
                                           : Text(
                                               widget.groupChainStrings(c.groupChain(abw)[index], innerAbw),
                                             ),
@@ -136,7 +138,7 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
-                            return Icon(Icons.chevron_right);
+                            return const Icon(Icons.chevron_right, color: Colors.grey, size: 14);
                           },
                         );
                       },
@@ -238,7 +240,7 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
                 (e) {
                   return AbwBuilder(builder: (abw) => widget.groupBuilder(c, e, abw));
                 },
-              ).toList(),
+              ),
             ],
           ),
         );
@@ -277,7 +279,7 @@ class _Head<G, U, UR, C extends GroupListWidgetController<G, U, UR>> extends Sta
 
 class _HeadState<G, U, UR, C extends GroupListWidgetController<G, U, UR>> extends State<_Head<G, U, UR, C>> {
   double _expandedHeight = double.maxFinite;
-  GlobalKey _key = GlobalKey();
+  final GlobalKey _key = GlobalKey();
 
   @override
   void initState() {

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 /// 若需要占位框，则可以使用 [floatingRoundCornerButtonPlaceholderBox]。
 class FloatingRoundCornerButton extends StatelessWidget {
   const FloatingRoundCornerButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.border,
     this.color = Colors.tealAccent,
-  }) : super(key: key);
+  });
 
   final Widget text;
   final void Function() onPressed;

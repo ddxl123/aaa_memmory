@@ -28,7 +28,9 @@ class DialogWidget extends StatelessWidget {
     this.dialogSize,
     this.mainVerticalWidgetsAlignment,
     this.fullPadding = const EdgeInsets.fromLTRB(30, 20, 30, 5),
+    this.stackChildren,
   });
+
   final String? title;
   final Widget? topRightAction;
   final Widget? bottomLiftAction;
@@ -41,53 +43,61 @@ class DialogWidget extends StatelessWidget {
   final DialogSize? dialogSize;
   final EdgeInsets fullPadding;
 
+  final List<Widget>? stackChildren;
+
   @override
   Widget build(BuildContext context) {
-    final inner = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: allCrossAxisAlignment ?? CrossAxisAlignment.center,
+    final inner = Stack(
+      alignment: Alignment.topCenter,
       children: [
-        title == null
-            ? Container()
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Builder(
-                      builder: (_) {
-                        return Text(
-                          title!,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        );
-                      },
-                    ),
-                  ),
-                  topRightAction == null ? Container() : topRightAction!,
-                ],
-              ),
-        topKeepWidget == null ? Container() : const SizedBox(height: 5),
-        topKeepWidget == null ? Container() : topKeepWidget!,
-        Expanded(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: mainVerticalWidgetsAlignment ?? CrossAxisAlignment.start,
-              // 文字部分
-              children: mainVerticalWidgets,
-            ),
-          ),
-        ),
-        bottomKeepWidget == null ? Container() : const SizedBox(height: 5),
-        bottomKeepWidget == null ? Container() : bottomKeepWidget!,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          // 按钮部分
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: allCrossAxisAlignment ?? CrossAxisAlignment.center,
           children: [
-            bottomLiftAction == null ? Container() : bottomLiftAction!,
-            ...bottomHorizontalButtonWidgets,
+            title == null
+                ? Container()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Builder(
+                          builder: (_) {
+                            return Text(
+                              title!,
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            );
+                          },
+                        ),
+                      ),
+                      topRightAction == null ? Container() : topRightAction!,
+                    ],
+                  ),
+            topKeepWidget == null ? Container() : const SizedBox(height: 5),
+            topKeepWidget == null ? Container() : topKeepWidget!,
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: mainVerticalWidgetsAlignment ?? CrossAxisAlignment.start,
+                  // 文字部分
+                  children: mainVerticalWidgets,
+                ),
+              ),
+            ),
+            bottomKeepWidget == null ? Container() : const SizedBox(height: 5),
+            bottomKeepWidget == null ? Container() : bottomKeepWidget!,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              // 按钮部分
+              children: [
+                bottomLiftAction == null ? Container() : bottomLiftAction!,
+                ...bottomHorizontalButtonWidgets,
+              ],
+            ),
           ],
         ),
+        ...stackChildren ?? [],
       ],
     );
     return AnimatedPadding(

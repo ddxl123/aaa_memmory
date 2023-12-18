@@ -15,7 +15,7 @@ import '../../single_dialog/showFragmentGroupConfigDialog.dart';
 import 'FragmentGroupListSelfPageController.dart';
 
 class FragmentGroupListSelfPage extends StatelessWidget {
-  const FragmentGroupListSelfPage({Key? key}) : super(key: key);
+  const FragmentGroupListSelfPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,30 @@ class FragmentGroupListSelfPage extends StatelessWidget {
           enterFragmentGroupId: null,
         ),
         groupChainStrings: (group, abw) => group(abw).getDynamicGroupEntity(abw)!.title,
+        leftActionBuilder: (c, abw) => Padding(
+          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          child: Row(
+            children: [
+              CustomDropdownBodyButton(
+                primaryButton: Padding(
+                  padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                  child: const Icon(FontAwesomeIcons.barsStaggered, size: 16),
+                ),
+                initValue: c.fragmentGroupViewType(abw),
+                items: FragmentGroupViewType.values.map((e) => CustomItem(value: e, text: e.display)).toList(),
+                onChanged: (v) {
+                  c.fragmentGroupViewType.refreshEasy((oldValue) => v!);
+                },
+              ),
+              SizedBox(
+                  child: VerticalDivider(
+                    width: 5,
+                  ),
+                  height: 5),
+              SizedBox(width: 5),
+            ],
+          ),
+        ),
         headSliver: (c, g, abw) => g(abw).getDynamicGroupEntity(abw) == null ? Container() : _Head(c: c, g: g, abw: abw),
         groupBuilder: (c, group, abw) {
           return Card(

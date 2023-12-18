@@ -1,9 +1,12 @@
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tools/tools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../push_page/push_page.dart';
+import '../edit/MemoryGroupGizmoEditPage/MemoryGroupGizmoEditPage.dart';
+import '../edit/edit_page_type.dart';
 
 class MemoryGroupListPageAbController extends AbController {
   MemoryGroupListPageAbController({required this.user});
@@ -77,7 +80,15 @@ class MemoryGroupListPageAbController extends AbController {
   }
 
   Future<void> onStatusTap(MemoryGroup memoryGroupGizmo) async {
-    await pushToMemoryGroupGizmoEditPageOfModify(context: context, memoryGroupId: memoryGroupGizmo.id);
+    await showCustomDialog(
+      builder: (ctx) {
+        return MemoryGroupGizmoEditPage(
+          editPageType: MemoryGroupGizmoEditPageType.modify,
+          memoryGroupId: memoryGroupGizmo.id,
+        );
+      },
+    );
+    // await pushToMemoryGroupGizmoEditPageOfModify(context: context, memoryGroupId: memoryGroupGizmo.id);
     await refreshPage();
   }
 }
