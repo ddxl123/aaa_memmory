@@ -270,7 +270,7 @@ class CurrentCircleWidget extends StatelessWidget {
                   const Text('复习接下来  '),
                   GestureDetector(
                     child: Container(
-                      decoration: BoxDecoration(border: Border(bottom: BorderSide())),
+                      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
                       child: Text(
                         time2TextTime(
                           longSeconds: c.memoryGroupAb(abw).review_interval.difference(DateTime.now()).inSeconds,

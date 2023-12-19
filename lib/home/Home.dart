@@ -38,7 +38,7 @@ class Home extends StatelessWidget {
           child: const Icon(Icons.add),
           onPressed: () async {
             showMaterialModalBottomSheet(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
               context: c.context,
               builder: (BuildContext context) {
                 return Card(

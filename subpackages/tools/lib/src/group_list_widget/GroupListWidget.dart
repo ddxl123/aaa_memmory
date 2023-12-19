@@ -6,7 +6,7 @@ import 'package:tools/tools.dart';
 
 class GroupListWidget<G, U, UR, C extends GroupListWidgetController<G, U, UR>> extends StatefulWidget {
   const GroupListWidget({
-    Key? key,
+    super.key,
     required this.headSliver,
     required this.groupListWidgetController,
     required this.groupChainStrings,
@@ -15,7 +15,8 @@ class GroupListWidget<G, U, UR, C extends GroupListWidgetController<G, U, UR>> e
     this.leftActionBuilder,
     this.rightActionBuilder,
     required this.floatingButtonOnPressed,
-  }) : super(key: key);
+  });
+
   final C groupListWidgetController;
 
   final Widget Function(C c, Ab<Group<G, U, UR>> group, Abw abw)? headSliver;
@@ -90,8 +91,8 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
       builder: (c, tAbw) {
         return Column(
           children: [
-            SizedBox(height: 5),
-            Container(
+            const SizedBox(height: 5),
+            SizedBox(
               height: kMinInteractiveDimension,
               child: Row(
                 children: [
@@ -101,49 +102,7 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
                       return widget.leftActionBuilder?.call(c, abw) ?? Container();
                     },
                   ),
-                  Expanded(
-                    child: AbBuilder<C>(
-                      tag: Aber.single,
-                      builder: (c, abw) {
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          controller: c.groupChainScrollController,
-                          scrollDirection: Axis.horizontal,
-                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                          itemCount: c.groupChain(abw).length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return AbwBuilder(
-                              builder: (innerAbw) {
-                                return Row(
-                                  children: [
-                                    TextButton(
-                                      style: ButtonStyle(
-                                        visualDensity: kMinVisualDensity,
-                                      ),
-                                      child: c.groupChain(abw)[index](innerAbw).getDynamicGroupEntity(innerAbw) == null
-                                          ? Row(
-                                              children: [Text("- "), Icon(Icons.circle, size: 5), Text(" -")],
-                                            )
-                                          : Text(
-                                              widget.groupChainStrings(c.groupChain(abw)[index], innerAbw),
-                                            ),
-                                      onPressed: () async {
-                                        await c.enterGroup(c.groupChain(abw)[index]);
-                                      },
-                                    ),
-                                    if (c.groupChain(abw).length - 1 == index) SizedBox(width: MediaQuery.of(context).size.width / 3),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const Icon(Icons.chevron_right, color: Colors.grey, size: 14);
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                  Expanded(child: _chain()),
                   AbBuilder<C>(
                     tag: Aber.single,
                     builder: (c, abw) {
@@ -153,79 +112,126 @@ class _GroupListWidgetState<G, U, UR, C extends GroupListWidgetController<G, U, 
                 ],
               ),
             ),
-            Expanded(
-              child: IndexedStack(
-                index: c.groupChain(tAbw).length - 1,
-                children: [
-                  ...c.groupChain(tAbw).map(
-                        (e) => AbwBuilder(
-                          builder: (abw) {
-                            return SmartRefresher(
-                              onRefresh: () async {
-                                await c.refreshCurrentGroup();
-                                e().refreshController.refreshCompleted();
-                              },
-                              controller: e(abw).refreshController,
-                              child: CustomScrollView(
-                                slivers: [
-                                  widget.headSliver == null
-                                      ? SliverToBoxAdapter()
-                                      : _Head<G, U, UR, C>(
-                                          mainState: this,
-                                          c: c,
-                                          e: e,
-                                        ),
-                                  (e().groups().isEmpty && e().units().isEmpty)
-                                      ? SliverToBoxAdapter(
-                                          child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: const [
-                                            Text('什么都没有~'),
-                                          ],
-                                        ))
-                                      : const SliverToBoxAdapter(),
-                                  SliverToBoxAdapter(
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
-                                      child: Row(
-                                        children: [
-                                          Text("子组", style: TextStyle(color: Colors.grey)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  _fragmentGroupsBuilder(),
-                                  SliverToBoxAdapter(
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
-                                      child: Row(
-                                        children: [
-                                          Text("碎片", style: TextStyle(color: Colors.grey)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  _fragmentsBuilder(),
-                                  SliverToBoxAdapter(
-                                    child: TextButton(
-                                      onPressed: () async {
-                                        await c.backGroup();
-                                      },
-                                      child: const Text('返回'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                ],
-              ),
-            ),
+            Expanded(child: _bodyCore(c, tAbw)),
           ],
         );
       },
+    );
+  }
+
+  Widget _chain() {
+    return AbBuilder<C>(
+      tag: Aber.single,
+      builder: (c, abw) {
+        return ListView.separated(
+          shrinkWrap: true,
+          controller: c.groupChainScrollController,
+          scrollDirection: Axis.horizontal,
+          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          itemCount: c.groupChain(abw).length,
+          itemBuilder: (BuildContext context, int index) {
+            return AbwBuilder(
+              builder: (innerAbw) {
+                return Row(
+                  children: [
+                    TextButton(
+                      style: ButtonStyle(
+                        visualDensity: kMinVisualDensity,
+                      ),
+                      child: c.groupChain(abw)[index](innerAbw).getDynamicGroupEntity(innerAbw) == null
+                          ? Row(
+                              children: [Text("- "), Icon(Icons.circle, size: 5), Text(" -")],
+                            )
+                          : Text(
+                              widget.groupChainStrings(c.groupChain(abw)[index], innerAbw),
+                            ),
+                      onPressed: () async {
+                        await c.enterGroup(c.groupChain(abw)[index]);
+                      },
+                    ),
+                    if (c.groupChain(abw).length - 1 == index) SizedBox(width: MediaQuery.of(context).size.width / 3),
+                  ],
+                );
+              },
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const Icon(Icons.chevron_right, color: Colors.grey, size: 14);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _bodyCore(C c, Abw tAbw) {
+    return IndexedStack(
+      index: c.groupChain(tAbw).length - 1,
+      children: [
+        ...c.groupChain(tAbw).map(
+              (e) => AbwBuilder(
+                builder: (abw) {
+                  return SmartRefresher(
+                    onRefresh: () async {
+                      await c.refreshCurrentGroup();
+                      e().refreshController.refreshCompleted();
+                    },
+                    controller: e(abw).refreshController,
+                    child: CustomScrollView(
+                      slivers: [
+                        widget.headSliver == null
+                            ? SliverToBoxAdapter()
+                            : _Head<G, U, UR, C>(
+                                mainState: this,
+                                c: c,
+                                e: e,
+                              ),
+                        (e().groups().isEmpty && e().units().isEmpty)
+                            ? SliverToBoxAdapter(
+                                child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('什么都没有~'),
+                                ],
+                              ))
+                            : const SliverToBoxAdapter(),
+                        // SliverToBoxAdapter(
+                        //   child: Padding(
+                        //     padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
+                        //     child: Row(
+                        //       children: [
+                        //         Text("子组", style: TextStyle(color: Colors.grey)),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        _fragmentGroupsBuilder(),
+                        // SliverToBoxAdapter(
+                        //   child: Padding(
+                        //     padding: EdgeInsets.fromLTRB(20, 30, 20, 10),
+                        //     child: Row(
+                        //       children: [
+                        //         Text("碎片", style: TextStyle(color: Colors.grey)),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        SliverToBoxAdapter(child: SizedBox(height: 20)),
+                        _fragmentsBuilder(),
+                        SliverToBoxAdapter(
+                          child: TextButton(
+                            onPressed: () async {
+                              await c.backGroup();
+                            },
+                            child: const Text('返回'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+      ],
     );
   }
 

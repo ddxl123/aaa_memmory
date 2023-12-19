@@ -7,7 +7,7 @@ import '../../global/tool_widgets/CustomImageWidget.dart';
 import 'FragmentGroupGizmoEditPageAbController.dart';
 
 class FragmentGroupGizmoEditPage extends StatefulWidget {
-  const FragmentGroupGizmoEditPage({Key? key, required this.currentDynamicFragmentGroupAb}) : super(key: key);
+  const FragmentGroupGizmoEditPage({super.key, required this.currentDynamicFragmentGroupAb});
   final Ab<FragmentGroup?> currentDynamicFragmentGroupAb;
 
   @override

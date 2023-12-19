@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -27,112 +28,120 @@ class FragmentGroupListSelfPage extends StatelessWidget {
         ),
         groupChainStrings: (group, abw) => group(abw).getDynamicGroupEntity(abw)!.title,
         leftActionBuilder: (c, abw) => Padding(
-          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           child: Row(
             children: [
-              CustomDropdownBodyButton(
-                primaryButton: Padding(
-                  padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                  child: const Icon(FontAwesomeIcons.barsStaggered, size: 16),
-                ),
-                initValue: c.fragmentGroupViewType(abw),
-                items: FragmentGroupViewType.values.map((e) => CustomItem(value: e, text: e.display)).toList(),
-                onChanged: (v) {
-                  c.fragmentGroupViewType.refreshEasy((oldValue) => v!);
-                },
-              ),
-              SizedBox(
-                  child: VerticalDivider(
-                    width: 5,
-                  ),
-                  height: 5),
-              SizedBox(width: 5),
+              const SizedBox(height: 5, child: VerticalDivider(width: 5)),
+              const SizedBox(width: 5),
             ],
           ),
         ),
         headSliver: (c, g, abw) => g(abw).getDynamicGroupEntity(abw) == null ? Container() : _Head(c: c, g: g, abw: abw),
         groupBuilder: (c, group, abw) {
-          return Card(
-            elevation: 0,
-            child: Row(
-              children: [
-                Expanded(
-                  child: MaterialButton(
-                    visualDensity: kMinVisualDensity,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(c.isSelfOfFragmentGroup(dynamicFragmentGroup: group().getDynamicGroupEntity(abw)!) ? 20 : 10, 15, 10, 15),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      elevation: 0,
                       child: Row(
                         children: [
-                          c.isSelfOfFragmentGroup(dynamicFragmentGroup: group(abw).getDynamicGroupEntity()!)
-                              ? Container()
-                              : Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                  child: Transform.scale(
-                                    scaleY: -1,
-                                    child: Icon(Icons.turn_slight_right, color: Colors.green),
-                                  ),
-                                ),
+                          IconButton(
+                            visualDensity: kMinVisualDensity,
+                            padding: EdgeInsets.zero,
+                            icon: group(abw).isShowSub(abw) ? const Icon(Icons.arrow_drop_down, color: Colors.grey) : const Icon(Icons.arrow_right, color: Colors.grey),
+                            onPressed: () async {
+                              await c.findEntitiesForSub(group());
+                              group.refreshForce();
+                              group().isShowSub.refreshEasy((oldValue) => !oldValue);
+                            },
+                          ),
                           Expanded(
-                            child: Text(
-                              group(abw).getDynamicGroupEntity()!.title,
-                              style: TextStyle(color: Colors.black, fontSize: 16),
-                              overflow: TextOverflow.ellipsis,
+                            child: MaterialButton(
+                              visualDensity: kMinVisualDensity,
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(c.isSelfOfFragmentGroup(dynamicFragmentGroup: group().getDynamicGroupEntity(abw)!) ? 5 : 5, 10, 10, 10),
+                                child: Row(
+                                  children: [
+                                    c.isSelfOfFragmentGroup(dynamicFragmentGroup: group(abw).getDynamicGroupEntity()!)
+                                        ? Container()
+                                        : Padding(
+                                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                            child: Transform.scale(
+                                              scaleY: -1,
+                                              child: const Icon(Icons.turn_slight_right, color: Colors.green),
+                                            ),
+                                          ),
+                                    Expanded(
+                                      child: Text(
+                                        group(abw).getDynamicGroupEntity()!.title,
+                                        style: const TextStyle(color: Colors.black),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    c.longPressedTarget(abw) == group(abw)
+                                        ? GestureDetector(
+                                            child: const Text("编辑", style: TextStyle(color: Colors.blue)),
+                                            onTap: () {
+                                              pushToFragmentGroupGizmoEditPage(context: context, fragmentGroupAb: group().getDynamicGroupEntityAb());
+                                            },
+                                          )
+                                        : Container(),
+                                    Icon(Icons.chevron_right, color: group().getDynamicGroupEntity()!.be_publish ? Colors.green : Colors.grey),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () async {
+                                await c.enterGroup(group);
+                              },
+                              onLongPress: () async {
+                                await c.clearAllSelected();
+                                c.isSelecting.refreshEasy((oldValue) => !oldValue);
+                                if (c.isSelecting()) {
+                                  c.longPressedTarget.refreshEasy((oldValue) => group());
+                                } else {
+                                  c.longPressedTarget.refreshEasy((oldValue) => null);
+                                }
+                                Aber.find<HomeAbController>().isShowFloating.refreshEasy((oldValue) => !oldValue);
+                              },
                             ),
                           ),
-                          c.longPressedTarget(abw) == group(abw)
-                              ? GestureDetector(
-                                  child: Text("编辑", style: TextStyle(color: Colors.blue)),
-                                  onTap: () {
-                                    pushToFragmentGroupGizmoEditPage(context: context, fragmentGroupAb: group().getDynamicGroupEntityAb());
-                                  },
-                                )
+                          // c.isSelecting(abw) ? Text('${group(abw).selectedUnitCount(abw)}/${group(abw).allUnitCount(abw)}') : Container(),
+                          c.isSelecting(abw)
+                              ? (c.selectedFragmentsMap(abw).isEmpty
+                                  ? IconButton(
+                                      icon: () {
+                                        if (c.selectedSurfaceFragmentGroupsMap(abw).containsKey(group(abw).surfaceEntity(abw)!.id)) {
+                                          return const SolidCircleIcon();
+                                        } else {
+                                          if (group(abw).selectedUnitCount(abw) == 0) {
+                                            return const SolidCircleGreyIcon();
+                                          } else {
+                                            return const CircleHalfStrokeIcon();
+                                          }
+                                        }
+                                      }(),
+                                      onPressed: () async {
+                                        await c.selectFragmentGroup(
+                                          targetSurfaceFragmentGroup: group().surfaceEntity()!,
+                                          isSelect: !c.selectedSurfaceFragmentGroupsMap(abw).containsKey(group(abw).surfaceEntity(abw)!.id),
+                                        );
+                                      },
+                                    )
+                                  : Container())
                               : Container(),
-                          Icon(Icons.chevron_right, color: group().getDynamicGroupEntity()!.be_publish ? Colors.green : Colors.grey),
                         ],
                       ),
                     ),
-                    onPressed: () async {
-                      await c.enterGroup(group);
-                    },
-                    onLongPress: () async {
-                      await c.clearAllSelected();
-                      c.isSelecting.refreshEasy((oldValue) => !oldValue);
-                      if (c.isSelecting()) {
-                        c.longPressedTarget.refreshEasy((oldValue) => group());
-                      } else {
-                        c.longPressedTarget.refreshEasy((oldValue) => null);
-                      }
-                      Aber.find<HomeAbController>().isShowFloating.refreshEasy((oldValue) => !oldValue);
-                    },
                   ),
-                ),
-                // c.isSelecting(abw) ? Text('${group(abw).selectedUnitCount(abw)}/${group(abw).allUnitCount(abw)}') : Container(),
-                c.isSelecting(abw)
-                    ? (c.selectedFragmentsMap(abw).isEmpty
-                        ? IconButton(
-                            icon: () {
-                              if (c.selectedSurfaceFragmentGroupsMap(abw).containsKey(group(abw).surfaceEntity(abw)!.id)) {
-                                return const SolidCircleIcon();
-                              } else {
-                                if (group(abw).selectedUnitCount(abw) == 0) {
-                                  return const SolidCircleGreyIcon();
-                                } else {
-                                  return const CircleHalfStrokeIcon();
-                                }
-                              }
-                            }(),
-                            onPressed: () async {
-                              await c.selectFragmentGroup(
-                                targetSurfaceFragmentGroup: group().surfaceEntity()!,
-                                isSelect: !c.selectedSurfaceFragmentGroupsMap(abw).containsKey(group(abw).surfaceEntity(abw)!.id),
-                              );
-                            },
-                          )
-                        : Container())
-                    : Container(),
-              ],
-            ),
+                ],
+              ),
+              if (group(abw).isShowSub(abw)) c.loopSubGroup(group),
+            ],
           );
         },
         unitBuilder: (c, unit, abw) {
@@ -145,12 +154,9 @@ class FragmentGroupListSelfPage extends StatelessWidget {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: kMinVisualDensity,
                     child: Container(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      // decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.amber, width: 10))),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: Row(
                         children: [
-                          Icon(Icons.brightness_1_outlined, size: 12, color: Colors.green),
-                          SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               unit(abw).unitEntity.title,
@@ -202,10 +208,10 @@ class FragmentGroupListSelfPage extends StatelessWidget {
             children: [
               CustomDropdownBodyButton(
                 initValue: 0,
-                primaryButton: SizedBox(
+                primaryButton: const SizedBox(
                   width: kMinInteractiveDimension,
                   height: kMinInteractiveDimension,
-                  child: const Icon(Icons.add),
+                  child: Icon(Icons.add),
                 ),
                 itemAlignment: Alignment.centerLeft,
                 items: [
@@ -260,17 +266,17 @@ class FragmentGroupListSelfPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FaIcon(iconData, size: 26, color: color),
-                  Text(label, style: TextStyle(fontSize: 12, color: color)),
+                  FaIcon(iconData, size: 26, color: color ?? Theme.of(c.context).primaryColor),
+                  Text(label, style: TextStyle(fontSize: 12, color: color ?? Theme.of(c.context).primaryColor)),
                 ],
               ),
             );
           }
 
           return Card(
-            margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
             child: Container(
-              decoration: BoxDecoration(border: Border.all(color: Colors.amber)),
+              decoration: BoxDecoration(border: Border.all(color: Theme.of(c.context).primaryColor)),
               child: Row(
                 children: [
                   button(
@@ -356,7 +362,7 @@ class FragmentGroupListSelfPage extends StatelessWidget {
 }
 
 class _Head extends StatelessWidget {
-  const _Head({super.key, required this.abw, required this.c, required this.g});
+  const _Head({required this.abw, required this.c, required this.g});
 
   final FragmentGroupListSelfPageController c;
   final Ab<Group<FragmentGroup, Fragment, RFragment2FragmentGroup>> g;
@@ -371,7 +377,7 @@ class _Head extends StatelessWidget {
     return Row(
       children: [
         Text(text, style: TextStyle(color: color)),
-        SizedBox(width: 5),
+        const SizedBox(width: 5),
         Icon(Icons.settings, color: color, size: 20),
       ],
     );
@@ -382,13 +388,13 @@ class _Head extends StatelessWidget {
     final bePublish = g(abw).getDynamicGroupEntity(abw)!.be_publish;
     final small = Row(
       children: [
-        Spacer(),
+        const Spacer(),
         Card(
           child: MaterialButton(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: kMinVisualDensity,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               child: hasFatherFragmentGroupBePublish() ? publishWidget(text: "已随父组发布", color: Colors.green) : publishWidget(text: "未发布", color: Colors.amber),
             ),
             onPressed: () async {
@@ -398,114 +404,118 @@ class _Head extends StatelessWidget {
         ),
       ],
     );
-    final big = Card(
-      margin: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-      color: Colors.white,
-      elevation: 0,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
-        child: Column(
-          children: [
-            c.isSelfOfFragmentGroup(dynamicFragmentGroup: g(abw).getDynamicGroupEntity(abw)!)
-                ? Row(
-                    children: [
-                      Spacer(),
-                      Card(
-                        child: MaterialButton(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          visualDensity: kMinVisualDensity,
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                            child: publishWidget(text: hasFatherFragmentGroupBePublish() ? "已随父组发布 · 并单独发布" : "已发布", color: Colors.green),
-                          ),
-                          onPressed: () async {
-                            await showFragmentGroupConfigDialog(c: c, currentDynamicFragmentGroupAb: g().getDynamicGroupEntityAb());
-                          },
-                        ),
+    final big = Column(
+      children: [
+        c.isSelfOfFragmentGroup(dynamicFragmentGroup: g(abw).getDynamicGroupEntity(abw)!)
+            ? Row(
+                children: [
+                  const Spacer(),
+                  Card(
+                    child: MaterialButton(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: kMinVisualDensity,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        child: publishWidget(text: hasFatherFragmentGroupBePublish() ? "已随父组发布 · 并单独发布" : "已发布", color: Colors.green),
                       ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      Spacer(),
-                      TextButton(
-                        child: Text("查看源"),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-            Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LocalThenCloudImageWidget(
-                      size: globalFragmentGroupCoverRatio * 100,
-                      localPath: null,
-                      cloudPath: g(abw).getDynamicGroupEntity(abw)?.cover_cloud_path,
+                      onPressed: () async {
+                        await showFragmentGroupConfigDialog(c: c, currentDynamicFragmentGroupAb: g().getDynamicGroupEntityAb());
+                      },
                     ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  const Spacer(),
+                  TextButton(
+                    child: const Text("查看源"),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+        Card(
+          margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+          color: Colors.white,
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: Column(
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LocalThenCloudImageWidget(
+                          size: globalFragmentGroupCoverRatio * 100,
+                          localPath: null,
+                          cloudPath: g(abw).getDynamicGroupEntity(abw)?.cover_cloud_path,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  g(abw).getDynamicGroupEntity(abw)!.title,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          (c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).isEmpty
-                              ? Container()
-                              : Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: [
-                                    ...(c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).map(
-                                      (e) {
-                                        return Container(
-                                          padding: EdgeInsets.fromLTRB(2, 0, 2, 0),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
-                                            border: Border.all(color: Colors.grey),
-                                          ),
-                                          child: Text(e.tag, style: TextStyle(color: Colors.grey, fontSize: 14)),
-                                        );
-                                      },
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      g(abw).getDynamicGroupEntity(abw)!.title,
+                                      style: Theme.of(context).textTheme.titleLarge,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ],
-                                ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  () {
-                                    final text = q.Document.fromJson(jsonDecode(g(abw).getDynamicGroupEntity(abw)!.profile)).toPlainText().trim();
-                                    return text.isEmpty ? "无简介" : text;
-                                  }(),
-                                  style: TextStyle(color: Colors.grey),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              (c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).isEmpty
+                                  ? Container()
+                                  : Wrap(
+                                      alignment: WrapAlignment.start,
+                                      children: [
+                                        ...(c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).map(
+                                          (e) {
+                                            return Container(
+                                              padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5),
+                                                border: Border.all(color: Colors.grey),
+                                              ),
+                                              child: Text(e.tag, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      () {
+                                        final text = q.Document.fromJson(jsonDecode(g(abw).getDynamicGroupEntity(abw)!.profile)).toPlainText().trim();
+                                        return text.isEmpty ? "无简介" : text;
+                                      }(),
+                                      style: const TextStyle(color: Colors.grey),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
     return bePublish ? big : small;
   }

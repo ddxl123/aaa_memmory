@@ -132,7 +132,7 @@ Future<void> pushToMultiFragmentTemplateView({
 
 Future<void> pushToFragmentGroupListView({
   required BuildContext context,
-  required int userId,
+  required int enterUserId,
   required int? enterFragmentGroupId,
 }) async {
   await Navigator.push(
@@ -140,7 +140,7 @@ Future<void> pushToFragmentGroupListView({
     MaterialPageRoute(
       builder: (ctx) => FragmentGroupListView(
         enterFragmentGroupId: enterFragmentGroupId,
-        enterUserId: userId,
+        enterUserId: enterUserId,
       ),
     ),
   );

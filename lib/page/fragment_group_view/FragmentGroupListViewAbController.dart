@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:aaa_memory/page/list/FragmentGroupListSelfPage.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
+import 'package:flutter/material.dart';
 import 'package:tools/tools.dart';
 
 import '../../global/GlobalAbController.dart';
@@ -12,6 +14,7 @@ import 'FragmentGroupSelectViewAbController.dart';
 class FragmentGroupListViewAbController extends GroupListWidgetController<FragmentGroup, Fragment, RFragment2FragmentGroup> {
   FragmentGroupListViewAbController({required this.enterUserId, required this.enterFragmentGroupId});
 
+  /// 该进入的碎片组属于哪个用户的
   final int enterUserId;
 
   final int? enterFragmentGroupId;
@@ -20,7 +23,7 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
 
   /// 因为不能将 surface 进行发布，因此 [enterFragmentGroupAb] 始终是 dynamicFragmentGroup 类型。
   ///
-  /// 为 null 的话，说明进入的是 [enterUserId] 的 root.
+  /// 为 null 的话，说明进入的是 [enterUserId] 的 root，即碎片组的创建者。
   final currentFragmentGroupInformation = Ab<KnowledgeBaseFragmentGroupWrapperBo?>(null);
 
   @override
@@ -200,6 +203,73 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
       selectResult: (FragmentGroup? selectedDynamicFragmentGroup, FragmentGroupSelectViewAbController controller) async {
         await controller.selectFragmentGroup(targetSurfaceFragmentGroup: targetSurfaceFragmentGroup, isSelect: true);
         await controller.reuseSelectedOrDownload(reuseOrDownload: ReuseOrDownload.download);
+      },
+    );
+  }
+
+  Widget loopSubGroup(Ab<Group<FragmentGroup, Fragment, RFragment2FragmentGroup>> group) {
+    return AbBuilder<FragmentGroupListSelfPageController>(
+      tag: Aber.single,
+      builder: (c, abw) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: group(abw).groups(abw).map(
+            (e) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      const SizedBox(width: 20),
+                      IconButton(
+                        visualDensity: kMinVisualDensity,
+                        padding: EdgeInsets.zero,
+                        icon: e(abw).isShowSub(abw) ? const Icon(Icons.arrow_drop_down, color: Colors.grey) : const Icon(Icons.arrow_right, color: Colors.grey),
+                        onPressed: () async {
+                          await c.findEntitiesForSub(e());
+                          e.refreshForce();
+                          e().isShowSub.refreshEasy((oldValue) => !oldValue);
+                        },
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(e().getDynamicGroupEntity(abw)!.title),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            // TODO: 如果进入下面这个页面的话，进行移动或者复用时，检查是否嵌套会存在问题。
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (ctx) => FragmentGroupListSelfPage(),
+                            //   ),
+                            // );
+                            pushToFragmentGroupListView(
+                              context: context,
+                              enterUserId: e().getDynamicGroupEntity()!.creator_user_id,
+                              enterFragmentGroupId: e().getDynamicGroupEntity()!.id,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (e(abw).isShowSub(abw))
+                    Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        Expanded(child: loopSubGroup(e)),
+                      ],
+                    ),
+                ],
+              );
+            },
+          ).toList(),
+        );
       },
     );
   }

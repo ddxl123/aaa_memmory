@@ -44,23 +44,44 @@ class FragmentGroupListView extends StatelessWidget {
         groupBuilder: (c, group, abw) {
           return Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Card(
-              elevation: 0,
-              child: InkWell(
-                child: Row(
+            child: Column(
+              children: [
+                Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text(group(abw).getDynamicGroupEntity(abw)!.title, overflow: TextOverflow.ellipsis),
+                      child: Card(
+                        elevation: 0,
+                        child: InkWell(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                visualDensity: kMinVisualDensity,
+                                padding: EdgeInsets.zero,
+                                icon: group(abw).isShowSub(abw) ? const Icon(Icons.arrow_drop_down, color: Colors.grey) : const Icon(Icons.arrow_right, color: Colors.grey),
+                                onPressed: () async {
+                                  await c.findEntitiesForSub(group());
+                                  group.refreshForce();
+                                  group().isShowSub.refreshEasy((oldValue) => !oldValue);
+                                },
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(group(abw).getDynamicGroupEntity(abw)!.title, overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            c.enterGroup(group);
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
-                onTap: () {
-                  c.enterGroup(group);
-                },
-              ),
+                if (group(abw).isShowSub(abw)) c.loopSubGroup(group),
+              ],
             ),
           );
         },
@@ -72,8 +93,6 @@ class FragmentGroupListView extends StatelessWidget {
               child: InkWell(
                 child: Row(
                   children: [
-                    SizedBox(width: 10),
-                    Icon(Icons.brightness_1_outlined, size: 12, color: Colors.green),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(10),

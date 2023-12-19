@@ -178,7 +178,7 @@ class _PersonalHomePageState extends State<PersonalHomePage> {
       builder: (c, abw) {
         return GestureDetector(
           onTap: () {
-            pushToFragmentGroupListView(context: c.context, enterFragmentGroupId: null, userId: widget.userId);
+            pushToFragmentGroupListView(context: c.context, enterFragmentGroupId: null, enterUserId: widget.userId);
           },
           child: Padding(
             padding: EdgeInsets.all(10),
@@ -339,7 +339,7 @@ class _PersonalHomePageState extends State<PersonalHomePage> {
                         ),
                       ),
                       onTap: () {
-                        pushToFragmentGroupListView(context: c.context, userId: widget.userId, enterFragmentGroupId: e.id);
+                        pushToFragmentGroupListView(context: c.context, enterUserId: widget.userId, enterFragmentGroupId: e.id);
                       },
                     ),
                   );

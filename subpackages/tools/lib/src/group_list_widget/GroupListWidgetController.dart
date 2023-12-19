@@ -31,6 +31,8 @@ class Group<G, U, UR> with AbBroken {
   /// jump 的目标组（如果有）
   final Ab<G?> jumpTargetEntity;
 
+  final isShowSub = false.ab;
+
   G? getDynamicGroupEntity([Abw? abw]) => jumpTargetEntity(abw) ?? surfaceEntity(abw);
 
   Ab<G?> getDynamicGroupEntityAb() => jumpTargetEntity() != null ? jumpTargetEntity : surfaceEntity;
@@ -38,6 +40,11 @@ class Group<G, U, UR> with AbBroken {
   /// 在创建元素时，同时创建元素对应的 [selectedUnitCount] 和 [allUnitCount]。
   ///
   /// 如果当前 Group 是 jump 类型，[groups] 则是目标组的 list。
+  ///
+  /// 获取当前页面的组的子组和碎片时，当前页面的组是 [surfaceEntity]/[jumpTargetEntity]，
+  /// 而 [groups]/[units] 是当前页面的子组和碎片，
+  /// 获取时，会在 [FragmentGroupViewType.simple] 下同时获取该组列表内的子组(点开组列表的组时)，而在 [FragmentGroupViewType.folder] 下并不会。
+  /// 由 [isShowSub] 触发。
   final groups = <Ab<Group<G, U, UR>>>[].ab;
 
   /// 如果当前 Group 是 jump 类型，[units] 则是目标组的 list。
@@ -62,10 +69,6 @@ class Group<G, U, UR> with AbBroken {
     groups().addAll(
       groupsAndUnitEntities.groupEntities.map(
         (e) {
-          print("111111");
-          print(e.$1);
-          print(e.$2);
-          print("222222");
           return Group<G, U, UR>(
             fatherGroup: this,
             surfaceEntity: e.$1.ab,
@@ -189,12 +192,15 @@ abstract class GroupListWidgetController<G, U, UR> extends AbController {
     await refreshCount(whichGroup: getCurrentGroupAb());
     groupChain.refreshForce();
 
-    groupChainScrollController.animateTo(
-      // TODO: 有时候会出现这个异常 Failed assertion: line 105 pos 12: '_positions.isNotEmpty': ScrollController not attached to any scroll views.
-      groupChainScrollController.position.maxScrollExtent,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeOutCirc,
-    );
+    // 有时候会出现这个异常 Failed assertion: line 105 pos 12: '_positions.isNotEmpty': ScrollController not attached to any scroll views.
+    // 因此加个这个判断。
+    if (groupChainScrollController.hasClients) {
+      groupChainScrollController.animateTo(
+        groupChainScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.easeOutCirc,
+      );
+    }
     await refreshExtra();
     await refreshDone();
   }
@@ -233,6 +239,12 @@ abstract class GroupListWidgetController<G, U, UR> extends AbController {
 
   /// 查询 [whichSurfaceGroupEntity] 内的全部 [Group] 实体 和 [Unit] 实体。
   Future<GroupsAndUnitEntities<G, U, UR>> findEntities(G? whichSurfaceGroupEntity);
+
+  /// 查询 [whichSurfaceGroupEntity] 内的全部 [Group] 实体 和 [Unit] 实体。
+  Future<void> findEntitiesForSub(Group<G, U, UR>? whichGroup) async {
+    final newEntities = await findEntities(whichGroup?.surfaceEntity());
+    whichGroup?.refreshGroupsAndUnits(c: this, groupsAndUnitEntities: newEntities);
+  }
 }
 
 class GroupsAndUnitEntities<G, U, UR> {

@@ -69,6 +69,13 @@ class TemplateChoice extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             SingleTemplateChoicePage(
+              title: "AI 解析",
+              explain: "输入任意文本，给予提示词，AI 自动解析并生成碎片",
+              onTap: () {
+                Navigator.pop(context, SimpleFragmentTemplate(performType: PerformType.edit));
+              },
+            ),
+            SingleTemplateChoicePage(
               title: "单面碎片",
               explain: "只有一面",
               onTap: () {
