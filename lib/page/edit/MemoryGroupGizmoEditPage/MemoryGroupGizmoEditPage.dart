@@ -19,7 +19,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
       putController: MemoryGroupGizmoEditPageAbController(memoryGroupId: memoryGroupId),
       builder: (putController, putAbw) {
         return DialogWidget(
-          fullPadding: EdgeInsets.zero,
+          fullPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           topKeepWidget: Row(
             children: [
               _appBarLeadingWidget(),
@@ -102,6 +102,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
           color: Colors.amberAccent,
           text: Text(c.memoryGroupAb(abw).start_time == null ? '开始' : "继续", style: TextStyle(color: Colors.white)),
           onPressed: () async {
+            print("object");
             await c.clickStart();
           },
         );

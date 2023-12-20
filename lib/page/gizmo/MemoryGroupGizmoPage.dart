@@ -6,7 +6,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'MemoryGroupGizmoPageAbController.dart';
 
 class MemoryGroupGizmoPage extends StatelessWidget {
-  const MemoryGroupGizmoPage({Key? key, required this.memoryGroupGizmo, required this.innerMemoryGroupGizmoWidget}) : super(key: key);
+  const MemoryGroupGizmoPage({super.key, required this.memoryGroupGizmo, required this.innerMemoryGroupGizmoWidget});
   final MemoryGroup memoryGroupGizmo;
   final Widget innerMemoryGroupGizmoWidget;
 

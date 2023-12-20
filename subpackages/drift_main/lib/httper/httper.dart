@@ -92,6 +92,12 @@ part 'dto_vo_bo/dto_vo/FragmentGroupInformationDto.dart';
 part 'dto_vo_bo/dto_vo/FragmentGroupInformationVo.dart';
 
 
+part 'dto_vo_bo/dto_vo/FragmentGroupInfosQueryDto.dart';
+
+
+part 'dto_vo_bo/dto_vo/FragmentGroupInfosQueryVo.dart';
+
+
 part 'dto_vo_bo/dto_vo/FragmentGroupLikeChangeForCurrentLoginedDto.dart';
 
 

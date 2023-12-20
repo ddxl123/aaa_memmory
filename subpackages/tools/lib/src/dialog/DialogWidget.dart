@@ -54,24 +54,31 @@ class DialogWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: allCrossAxisAlignment ?? CrossAxisAlignment.center,
           children: [
-            title == null
-                ? Container()
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Builder(
-                          builder: (_) {
-                            return Text(
-                              title!,
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            );
-                          },
-                        ),
-                      ),
-                      topRightAction == null ? Container() : topRightAction!,
-                    ],
+            if (title != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Builder(
+                      builder: (_) {
+                        return Text(
+                          title!,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
                   ),
+                  topRightAction == null ? Container() : topRightAction!,
+                ],
+              ),
+            if (title == null && topRightAction != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Spacer(),
+                  topRightAction == null ? Container() : topRightAction!,
+                ],
+              ),
             topKeepWidget == null ? Container() : const SizedBox(height: 5),
             topKeepWidget == null ? Container() : topKeepWidget!,
             Expanded(
@@ -119,7 +126,7 @@ class DialogWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: const [BoxShadow(spreadRadius: -5, offset: Offset(3, 3), blurRadius: 8)],
+          boxShadow: const [BoxShadow(spreadRadius: -4, offset: Offset(2, 2), blurRadius: 3)],
         ),
         child: IntrinsicHeight(
           child: IntrinsicWidth(

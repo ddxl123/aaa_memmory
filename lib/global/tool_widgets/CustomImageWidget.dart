@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter/material.dart';
+import 'package:tools/tools.dart';
+
+const String unknownUrl = "https://img2.baidu.com/it/u=824807255,173743980&fm=253&fmt=auto&app=120&f=JPEG?w=200&h=200";
 
 /// 先加载本地，如果本地加载失败，则获取云端，若云端获取失败，则 errorWidget
 ///
@@ -20,19 +23,18 @@ class LocalThenCloudImageWidget extends StatelessWidget {
   final Size size;
   final String? localPath;
   final String? cloudPath;
-  final String unknown = "unknown";
 
   @override
   Widget build(BuildContext context) {
     return Image.file(
-      File(localPath ?? unknown),
+      File(localPath ?? unknownUrl),
       width: size.width,
       height: size.height,
       errorBuilder: (ctx, e, st) {
         return CachedNetworkImage(
           width: size.width,
           height: size.height,
-          imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknown,
+          imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknownUrl,
           placeholder: (ctx, url) {
             return Container(
               width: size.width,
@@ -42,21 +44,13 @@ class LocalThenCloudImageWidget extends StatelessWidget {
             );
           },
           errorWidget: (ctx, url, e) {
-            if (url == unknown) {
-              return Container(
-                width: size.width,
-                height: size.height,
-                color: Colors.black12,
-                child: Center(child: Text("无图片")),
-              );
-            } else {
-              return Container(
-                width: size.width,
-                height: size.height,
-                color: Colors.black12,
-                child: Center(child: Text("加载异常！")),
-              );
-            }
+            logger.outError(error: e, stackTrace: st);
+            return Container(
+              width: size.width,
+              height: size.height,
+              color: Colors.black12,
+              child: Center(child: Text("加载异常！")),
+            );
           },
         );
       },
@@ -80,7 +74,6 @@ class CloudThenLocalImageWidget extends StatelessWidget {
   final Size size;
   final String? localPath;
   final String? cloudPath;
-  final String unknown = "unknown";
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +81,7 @@ class CloudThenLocalImageWidget extends StatelessWidget {
     return CachedNetworkImage(
       width: size.width,
       height: size.height,
-      imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknown,
+      imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknownUrl,
       placeholder: (ctx, url) {
         return Container(
           width: size.width,
@@ -99,25 +92,17 @@ class CloudThenLocalImageWidget extends StatelessWidget {
       },
       errorWidget: (ctx, url, e) {
         return Image.file(
-          File(localPath ?? unknown),
+          File(localPath ?? unknownUrl),
           width: size.width,
           height: size.height,
           errorBuilder: (ctx, e, st) {
-            if (url == unknown) {
-              return Container(
-                width: size.width,
-                height: size.height,
-                color: Colors.black12,
-                child: Center(child: Text("无图片")),
-              );
-            } else {
-              return Container(
-                width: size.width,
-                height: size.height,
-                color: Colors.black12,
-                child: Center(child: Text("加载异常！")),
-              );
-            }
+            logger.outError(error: e, stackTrace: st);
+            return Container(
+              width: size.width,
+              height: size.height,
+              color: Colors.black12,
+              child: Center(child: Text("加载异常！")),
+            );
           },
         );
       },
@@ -137,30 +122,21 @@ class ForceCloudImageWidget extends StatelessWidget {
 
   final Size? size;
   final String? cloudPath;
-  final String unknown = "https://img2.baidu.com/it/u=824807255,173743980&fm=253&fmt=auto&app=120&f=JPEG?w=200&h=200";
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       width: size?.width,
       height: size?.height,
-      imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknown,
+      imageUrl: FilePathWrapper.toAvailablePath(cloudPath: cloudPath) ?? unknownUrl,
       errorWidget: (ctx, url, e) {
-        if (url == unknown) {
-          return Container(
-            width: size?.width,
-            height: size?.height,
-            color: Colors.black12,
-            child: Center(child: Text("无图片")),
-          );
-        } else {
-          return Container(
-            width: size?.width,
-            height: size?.height,
-            color: Colors.black12,
-            child: Center(child: Text("加载异常！")),
-          );
-        }
+        logger.outError(error: e);
+        return Container(
+          width: size?.width,
+          height: size?.height,
+          color: Colors.black12,
+          child: Center(child: Text("加载异常！")),
+        );
       },
     );
   }

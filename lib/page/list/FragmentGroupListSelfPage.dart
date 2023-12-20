@@ -208,10 +208,10 @@ class FragmentGroupListSelfPage extends StatelessWidget {
             children: [
               CustomDropdownBodyButton(
                 initValue: 0,
-                primaryButton: const SizedBox(
+                primaryButton: SizedBox(
                   width: kMinInteractiveDimension,
                   height: kMinInteractiveDimension,
-                  child: Icon(Icons.add),
+                  child: Icon(Icons.add, color: Theme.of(c.context).primaryColor),
                 ),
                 itemAlignment: Alignment.centerLeft,
                 items: [
@@ -395,7 +395,7 @@ class _Head extends StatelessWidget {
             visualDensity: kMinVisualDensity,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: hasFatherFragmentGroupBePublish() ? publishWidget(text: "已随父组发布", color: Colors.green) : publishWidget(text: "未发布", color: Colors.amber),
+              child: hasFatherFragmentGroupBePublish() ? publishWidget(text: "已随父组发布", color: Colors.green) : publishWidget(text: "未发布", color: Theme.of(context).primaryColor),
             ),
             onPressed: () async {
               await showFragmentGroupConfigDialog(c: c, currentDynamicFragmentGroupAb: g().getDynamicGroupEntityAb());
@@ -434,84 +434,89 @@ class _Head extends StatelessWidget {
                   ),
                 ],
               ),
-        Card(
-          margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-          color: Colors.white,
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LocalThenCloudImageWidget(
-                          size: globalFragmentGroupCoverRatio * 100,
-                          localPath: null,
-                          cloudPath: g(abw).getDynamicGroupEntity(abw)?.cover_cloud_path,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      g(abw).getDynamicGroupEntity(abw)!.title,
-                                      style: Theme.of(context).textTheme.titleLarge,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              (c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).isEmpty
-                                  ? Container()
-                                  : Wrap(
-                                      alignment: WrapAlignment.start,
-                                      children: [
-                                        ...(c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).map(
-                                          (e) {
-                                            return Container(
-                                              padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(5),
-                                                border: Border.all(color: Colors.grey),
-                                              ),
-                                              child: Text(e.tag, style: const TextStyle(color: Colors.grey, fontSize: 14)),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      () {
-                                        final text = q.Document.fromJson(jsonDecode(g(abw).getDynamicGroupEntity(abw)!.profile)).toPlainText().trim();
-                                        return text.isEmpty ? "无简介" : text;
-                                      }(),
-                                      style: const TextStyle(color: Colors.grey),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+        GestureDetector(
+          onTap: () {
+            pushToFragmentGroupGizmoEditPage(context: context, fragmentGroupAb: g().getDynamicGroupEntityAb());
+          },
+          child: Card(
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+            color: Colors.white,
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LocalThenCloudImageWidget(
+                            size: globalFragmentGroupCoverRatio * 100,
+                            localPath: null,
+                            cloudPath: g(abw).getDynamicGroupEntity(abw)?.cover_cloud_path,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        g(abw).getDynamicGroupEntity(abw)!.title,
+                                        style: Theme.of(context).textTheme.titleLarge,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                (c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).isEmpty
+                                    ? Container()
+                                    : Wrap(
+                                        alignment: WrapAlignment.start,
+                                        children: [
+                                          ...(c.currentFragmentGroupInformation(abw)?.fragment_group_tags ?? []).map(
+                                            (e) {
+                                              return Container(
+                                                padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  border: Border.all(color: Colors.grey),
+                                                ),
+                                                child: Text(e.tag, style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        () {
+                                          final text = q.Document.fromJson(jsonDecode(g(abw).getDynamicGroupEntity(abw)!.profile)).toPlainText().trim();
+                                          return text.isEmpty ? "无简介" : text;
+                                        }(),
+                                        style: const TextStyle(color: Colors.grey),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

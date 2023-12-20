@@ -17,6 +17,7 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
   /// 该进入的碎片组属于哪个用户的
   final int enterUserId;
 
+  /// 因为不能将 surface 进行发布，因此 [enterFragmentGroup] 始终是 target。
   final int? enterFragmentGroupId;
 
   final enterUser = Ab<User?>(null);
@@ -38,7 +39,6 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
 
   @override
   Future<GroupsAndUnitEntities<FragmentGroup, Fragment, RFragment2FragmentGroup>> findEntities(FragmentGroup? whichSurfaceGroupEntity) async {
-    // 因为不能将 surface 进行发布，因此 [enterFragmentGroup] 始终是 target。
     final targetDynamicId = (whichSurfaceGroupEntity?.jump_to_fragment_groups_id ?? whichSurfaceGroupEntity?.id) ?? enterFragmentGroupId;
     // 获取当前页面的当前碎片组和子碎片组以及碎片。
     final result = await request(
@@ -221,15 +221,18 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
                   Row(
                     children: [
                       const SizedBox(width: 20),
-                      IconButton(
-                        visualDensity: kMinVisualDensity,
-                        padding: EdgeInsets.zero,
-                        icon: e(abw).isShowSub(abw) ? const Icon(Icons.arrow_drop_down, color: Colors.grey) : const Icon(Icons.arrow_right, color: Colors.grey),
-                        onPressed: () async {
-                          await c.findEntitiesForSub(e());
-                          e.refreshForce();
-                          e().isShowSub.refreshEasy((oldValue) => !oldValue);
-                        },
+                      Container(
+                        decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.withOpacity(0.2)))),
+                        child: IconButton(
+                          visualDensity: kMinVisualDensity,
+                          padding: EdgeInsets.zero,
+                          icon: e(abw).isShowSub(abw) ? const Icon(Icons.arrow_drop_down, color: Colors.grey) : const Icon(Icons.arrow_right, color: Colors.grey),
+                          onPressed: () async {
+                            await c.findEntitiesForSub(e());
+                            e.refreshForce();
+                            e().isShowSub.refreshEasy((oldValue) => !oldValue);
+                          },
+                        ),
                       ),
                       Expanded(
                         child: GestureDetector(
@@ -262,7 +265,36 @@ class FragmentGroupListViewAbController extends GroupListWidgetController<Fragme
                     Row(
                       children: [
                         const SizedBox(width: 20),
-                        Expanded(child: loopSubGroup(e)),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(border: Border(left: BorderSide(color: Colors.grey.withOpacity(0.2)))),
+                            child: Column(
+                              children: [
+                                loopSubGroup(e),
+                                if (e().units().isNotEmpty)
+                                  GestureDetector(
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 35),
+                                        const Icon(Icons.join_right, color: Colors.grey, size: 14),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(e().units().length.toString()),
+                                        )
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      pushToFragmentGroupListView(
+                                        context: context,
+                                        enterUserId: e().getDynamicGroupEntity()!.creator_user_id,
+                                        enterFragmentGroupId: e().getDynamicGroupEntity()!.id,
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                 ],

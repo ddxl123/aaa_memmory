@@ -4,6 +4,8 @@ part of 'DriftDb.dart';
 mixin _$GeneralQueryDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -28,6 +30,8 @@ mixin _$GeneralQueryDAOMixin on DatabaseAccessor<DriftDb> {
 mixin _$InsertDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -52,6 +56,8 @@ mixin _$InsertDAOMixin on DatabaseAccessor<DriftDb> {
 mixin _$RawDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -76,6 +82,8 @@ mixin _$RawDAOMixin on DatabaseAccessor<DriftDb> {
 mixin _$RegisterOrLoginDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -100,6 +108,8 @@ mixin _$RegisterOrLoginDAOMixin on DatabaseAccessor<DriftDb> {
 mixin _$UpdateDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -124,6 +134,8 @@ mixin _$UpdateDAOMixin on DatabaseAccessor<DriftDb> {
 mixin _$DeleteDAOMixin on DatabaseAccessor<DriftDb> {
   $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
   $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
@@ -815,6 +827,355 @@ class SyncsCompanion extends UpdateCompanion<Sync> {
           ..write('sync_curd_type: $sync_curd_type, ')
           ..write('sync_table_name: $sync_table_name, ')
           ..write('tag: $tag, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FragmentGroupInfosTable extends FragmentGroupInfos
+    with TableInfo<$FragmentGroupInfosTable, FragmentGroupInfo> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FragmentGroupInfosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _creator_user_idMeta =
+      const VerificationMeta('creator_user_id');
+  @override
+  late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
+      'creator_user_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _fragment_group_idMeta =
+      const VerificationMeta('fragment_group_id');
+  @override
+  late final GeneratedColumn<int> fragment_group_id = GeneratedColumn<int>(
+      'fragment_group_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _notification_modify_contentMeta =
+      const VerificationMeta('notification_modify_content');
+  @override
+  late final GeneratedColumn<String> notification_modify_content =
+      GeneratedColumn<String>('notification_modify_content', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _created_atMeta =
+      const VerificationMeta('created_at');
+  @override
+  late final GeneratedColumn<DateTime> created_at = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _updated_atMeta =
+      const VerificationMeta('updated_at');
+  @override
+  late final GeneratedColumn<DateTime> updated_at = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        creator_user_id,
+        fragment_group_id,
+        notification_modify_content,
+        created_at,
+        id,
+        updated_at
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'fragment_group_infos';
+  @override
+  VerificationContext validateIntegrity(Insertable<FragmentGroupInfo> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('creator_user_id')) {
+      context.handle(
+          _creator_user_idMeta,
+          creator_user_id.isAcceptableOrUnknown(
+              data['creator_user_id']!, _creator_user_idMeta));
+    } else if (isInserting) {
+      context.missing(_creator_user_idMeta);
+    }
+    if (data.containsKey('fragment_group_id')) {
+      context.handle(
+          _fragment_group_idMeta,
+          fragment_group_id.isAcceptableOrUnknown(
+              data['fragment_group_id']!, _fragment_group_idMeta));
+    } else if (isInserting) {
+      context.missing(_fragment_group_idMeta);
+    }
+    if (data.containsKey('notification_modify_content')) {
+      context.handle(
+          _notification_modify_contentMeta,
+          notification_modify_content.isAcceptableOrUnknown(
+              data['notification_modify_content']!,
+              _notification_modify_contentMeta));
+    } else if (isInserting) {
+      context.missing(_notification_modify_contentMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+          _created_atMeta,
+          created_at.isAcceptableOrUnknown(
+              data['created_at']!, _created_atMeta));
+    } else if (isInserting) {
+      context.missing(_created_atMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+          _updated_atMeta,
+          updated_at.isAcceptableOrUnknown(
+              data['updated_at']!, _updated_atMeta));
+    } else if (isInserting) {
+      context.missing(_updated_atMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FragmentGroupInfo map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FragmentGroupInfo(
+      creator_user_id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
+      fragment_group_id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}fragment_group_id'])!,
+      notification_modify_content: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}notification_modify_content'])!,
+      created_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updated_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $FragmentGroupInfosTable createAlias(String alias) {
+    return $FragmentGroupInfosTable(attachedDatabase, alias);
+  }
+}
+
+class FragmentGroupInfo extends DataClass
+    implements Insertable<FragmentGroupInfo> {
+  int creator_user_id;
+  int fragment_group_id;
+  String notification_modify_content;
+  DateTime created_at;
+  int id;
+  DateTime updated_at;
+  FragmentGroupInfo(
+      {required this.creator_user_id,
+      required this.fragment_group_id,
+      required this.notification_modify_content,
+      required this.created_at,
+      required this.id,
+      required this.updated_at});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['creator_user_id'] = Variable<int>(creator_user_id);
+    map['fragment_group_id'] = Variable<int>(fragment_group_id);
+    map['notification_modify_content'] =
+        Variable<String>(notification_modify_content);
+    map['created_at'] = Variable<DateTime>(created_at);
+    map['id'] = Variable<int>(id);
+    map['updated_at'] = Variable<DateTime>(updated_at);
+    return map;
+  }
+
+  FragmentGroupInfosCompanion toCompanion(bool nullToAbsent) {
+    return FragmentGroupInfosCompanion(
+      creator_user_id: Value(creator_user_id),
+      fragment_group_id: Value(fragment_group_id),
+      notification_modify_content: Value(notification_modify_content),
+      created_at: Value(created_at),
+      id: Value(id),
+      updated_at: Value(updated_at),
+    );
+  }
+
+  factory FragmentGroupInfo.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FragmentGroupInfo(
+      creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
+      fragment_group_id: serializer.fromJson<int>(json['fragment_group_id']),
+      notification_modify_content:
+          serializer.fromJson<String>(json['notification_modify_content']),
+      created_at: serializer.fromJson<DateTime>(json['created_at']),
+      id: serializer.fromJson<int>(json['id']),
+      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'creator_user_id': serializer.toJson<int>(creator_user_id),
+      'fragment_group_id': serializer.toJson<int>(fragment_group_id),
+      'notification_modify_content':
+          serializer.toJson<String>(notification_modify_content),
+      'created_at': serializer.toJson<DateTime>(created_at),
+      'id': serializer.toJson<int>(id),
+      'updated_at': serializer.toJson<DateTime>(updated_at),
+    };
+  }
+
+  FragmentGroupInfo copyWith(
+          {int? creator_user_id,
+          int? fragment_group_id,
+          String? notification_modify_content,
+          DateTime? created_at,
+          int? id,
+          DateTime? updated_at}) =>
+      FragmentGroupInfo(
+        creator_user_id: creator_user_id ?? this.creator_user_id,
+        fragment_group_id: fragment_group_id ?? this.fragment_group_id,
+        notification_modify_content:
+            notification_modify_content ?? this.notification_modify_content,
+        created_at: created_at ?? this.created_at,
+        id: id ?? this.id,
+        updated_at: updated_at ?? this.updated_at,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('FragmentGroupInfo(')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('fragment_group_id: $fragment_group_id, ')
+          ..write('notification_modify_content: $notification_modify_content, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(creator_user_id, fragment_group_id,
+      notification_modify_content, created_at, id, updated_at);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FragmentGroupInfo &&
+          other.creator_user_id == this.creator_user_id &&
+          other.fragment_group_id == this.fragment_group_id &&
+          other.notification_modify_content ==
+              this.notification_modify_content &&
+          other.created_at == this.created_at &&
+          other.id == this.id &&
+          other.updated_at == this.updated_at);
+}
+
+class FragmentGroupInfosCompanion extends UpdateCompanion<FragmentGroupInfo> {
+  Value<int> creator_user_id;
+  Value<int> fragment_group_id;
+  Value<String> notification_modify_content;
+  Value<DateTime> created_at;
+  Value<int> id;
+  Value<DateTime> updated_at;
+  FragmentGroupInfosCompanion({
+    this.creator_user_id = const Value.absent(),
+    this.fragment_group_id = const Value.absent(),
+    this.notification_modify_content = const Value.absent(),
+    this.created_at = const Value.absent(),
+    this.id = const Value.absent(),
+    this.updated_at = const Value.absent(),
+  });
+  FragmentGroupInfosCompanion.insert({
+    required int creator_user_id,
+    required int fragment_group_id,
+    required String notification_modify_content,
+    required DateTime created_at,
+    this.id = const Value.absent(),
+    required DateTime updated_at,
+  })  : creator_user_id = Value(creator_user_id),
+        fragment_group_id = Value(fragment_group_id),
+        notification_modify_content = Value(notification_modify_content),
+        created_at = Value(created_at),
+        updated_at = Value(updated_at);
+  static Insertable<FragmentGroupInfo> custom({
+    Expression<int>? creator_user_id,
+    Expression<int>? fragment_group_id,
+    Expression<String>? notification_modify_content,
+    Expression<DateTime>? created_at,
+    Expression<int>? id,
+    Expression<DateTime>? updated_at,
+  }) {
+    return RawValuesInsertable({
+      if (creator_user_id != null) 'creator_user_id': creator_user_id,
+      if (fragment_group_id != null) 'fragment_group_id': fragment_group_id,
+      if (notification_modify_content != null)
+        'notification_modify_content': notification_modify_content,
+      if (created_at != null) 'created_at': created_at,
+      if (id != null) 'id': id,
+      if (updated_at != null) 'updated_at': updated_at,
+    });
+  }
+
+  FragmentGroupInfosCompanion copyWith(
+      {Value<int>? creator_user_id,
+      Value<int>? fragment_group_id,
+      Value<String>? notification_modify_content,
+      Value<DateTime>? created_at,
+      Value<int>? id,
+      Value<DateTime>? updated_at}) {
+    return FragmentGroupInfosCompanion(
+      creator_user_id: creator_user_id ?? this.creator_user_id,
+      fragment_group_id: fragment_group_id ?? this.fragment_group_id,
+      notification_modify_content:
+          notification_modify_content ?? this.notification_modify_content,
+      created_at: created_at ?? this.created_at,
+      id: id ?? this.id,
+      updated_at: updated_at ?? this.updated_at,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (creator_user_id.present) {
+      map['creator_user_id'] = Variable<int>(creator_user_id.value);
+    }
+    if (fragment_group_id.present) {
+      map['fragment_group_id'] = Variable<int>(fragment_group_id.value);
+    }
+    if (notification_modify_content.present) {
+      map['notification_modify_content'] =
+          Variable<String>(notification_modify_content.value);
+    }
+    if (created_at.present) {
+      map['created_at'] = Variable<DateTime>(created_at.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updated_at.present) {
+      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FragmentGroupInfosCompanion(')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('fragment_group_id: $fragment_group_id, ')
+          ..write('notification_modify_content: $notification_modify_content, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')
@@ -7366,6 +7727,8 @@ abstract class _$DriftDb extends GeneratedDatabase {
   late final $ClientSyncInfosTable clientSyncInfos =
       $ClientSyncInfosTable(this);
   late final $SyncsTable syncs = $SyncsTable(this);
+  late final $FragmentGroupInfosTable fragmentGroupInfos =
+      $FragmentGroupInfosTable(this);
   late final $FragmentMemoryInfosTable fragmentMemoryInfos =
       $FragmentMemoryInfosTable(this);
   late final $FragmentGroupTagsTable fragmentGroupTags =
@@ -7400,6 +7763,7 @@ abstract class _$DriftDb extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         clientSyncInfos,
         syncs,
+        fragmentGroupInfos,
         fragmentMemoryInfos,
         fragmentGroupTags,
         rFragment2FragmentGroups,

@@ -548,6 +548,35 @@ Map<String, dynamic> _$FragmentGroupInformationVoToJson(
           instance.knowledge_base_fragment_group_wrapper_bo,
     };
 
+FragmentGroupInfosQueryDto _$FragmentGroupInfosQueryDtoFromJson(
+        Map<String, dynamic> json) =>
+    FragmentGroupInfosQueryDto(
+      fragment_group_id: json['fragment_group_id'] as int,
+      dto_padding_1: json['dto_padding_1'] as bool?,
+    );
+
+Map<String, dynamic> _$FragmentGroupInfosQueryDtoToJson(
+        FragmentGroupInfosQueryDto instance) =>
+    <String, dynamic>{
+      'fragment_group_id': instance.fragment_group_id,
+      'dto_padding_1': instance.dto_padding_1,
+    };
+
+FragmentGroupInfosQueryVo _$FragmentGroupInfosQueryVoFromJson(
+        Map<String, dynamic> json) =>
+    FragmentGroupInfosQueryVo(
+      fragment_group_infos_list:
+          (json['fragment_group_infos_list'] as List<dynamic>)
+              .map((e) => FragmentGroupInfo.fromJson(e as Map<String, dynamic>))
+              .toList(),
+    );
+
+Map<String, dynamic> _$FragmentGroupInfosQueryVoToJson(
+        FragmentGroupInfosQueryVo instance) =>
+    <String, dynamic>{
+      'fragment_group_infos_list': instance.fragment_group_infos_list,
+    };
+
 FragmentGroupLikeChangeForCurrentLoginedDto
     _$FragmentGroupLikeChangeForCurrentLoginedDtoFromJson(
             Map<String, dynamic> json) =>

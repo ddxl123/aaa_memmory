@@ -1,8 +1,11 @@
+import 'package:drift/drift.dart' as d;
+import 'package:drift/extensions/json1.dart';
+import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/share_common/share_enum.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:tools/tools.dart';
-import 'package:flutter_datetime_picker_plus/src/datetime_picker_theme.dart' as pt;
 
 import '../../../single_dialog/showSelectMemoryModelInMemoryGroupDialog.dart';
 import 'MemoryGroupGizmoEditPageAbController.dart';
@@ -31,10 +34,8 @@ class CurrentCircleWidget extends StatelessWidget {
                       Text("学习数量", style: TextStyle(color: Colors.grey)),
                     ],
                   ),
-                  SizedBox(height: 10),
-                  _countWidget(),
                   _newLearnCountWidget(),
-                  _reviewIntervalWidget(),
+                  const ReviewIntervalWidget(),
                 ],
               ),
               Divider(color: Colors.black12, height: 30),
@@ -179,32 +180,6 @@ class CurrentCircleWidget extends StatelessWidget {
     );
   }
 
-  Widget _countWidget() {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text("总数量：999"),
-                  Text("未完成：555"),
-                ],
-              ),
-              Row(
-                children: [
-                  Text("本次将新学：200"),
-                  Text("本次将复习：300"),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Widget _newLearnCountWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
@@ -251,80 +226,6 @@ class CurrentCircleWidget extends StatelessWidget {
                   },
                 ),
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _reviewIntervalWidget() {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  const Text('复习接下来  '),
-                  GestureDetector(
-                    child: Container(
-                      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
-                      child: Text(
-                        time2TextTime(
-                          longSeconds: c.memoryGroupAb(abw).review_interval.difference(DateTime.now()).inSeconds,
-                          canNegative: true,
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      DatePicker.showDateTimePicker(
-                        c.context,
-                        locale: LocaleType.zh,
-                        minTime: DateTime.now(),
-                        currentTime: c.memoryGroupAb().review_interval,
-                        onConfirm: (v) {
-                          c.memoryGroupAb.refreshInevitable((obj) => obj..review_interval = v);
-                        },
-                      );
-                    },
-                  ),
-                  // Expanded(
-                  //   child: TextField(
-                  //     controller: c.reviewIntervalTextEditingController,
-                  //     style: const TextStyle(fontSize: 14),
-                  //     decoration: InputDecoration(
-                  //       // border: InputBorder.none,
-                  //       hintText: '请输入...',
-                  //       hintStyle: TextStyle(fontSize: 14),
-                  //       isDense: true,
-                  //       contentPadding: EdgeInsets.zero,
-                  //       counter: Container(),
-                  //     ),
-                  //     scrollPadding: EdgeInsets.zero,
-                  //     maxLength: 9,
-                  //     keyboardType: TextInputType.number,
-                  //     onChanged: (v) {
-                  //       c.memoryGroupAb.refreshInevitable(
-                  //         (obj) => obj..review_interval = DateTime.now().add(Duration(seconds: int.tryParse(v) ?? 0)),
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
-                  const Text(' 前需要复习的碎片，数量为 999'),
-                ],
-              ),
-              // Row(
-              //   children: [
-              //     Spacer(),
-              //     AbwBuilder(
-              //       builder: (abwT) {
-              //         return Text('${DateFormat("yyyy-MM-dd HH:mm:ss").format(c.memoryGroupAb(abw).review_interval)} 前');
-              //       },
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         );
@@ -405,6 +306,98 @@ class CurrentCircleWidget extends StatelessWidget {
                 onChanged: (v) {
                   c.memoryGroupAb.refreshInevitable((obj) => obj..review_display_order = v!);
                 },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ReviewIntervalWidget extends StatefulWidget {
+  const ReviewIntervalWidget({super.key});
+
+  @override
+  State<ReviewIntervalWidget> createState() => _ReviewIntervalWidgetState();
+}
+
+class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
+  int reviewTotalCount = 0;
+
+  final MemoryGroupGizmoEditPageAbController memoryGroupGizmoEditPageAbController = Aber.find<MemoryGroupGizmoEditPageAbController>();
+
+  @override
+  void initState() {
+    super.initState();
+    queryReviewTotalCount();
+  }
+
+  Future<void> queryReviewTotalCount() async {
+    print(memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time);
+    if (memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time == null) {
+      reviewTotalCount = 0;
+      setState(() {});
+      return;
+    }
+    final diff = memoryGroupGizmoEditPageAbController.memoryGroupAb().review_interval.difference(memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time!);
+    final count = driftDb.fragmentMemoryInfos.id.count();
+    final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    sel.where(
+      driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroupGizmoEditPageAbController.memoryGroupId) &
+          driftDb.fragmentMemoryInfos.study_status.equalsValue(StudyStatus.review) &
+          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isSmallerOrEqualValue(diff.inSeconds),
+    );
+    sel.addColumns([count]);
+    final result = await sel.get();
+    reviewTotalCount = result.first.read(count)!;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
+      builder: (c, abw) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    text: "复习接下来 ",
+                    children: [
+                      TextSpan(
+                        text: time2TextTime(
+                          longSeconds: c.memoryGroupAb(abw).review_interval.difference(DateTime.now()).inSeconds,
+                          canNegative: true,
+                        ),
+                        style: TextStyle(decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            DatePicker.showDateTimePicker(
+                              c.context,
+                              locale: LocaleType.zh,
+                              minTime: DateTime.now(),
+                              currentTime: c.memoryGroupAb().review_interval,
+                              onConfirm: (v) {
+                                c.memoryGroupAb.refreshInevitable((obj) => obj..review_interval = v);
+                                queryReviewTotalCount();
+                              },
+                            );
+                          },
+                      ),
+                      TextSpan(
+                        text: " 前需要复习的 ",
+                      ),
+                      TextSpan(
+                        text: "$reviewTotalCount",
+                      ),
+                      TextSpan(text: " 个碎片")
+                    ],
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
               ),
             ],
           ),

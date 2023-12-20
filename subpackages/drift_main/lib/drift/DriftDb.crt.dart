@@ -39,6 +39,21 @@ class Crt {
     );
   }
 
+  static FragmentGroupInfo fragmentGroupInfoEntity({
+    required int creator_user_id,
+    required int fragment_group_id,
+    required String notification_modify_content,
+  }) {
+    return FragmentGroupInfo(
+      creator_user_id: creator_user_id,
+      fragment_group_id: fragment_group_id,
+      notification_modify_content: notification_modify_content,
+      created_at: DateTime(0),
+      id: -1,
+      updated_at: DateTime(0),
+    );
+  }
+
   static FragmentMemoryInfo fragmentMemoryInfoEntity({
     required String actual_show_time,
     required bool be_synced,

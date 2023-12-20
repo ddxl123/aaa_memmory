@@ -18,6 +18,7 @@ Future<void> showCustomDialog({
     clickMaskDismiss: clickMaskDismiss,
     backDismiss: backDismiss,
     useSystem: true,
+    maskColor: Colors.black.withOpacity(0.2),
     builder: (_) => builder(_),
   );
 }

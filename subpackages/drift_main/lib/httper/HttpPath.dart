@@ -8,7 +8,7 @@ class HttpPath {
   HttpPath._();
 
   /// 基础 path
-  static const String BASE_PATH_LOCAL = 'http://10.11.7.118:2814';
+  static const String BASE_PATH_LOCAL = 'http://192.168.101.232:2814';
   
   static const String POST__REGISTER_OR_LOGIN_CHECK_LOGIN = 'POST_/register_or_login/check_login';
 
@@ -21,6 +21,8 @@ class HttpPath {
   static const String POST__NO_LOGIN_REQUIRED_FRAGMENT_GROUP_HANDLE_ALL_SUB_FRAGMENT_GROUPS_QUERY = 'POST_/no_login_required/fragment_group_handle/all_sub_fragment_groups_query';
 
   static const String GET__NO_LOGIN_REQUIRED_FRAGMENT_GROUP_HANDLE_FRAGMENT_GROUP_INFORMATION = 'GET_/no_login_required/fragment_group_handle/fragment_group_information';
+
+  static const String GET__NO_LOGIN_REQUIRED_FRAGMENT_GROUP_HANDLE_FRAGMENT_GROUP_INFOS_QUERY = 'GET_/no_login_required/fragment_group_handle/fragment_group_infos_query';
 
   static const String GET__NO_LOGIN_REQUIRED_FRAGMENT_GROUP_HANDLE_FRAGMENT_GROUP_LIKE_CHANGE = 'GET_/no_login_required/fragment_group_handle/fragment_group_like_change';
 
