@@ -63,25 +63,27 @@ class MemoryModeListPage extends StatelessWidget {
     return AbBuilder<MemoryModeListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      child: Text(c.memoryModelsAb()[index].title.toString()),
-                      onPressed: () {
-                        pushToMemoryModelGizmoEditPage(context: context, memoryModel: c.memoryModelsAb()[index]);
-                      },
-                    ),
-                  ),
-                ],
+        return c.memoryModelsAb(abw).isEmpty
+            ? SliverToBoxAdapter(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("还没有记忆算法~")]))
+            : SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            child: Text(c.memoryModelsAb()[index].title.toString()),
+                            onPressed: () {
+                              pushToMemoryModelGizmoEditPage(context: context, memoryModel: c.memoryModelsAb()[index]);
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  childCount: c.memoryModelsAb(abw).length,
+                ),
               );
-            },
-            childCount: c.memoryModelsAb(abw).length,
-          ),
-        );
       },
     );
   }

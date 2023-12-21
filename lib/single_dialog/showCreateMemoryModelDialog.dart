@@ -24,31 +24,24 @@ Future<void> showCreateMemoryModelDialog() async {
             SmartDialog.showToast('名称不能为空！');
             return;
           }
-          await requestSingleRowInsert(
-            isLoginRequired: true,
-            singleRowInsertDto: SingleRowInsertDto(
-              table_name: driftDb.memoryModels.actualTableName,
-              row: Crt.memoryModelEntity(
-                title: tec.text.trim(),
-                creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-                father_memory_model_id: null,
-                button_algorithm: null,
-                button_algorithm_remark: null,
-                familiarity_algorithm: null,
-                familiarity_algorithm_remark: null,
-                next_time_algorithm: null,
-                next_time_algorithm_remark: null,
-              ),
+          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryModelAndOverwriteLocal(
+            crtEntity: Crt.memoryModelEntity(
+              title: tec.text.trim(),
+              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+              father_memory_model_id: null,
+              button_algorithm: null,
+              button_algorithm_remark: null,
+              familiarity_algorithm: null,
+              familiarity_algorithm_remark: null,
+              next_time_algorithm: null,
+              next_time_algorithm_remark: null,
             ),
-            onSuccess: (String showMessage, SingleRowInsertVo vo) async {
-              // 插入到本地
-              await driftDb.insertDAO.insertMemoryModel(memoryModel: MemoryModel.fromJson(vo.row));
-
-              SmartDialog.dismiss();
+            onSuccess: (MemoryModel memoryModel) async {
+              SmartDialog.dismiss(status: SmartStatus.dialog);
               SmartDialog.showToast('创建成功！');
             },
-            onError: (a, b, c) async {
-              logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
+            onError: (int? code, HttperException httperException, StackTrace st) async {
+              logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
             },
           );
         },

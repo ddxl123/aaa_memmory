@@ -157,6 +157,32 @@ mixin _$DeleteDAOMixin on DatabaseAccessor<DriftDb> {
   $UserFollowsTable get userFollows => attachedDatabase.userFollows;
   $UsersTable get users => attachedDatabase.users;
 }
+mixin _$CloudOverwriteLocalDAOMixin on DatabaseAccessor<DriftDb> {
+  $ClientSyncInfosTable get clientSyncInfos => attachedDatabase.clientSyncInfos;
+  $SyncsTable get syncs => attachedDatabase.syncs;
+  $FragmentGroupInfosTable get fragmentGroupInfos =>
+      attachedDatabase.fragmentGroupInfos;
+  $FragmentMemoryInfosTable get fragmentMemoryInfos =>
+      attachedDatabase.fragmentMemoryInfos;
+  $FragmentGroupTagsTable get fragmentGroupTags =>
+      attachedDatabase.fragmentGroupTags;
+  $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
+      attachedDatabase.rFragment2FragmentGroups;
+  $Test2sTable get test2s => attachedDatabase.test2s;
+  $TestsTable get tests => attachedDatabase.tests;
+  $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
+  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
+  $ShorthandsTable get shorthands => attachedDatabase.shorthands;
+  $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
+      attachedDatabase.fragmentGroupBeSaveds;
+  $FragmentGroupLikesTable get fragmentGroupLikes =>
+      attachedDatabase.fragmentGroupLikes;
+  $FragmentGroupsTable get fragmentGroups => attachedDatabase.fragmentGroups;
+  $UserCommentsTable get userComments => attachedDatabase.userComments;
+  $UserFollowsTable get userFollows => attachedDatabase.userFollows;
+  $UsersTable get users => attachedDatabase.users;
+}
 
 class $ClientSyncInfosTable extends ClientSyncInfos
     with TableInfo<$ClientSyncInfosTable, ClientSyncInfo> {
@@ -7756,6 +7782,8 @@ abstract class _$DriftDb extends GeneratedDatabase {
   late final UpdateDAO updateDAO = UpdateDAO(this as DriftDb);
   late final DeleteDAO deleteDAO = DeleteDAO(this as DriftDb);
   late final GeneralQueryDAO generalQueryDAO = GeneralQueryDAO(this as DriftDb);
+  late final CloudOverwriteLocalDAO cloudOverwriteLocalDAO =
+      CloudOverwriteLocalDAO(this as DriftDb);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

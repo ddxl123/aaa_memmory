@@ -7,21 +7,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 import '../../../push_page/push_page.dart';
 
-enum FragmentAndMemoryInfoStatus {
-  /// 本地和云端数量都为 0
-  zero,
-
-  /// 本地和云端数量都不为 0，且数量相同
-  allDownloaded,
-
-  /// 本地数量为 0，云端数量不为 0
-  neverDownloaded,
-
-  /// 本地和云端数量都不为 0，但数量不一致
-  /// 1. 已下载过，但是云端存在一些未下载的，需要下载云端未下载的
-  /// 2. 需要删除本地多余的，只删除记忆信息，不删除碎片，因为其他记忆组内可能使用了。
-  differentDownload,
-}
 
 class MemoryGroupGizmoEditPageAbController extends AbController {
   /// 把 gizmo 内所以信息打包成一个对象进行传入。
@@ -32,21 +17,13 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
   final memoryGroupAb = Ab<MemoryGroup>.late();
 
-  final memoryModelAb = Ab<MemoryModel?>(null);
-
   final titleTextEditingController = TextEditingController();
 
   final reviewIntervalTextEditingController = TextEditingController();
 
-  final fragmentCountAb = 0.ab;
-
-  /// 当前记忆组剩余未学习的数量。
-  final Ab<int> remainNeverFragmentsCount = 0.ab;
 
   /// 是否全部展开
   final isExpandAll = false.ab;
-
-  final fragmentAndMemoryInfoStatus = FragmentAndMemoryInfoStatus.zero.ab;
 
   @override
   void onDispose() {

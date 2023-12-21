@@ -26,6 +26,8 @@ part 'dao/UpdateDAO.dart';
 
 part 'dao/DeleteDAO.dart';
 
+part 'dao/CloudOverwriteLocalDAO.dart';
+
 part 'table/Base.dart';
 
 part 'custom/sync_tag.dart';

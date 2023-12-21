@@ -29,6 +29,7 @@ LazyDatabase _openConnection() {
     UpdateDAO,
     DeleteDAO,
     GeneralQueryDAO,
+    CloudOverwriteLocalDAO,
   ],
 )
 class DriftDb extends _$DriftDb {

@@ -30,7 +30,7 @@ class DeleteDAO extends DatabaseAccessor<DriftDb> with _$DeleteDAOMixin {
     );
   }
 
-  Future<void> deleteAllMemoryModels() async {
-    await delete(memoryModels).go();
-  }
+  // Future<void> deleteAllMemoryModels() async {
+  //   await delete(memoryModels).go();
+  // }
 }

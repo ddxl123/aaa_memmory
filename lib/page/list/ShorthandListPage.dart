@@ -26,52 +26,54 @@ class ShorthandListPage extends StatelessWidget {
               c.refreshController.refreshCompleted();
             },
             header: ClassicHeader(),
-            child: MasonryGridView.count(
-              padding: EdgeInsets.only(top: 20, bottom: 100),
-              crossAxisCount: 2,
-              itemCount: c.shorthandsAb(abw).length,
-              itemBuilder: (_, index) {
-                return GestureDetector(
-                  onTap: () {
-                    pushToShorthandGizmoEditPage(context: context, initShorthand: c.shorthandsAb()[index]);
-                  },
-                  child: Card(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            q.Document.fromJson(jsonDecode(c.shorthandsAb(abw)[index].content)).toPlainText(),
-                            maxLines: 6,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  () {
-                                    final time = c.shorthandsAb(abw)[index].updated_at;
-                                    final spt = time.toString().split(" ");
-                                    if (DateTime.now().difference(time).inHours >= 24) {
-                                      return spt.first.replaceAll("-", ".");
-                                    } else {
-                                      return spt.last.split(".").first;
-                                    }
-                                  }(),
-                                  style: TextStyle(color: Colors.grey),
+            child: c.shorthandsAb(abw).isEmpty
+                ? Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0), child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("没有笔记~")]))
+                : MasonryGridView.count(
+                    padding: EdgeInsets.only(top: 20, bottom: 100),
+                    crossAxisCount: 2,
+                    itemCount: c.shorthandsAb(abw).length,
+                    itemBuilder: (_, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          pushToShorthandGizmoEditPage(context: context, initShorthand: c.shorthandsAb()[index]);
+                        },
+                        child: Card(
+                          child: Container(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  q.Document.fromJson(jsonDecode(c.shorthandsAb(abw)[index].content)).toPlainText(),
+                                  maxLines: 6,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        () {
+                                          final time = c.shorthandsAb(abw)[index].updated_at;
+                                          final spt = time.toString().split(" ");
+                                          if (DateTime.now().difference(time).inHours >= 24) {
+                                            return spt.first.replaceAll("-", ".");
+                                          } else {
+                                            return spt.last.split(".").first;
+                                          }
+                                        }(),
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
           floatingActionButton: FloatingRoundCornerButton(
             text: Row(

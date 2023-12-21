@@ -17,31 +17,15 @@ class MemoryModeListPageAbController extends AbController {
   }
 
   Future<void> refreshPage() async {
-    final result = await request(
-      path: HttpPath.POST__NO_LOGIN_REQUIRED_MEMORY_MODEL_HANDLE_MEMORY_MODELS_QUERY,
-      dtoData: MemoryModelsQueryDto(
-        user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-        dto_padding_1: null,
-      ),
-      parseResponseVoData: MemoryModelsQueryVo.fromJson,
-    );
-    await result.handleCode(
-      code180101: (String showMessage, vo) async {
-        await driftDb.transaction(
-          () async {
-            await driftDb.deleteDAO.deleteAllMemoryModels();
-            await driftDb.insertDAO.insertManyMemoryModels(mms: vo.memory_models_list);
-
-            memoryModelsAb.refreshInevitable(
-              (obj) => obj
-                ..clear()
-                ..addAll(vo.memory_models_list),
-            );
-          },
-        );
+    await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryModelOverwriteLocal(
+      userId: Aber.find<GlobalAbController>().loggedInUser()!.id,
+      onSuccess: (mms) async {
+        memoryModelsAb.refreshInevitable((obj) => obj
+          ..clear()
+          ..addAll(mms));
       },
-      otherException: (a, b, c) async {
-        logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
+      onError: (int? code, HttperException httperException, StackTrace st) async {
+        logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
       },
     );
   }

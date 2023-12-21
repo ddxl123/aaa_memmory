@@ -9,15 +9,15 @@ class MemoryGroupFragmentsCountQueryDto extends BaseObject{
     /// 要查询的单个记忆组 id。
     int memory_group_id;
 
-    /// 要查询的多个记忆组 id。
-    List<int>? memory_group_ids_list;
+    /// 填充字段1
+    bool? dto_padding_1;
 
 
 MemoryGroupFragmentsCountQueryDto({
 
     required this.memory_group_id,
 
-    required this.memory_group_ids_list,
+    required this.dto_padding_1,
 
 });
   factory MemoryGroupFragmentsCountQueryDto.fromJson(Map<String, dynamic> json) => _$MemoryGroupFragmentsCountQueryDtoFromJson(json);

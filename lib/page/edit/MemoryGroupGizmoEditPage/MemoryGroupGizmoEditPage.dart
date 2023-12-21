@@ -23,6 +23,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
           topKeepWidget: Row(
             children: [
               _appBarLeadingWidget(),
+              Text("本轮", style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               _appBarRightButtonWidget(),
             ],
@@ -102,7 +103,6 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
           color: Colors.amberAccent,
           text: Text(c.memoryGroupAb(abw).start_time == null ? '开始' : "继续", style: TextStyle(color: Colors.white)),
           onPressed: () async {
-            print("object");
             await c.clickStart();
           },
         );

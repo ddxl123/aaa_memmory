@@ -1141,34 +1141,25 @@ MemoryGroupFragmentsCountQueryDto _$MemoryGroupFragmentsCountQueryDtoFromJson(
         Map<String, dynamic> json) =>
     MemoryGroupFragmentsCountQueryDto(
       memory_group_id: json['memory_group_id'] as int,
-      memory_group_ids_list: (json['memory_group_ids_list'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
+      dto_padding_1: json['dto_padding_1'] as bool?,
     );
 
 Map<String, dynamic> _$MemoryGroupFragmentsCountQueryDtoToJson(
         MemoryGroupFragmentsCountQueryDto instance) =>
     <String, dynamic>{
       'memory_group_id': instance.memory_group_id,
-      'memory_group_ids_list': instance.memory_group_ids_list,
+      'dto_padding_1': instance.dto_padding_1,
     };
 
 MemoryGroupFragmentsCountQueryVo _$MemoryGroupFragmentsCountQueryVoFromJson(
         Map<String, dynamic> json) =>
     MemoryGroupFragmentsCountQueryVo(
-      memory_group:
-          MemoryGroup.fromJson(json['memory_group'] as Map<String, dynamic>),
-      memory_model: json['memory_model'] == null
-          ? null
-          : MemoryModel.fromJson(json['memory_model'] as Map<String, dynamic>),
       count: json['count'] as int,
     );
 
 Map<String, dynamic> _$MemoryGroupFragmentsCountQueryVoToJson(
         MemoryGroupFragmentsCountQueryVo instance) =>
     <String, dynamic>{
-      'memory_group': instance.memory_group,
-      'memory_model': instance.memory_model,
       'count': instance.count,
     };
 

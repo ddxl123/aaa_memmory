@@ -56,14 +56,16 @@ class MemoryGroupListPage extends StatelessWidget {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (ctx, index) {
-              return _memoryGroupGizmoWidget(index);
-            },
-            childCount: c.memoryGroupGizmos(abw).length,
-          ),
-        );
+        return c.memoryGroupAndOthersAb(abw).isEmpty
+            ? const SliverToBoxAdapter(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("还没有创建记忆任务~")]))
+            : SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (ctx, index) {
+                    return _memoryGroupGizmoWidget(index);
+                  },
+                  childCount: c.memoryGroupAndOthersAb(abw).length,
+                ),
+              );
       },
     );
   }
@@ -92,9 +94,9 @@ class MemoryGroupListPage extends StatelessWidget {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        final mg = c.memoryGroupGizmos(abw)[index];
+        final mgAndOther = c.memoryGroupAndOthersAb(abw)[index];
         return Hero(
-          tag: mg.hashCode,
+          tag: mgAndOther.hashCode,
           child: GestureDetector(
             child: Card(
               child: Column(
@@ -104,7 +106,7 @@ class MemoryGroupListPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          mg.title,
+                          mgAndOther.memoryGroup.title,
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -113,13 +115,13 @@ class MemoryGroupListPage extends StatelessWidget {
                           return OutlinedButton(
                             style: ButtonStyle(
                               side: MaterialStateProperty.all(const BorderSide(color: Colors.blue, width: 1)),
-                              backgroundColor: MaterialStateProperty.all(_statusButtonBackgroundColorFilter(mg)),
+                              backgroundColor: MaterialStateProperty.all(_statusButtonBackgroundColorFilter(mgAndOther.memoryGroup)),
                             ),
                             child: () {
-                              return Text(_statusButtonTextFilter(mg));
+                              return Text(_statusButtonTextFilter(mgAndOther.memoryGroup));
                             }(),
                             onPressed: () {
-                              c.onStatusTap(mg);
+                              c.onStatusTap(mgAndOther.memoryGroup);
                             },
                           );
                         },
@@ -134,7 +136,7 @@ class MemoryGroupListPage extends StatelessWidget {
                 c.context,
                 MaterialPageRoute(
                   builder: (_) => MemoryGroupGizmoPage(
-                    memoryGroupGizmo: mg,
+                    memoryGroupGizmo: mgAndOther.memoryGroup,
                     innerMemoryGroupGizmoWidget: _memoryGroupGizmoWidget(index),
                   ),
                 ),

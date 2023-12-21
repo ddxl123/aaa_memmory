@@ -46,21 +46,21 @@ class InsertDAO extends DatabaseAccessor<DriftDb> with _$InsertDAOMixin {
     );
   }
 
-  Future<void> insertMemoryModel({
-    required MemoryModel memoryModel,
-  }) async {
-    await driftDb.into(memoryModels).insert(memoryModel, mode: InsertMode.insertOrReplace);
-  }
+  // Future<void> insertMemoryModel({
+  //   required MemoryModel memoryModel,
+  // }) async {
+  //   await driftDb.into(memoryModels).insert(memoryModel, mode: InsertMode.insertOrReplace);
+  // }
 
-  Future<void> insertManyMemoryModels({
-    required List<MemoryModel> mms,
-  }) async {
-    await batch(
-      (batch) async {
-        batch.insertAll(memoryModels, mms, mode: InsertMode.insertOrReplace);
-      },
-    );
-  }
+  // Future<void> insertManyMemoryModels({
+  //   required List<MemoryModel> mms,
+  // }) async {
+  //   await batch(
+  //     (batch) async {
+  //       batch.insertAll(memoryModels, mms, mode: InsertMode.insertOrReplace);
+  //     },
+  //   );
+  // }
 
   /// 注意：要先在云端中插入，后才能插入带有 id 的行。
   Future<void> insertManyFragmentAndMemoryInfos({
