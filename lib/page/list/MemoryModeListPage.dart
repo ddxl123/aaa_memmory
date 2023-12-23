@@ -17,7 +17,7 @@ class MemoryModeListPage extends StatelessWidget {
       builder: (c, abw) {
         return Scaffold(
           body: _body(),
-          floatingActionButton: FloatingRoundCornerButton(
+          floatingActionButton: CustomRoundCornerButton(
             text: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

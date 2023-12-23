@@ -35,7 +35,7 @@ enum SyncCurdType {
 
 }
         
-enum StudyStatus {
+enum FragmentMemoryInfoStudyStatus {
   
   never,
 
@@ -74,6 +74,20 @@ enum ReviewDisplayOrder {
   no_expire_first,
 
   ignore_expire,
+
+}
+        
+enum StudyStatus {
+  
+  not_startup,
+
+  not_study_for_this_cycle,
+
+  studying_for_this_cycle,
+
+  completed_for_this_cycle,
+
+  incomplete_for_last_cycle,
 
 }
         

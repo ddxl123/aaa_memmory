@@ -47,22 +47,15 @@ class MemoryModelGizmoEditPageAbController extends AbController {
   }
 
   /// 将 [copyMemoryModelAb] 的数据传递给 [memoryModel]，并对数据库进行修改。
-  Future<void> save() async {
-    await requestSingleRowModify(
-      isLoginRequired: true,
-      singleRowModifyDto: SingleRowModifyDto(
-        table_name: driftDb.memoryModels.actualTableName,
-        row: memoryModel,
-      ),
-      onSuccess: (String showMessage, SingleRowModifyVo vo) async {
-        // 更新到本地
-        await driftDb.insertDAO.insertMemoryModel(memoryModel: memoryModel);
-
+  Future<void> updateSave() async {
+    await driftDb.cloudOverwriteLocalDAO.updateCloudMemoryModelAndOverwriteLocal(
+      memoryModel: memoryModel,
+      onSuccess: (MemoryModel memoryModel) async {
         SmartDialog.showToast("保存成功！");
         Navigator.pop(context);
       },
-      onError: (a, b, c) async {
-        logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
+      onError: (int? code, HttperException httperException, StackTrace st) async {
+        logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
       },
     );
   }

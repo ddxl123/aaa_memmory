@@ -150,7 +150,7 @@ class InAppStageAbController extends AbController {
     }
 
     final info = currentPerformerAb()!.fragmentMemoryInfo;
-    if (info.study_status == StudyStatus.never) {
+    if (info.study_status == FragmentMemoryInfoStudyStatus.never) {
       memoryGroupAb.refreshInevitable((obj) => obj..will_new_learn_count -= 1);
     }
     info
@@ -162,7 +162,7 @@ class InAppStageAbController extends AbController {
       ..click_familiarity = info.click_familiarity.arrayAdd<double>(currentClickFamiliarity)
       ..button_values = info.button_values.arrayAdd<List<double>>(currentButtonDatasAb().map((e) => e.value).toList())
       ..content_value = info.content_value.arrayAdd<List<String>>(contentValue)
-      ..study_status = StudyStatus.review;
+      ..study_status = FragmentMemoryInfoStudyStatus.review;
 
     await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: memoryGroupAb());
     await driftDb.updateDAO.resetMemoryInfoAutoSyncVersion(entity: info);
@@ -193,19 +193,19 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountNeverConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.never),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.never),
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -288,19 +288,19 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountNeverConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.never),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.never),
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -383,19 +383,19 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountNeverConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.never),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.never),
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -478,19 +478,19 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountNeverConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.never),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.never),
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: StudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(

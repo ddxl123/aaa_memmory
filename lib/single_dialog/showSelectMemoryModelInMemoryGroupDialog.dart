@@ -2,19 +2,19 @@ import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
+import '../page/list/MemoryGroupListPageAbController.dart';
 import '../page/list/MemoryModeListPageAbController.dart';
 import '../push_page/push_page.dart';
 import 'showCreateMemoryModelDialog.dart';
 
-Future<void> showSelectMemoryModelInMemoryGroupDialog({required Ab<MemoryGroup> mg, required Ab<MemoryModel?> selectedMemoryModelAb}) async {
-  await showCustomDialog(builder: (_) => SelectMemoryModelInMemoryGroupDialogWidget(mg: mg, selectedMemoryModelAb: selectedMemoryModelAb));
+Future<void> showSelectMemoryModelInMemoryGroupDialog({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
+  await showCustomDialog(builder: (_) => SelectMemoryModelInMemoryGroupDialogWidget(mgAndOtherAb: mgAndOtherAb));
 }
 
 class SelectMemoryModelInMemoryGroupDialogWidget extends StatefulWidget {
-  const SelectMemoryModelInMemoryGroupDialogWidget({super.key, required this.mg, required this.selectedMemoryModelAb});
+  const SelectMemoryModelInMemoryGroupDialogWidget({super.key, required this.mgAndOtherAb});
 
-  final Ab<MemoryGroup> mg;
-  final Ab<MemoryModel?> selectedMemoryModelAb;
+  final Ab<MemoryGroupAndOther> mgAndOtherAb;
 
   @override
   State<SelectMemoryModelInMemoryGroupDialogWidget> createState() => _SelectMemoryModelInMemoryGroupDialogWidgetState();
@@ -40,7 +40,7 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
   @override
   void initState() {
     super.initState();
-    _selectedMm = widget.selectedMemoryModelAb();
+    _selectedMm = widget.mgAndOtherAb().getMemoryModel;
     getMms();
   }
 
@@ -95,7 +95,7 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
   }
 
   Future<void> _onOk() async {
-    widget.selectedMemoryModelAb.refreshEasy((oldValue) => _selectedMm);
+    widget.mgAndOtherAb.refreshInevitable((obj) => obj..setMemoryModel = _selectedMm);
     if (_selectedMm == null) {
       SmartDialog.showToast('不选择');
     } else {

@@ -75,7 +75,7 @@ class ShorthandListPage extends StatelessWidget {
                     },
                   ),
           ),
-          floatingActionButton: FloatingRoundCornerButton(
+          floatingActionButton: CustomRoundCornerButton(
             text: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

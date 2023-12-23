@@ -42,6 +42,7 @@ Future<void> showCreateMemoryGroupDialog() async {
                 creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
                 sync_version: 0,
                 be_synced: false,
+                study_status: StudyStatus.not_startup,
               ),
             ),
             onSuccess: (String showMessage, SingleRowInsertVo vo) async {

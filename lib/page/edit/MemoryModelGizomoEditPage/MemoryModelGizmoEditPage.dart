@@ -44,14 +44,14 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
           floatingActionButton: AbwBuilder(
             builder: (fAbw) {
               return c.isAlgorithmKeyboard(fAbw)
-                  ? FloatingRoundCornerButton(
+                  ? CustomRoundCornerButton(
                       text: const FaIcon(FontAwesomeIcons.keyboard),
                       onPressed: () {
                         c.changeKeyword();
                       },
                       border: const CircleBorder(),
                     )
-                  : FloatingRoundCornerButton(
+                  : CustomRoundCornerButton(
                       text: const Text('算法键盘'),
                       onPressed: () {
                         c.changeKeyword();
@@ -92,7 +92,7 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
         return IconButton(
           icon: Icon(Icons.save),
           onPressed: () {
-            c.save();
+            c.updateSave();
           },
         );
       },

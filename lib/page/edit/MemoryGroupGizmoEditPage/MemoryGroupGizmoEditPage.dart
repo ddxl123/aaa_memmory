@@ -3,20 +3,27 @@ import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../list/MemoryGroupListPageAbController.dart';
 import '../edit_page_type.dart';
 import 'CurrentCircleWidget.dart';
 import 'MemoryGroupGizmoEditPageAbController.dart';
 
 class MemoryGroupGizmoEditPage extends StatelessWidget {
-  const MemoryGroupGizmoEditPage({super.key, required this.editPageType, required this.memoryGroupId});
+  const MemoryGroupGizmoEditPage({
+    super.key,
+    required this.editPageType,
+    required this.cloneMemoryGroupAndOtherAb,
+    required this.listPageC,
+  });
 
-  final int memoryGroupId;
+  final MemoryGroupListPageAbController listPageC;
+  final Ab<MemoryGroupAndOther> cloneMemoryGroupAndOtherAb;
   final MemoryGroupGizmoEditPageType editPageType;
 
   @override
   Widget build(BuildContext context) {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      putController: MemoryGroupGizmoEditPageAbController(memoryGroupId: memoryGroupId),
+      putController: MemoryGroupGizmoEditPageAbController(cloneMemoryGroupAndOtherAb: cloneMemoryGroupAndOtherAb, listPageC: listPageC),
       builder: (putController, putAbw) {
         return DialogWidget(
           fullPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -35,7 +42,11 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
           stackChildren: [
             Positioned(
               bottom: 10,
-              child: _floatingActionButton(),
+              child: StatusButton(
+                listPageC: listPageC,
+                editPageC: putController,
+                memoryGroupAndOtherAb: cloneMemoryGroupAndOtherAb,
+              ),
             ),
           ],
         );
@@ -48,72 +59,10 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
     );
   }
 
-  Widget _floatingActionButton() {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        if (c.fragmentAndMemoryInfoStatus(abw) == FragmentAndMemoryInfoStatus.zero) {
-          return FloatingRoundCornerButton(
-            color: Colors.amberAccent,
-            text: const Text('未添加碎片', style: TextStyle(color: Colors.grey)),
-            onPressed: () {
-              SmartDialog.showToast("请先添加想要记忆的碎片！");
-            },
-          );
-        }
-        if (c.fragmentAndMemoryInfoStatus(abw) == FragmentAndMemoryInfoStatus.neverDownloaded) {
-          return FloatingRoundCornerButton(
-            color: Colors.grey,
-            text: const Text('未下载碎片', style: TextStyle(color: Colors.white)),
-            onPressed: () async {
-              await showCustomDialog(
-                builder: (ctx) => OkAndCancelDialogWidget(
-                  text: "是否下载碎片？",
-                  okText: "下载",
-                  cancelText: "等会下",
-                  onOk: () async {
-                    await c.allDownloadFragmentAndMemoryInfos(memoryGroupId: memoryGroupId);
-                  },
-                ),
-              );
-            },
-          );
-        }
-        if (c.fragmentAndMemoryInfoStatus(abw) == FragmentAndMemoryInfoStatus.differentDownload) {
-          return FloatingRoundCornerButton(
-            color: Colors.grey,
-            text: const Text('碎片数量不同步', style: TextStyle(color: Colors.white)),
-            onPressed: () async {
-              await showCustomDialog(
-                builder: (ctx) => OkAndCancelDialogWidget(
-                  text: "碎片数量不同步，是否进行数量同步？",
-                  okText: "同步",
-                  cancelText: "直接开始",
-                  onOk: () async {
-                    await c.differentFragmentAndMemoryInfos();
-                  },
-                  onCancel: () async {
-                    await c.clickStart();
-                  },
-                ),
-              );
-            },
-          );
-        }
-        return FloatingRoundCornerButton(
-          color: Colors.amberAccent,
-          text: Text(c.memoryGroupAb(abw).start_time == null ? '开始' : "继续", style: TextStyle(color: Colors.white)),
-          onPressed: () async {
-            await c.clickStart();
-          },
-        );
-      },
-    );
-  }
-
   Widget _appBarTitleWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
-        return Text(c.memoryGroupAb(abw).title);
+        return Text(c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.title);
       },
     );
   }

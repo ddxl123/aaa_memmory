@@ -1294,11 +1294,12 @@ class $FragmentMemoryInfosTable extends FragmentMemoryInfos
   static const VerificationMeta _study_statusMeta =
       const VerificationMeta('study_status');
   @override
-  late final GeneratedColumnWithTypeConverter<StudyStatus, String>
-      study_status = GeneratedColumn<String>('study_status', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<StudyStatus>(
-              $FragmentMemoryInfosTable.$converterstudy_status);
+  late final GeneratedColumnWithTypeConverter<FragmentMemoryInfoStudyStatus,
+      String> study_status = GeneratedColumn<String>(
+          'study_status', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true)
+      .withConverter<FragmentMemoryInfoStudyStatus>(
+          $FragmentMemoryInfosTable.$converterstudy_status);
   static const VerificationMeta _sync_versionMeta =
       const VerificationMeta('sync_version');
   @override
@@ -1526,9 +1527,10 @@ class $FragmentMemoryInfosTable extends FragmentMemoryInfos
     return $FragmentMemoryInfosTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<StudyStatus, String, String>
+  static JsonTypeConverter2<FragmentMemoryInfoStudyStatus, String, String>
       $converterstudy_status =
-      const EnumNameConverter<StudyStatus>(StudyStatus.values);
+      const EnumNameConverter<FragmentMemoryInfoStudyStatus>(
+          FragmentMemoryInfoStudyStatus.values);
 }
 
 class FragmentMemoryInfo extends DataClass
@@ -1545,7 +1547,7 @@ class FragmentMemoryInfo extends DataClass
   int memory_group_id;
   String next_plan_show_time;
   String show_familiarity;
-  StudyStatus study_status;
+  FragmentMemoryInfoStudyStatus study_status;
   int sync_version;
   DateTime created_at;
   int id;
@@ -1680,7 +1682,7 @@ class FragmentMemoryInfo extends DataClass
           int? memory_group_id,
           String? next_plan_show_time,
           String? show_familiarity,
-          StudyStatus? study_status,
+          FragmentMemoryInfoStudyStatus? study_status,
           int? sync_version,
           DateTime? created_at,
           int? id,
@@ -1783,7 +1785,7 @@ class FragmentMemoryInfosCompanion extends UpdateCompanion<FragmentMemoryInfo> {
   Value<int> memory_group_id;
   Value<String> next_plan_show_time;
   Value<String> show_familiarity;
-  Value<StudyStatus> study_status;
+  Value<FragmentMemoryInfoStudyStatus> study_status;
   Value<int> sync_version;
   Value<DateTime> created_at;
   Value<int> id;
@@ -1820,7 +1822,7 @@ class FragmentMemoryInfosCompanion extends UpdateCompanion<FragmentMemoryInfo> {
     required int memory_group_id,
     required String next_plan_show_time,
     required String show_familiarity,
-    required StudyStatus study_status,
+    required FragmentMemoryInfoStudyStatus study_status,
     required int sync_version,
     required DateTime created_at,
     this.id = const Value.absent(),
@@ -1895,7 +1897,7 @@ class FragmentMemoryInfosCompanion extends UpdateCompanion<FragmentMemoryInfo> {
       Value<int>? memory_group_id,
       Value<String>? next_plan_show_time,
       Value<String>? show_familiarity,
-      Value<StudyStatus>? study_status,
+      Value<FragmentMemoryInfoStudyStatus>? study_status,
       Value<int>? sync_version,
       Value<DateTime>? created_at,
       Value<int>? id,
@@ -3671,6 +3673,14 @@ class $MemoryGroupsTable extends MemoryGroups
   late final GeneratedColumn<DateTime> start_time = GeneratedColumn<DateTime>(
       'start_time', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _study_statusMeta =
+      const VerificationMeta('study_status');
+  @override
+  late final GeneratedColumnWithTypeConverter<StudyStatus, String>
+      study_status = GeneratedColumn<String>('study_status', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<StudyStatus>(
+              $MemoryGroupsTable.$converterstudy_status);
   static const VerificationMeta _sync_versionMeta =
       const VerificationMeta('sync_version');
   @override
@@ -3715,6 +3725,7 @@ class $MemoryGroupsTable extends MemoryGroups
         review_display_order,
         review_interval,
         start_time,
+        study_status,
         sync_version,
         title,
         will_new_learn_count,
@@ -3771,6 +3782,7 @@ class $MemoryGroupsTable extends MemoryGroups
           start_time.isAcceptableOrUnknown(
               data['start_time']!, _start_timeMeta));
     }
+    context.handle(_study_statusMeta, const VerificationResult.success());
     if (data.containsKey('sync_version')) {
       context.handle(
           _sync_versionMeta,
@@ -3841,6 +3853,9 @@ class $MemoryGroupsTable extends MemoryGroups
           DriftSqlType.dateTime, data['${effectivePrefix}review_interval'])!,
       start_time: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}start_time']),
+      study_status: $MemoryGroupsTable.$converterstudy_status.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}study_status'])!),
       sync_version: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}sync_version'])!,
       title: attachedDatabase.typeMapping
@@ -3871,6 +3886,9 @@ class $MemoryGroupsTable extends MemoryGroups
   static JsonTypeConverter2<ReviewDisplayOrder, String, String>
       $converterreview_display_order =
       const EnumNameConverter<ReviewDisplayOrder>(ReviewDisplayOrder.values);
+  static JsonTypeConverter2<StudyStatus, String, String>
+      $converterstudy_status =
+      const EnumNameConverter<StudyStatus>(StudyStatus.values);
 }
 
 class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
@@ -3882,6 +3900,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   ReviewDisplayOrder review_display_order;
   DateTime review_interval;
   DateTime? start_time;
+  StudyStatus study_status;
   int sync_version;
   String title;
   int will_new_learn_count;
@@ -3897,6 +3916,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       required this.review_display_order,
       required this.review_interval,
       this.start_time,
+      required this.study_status,
       required this.sync_version,
       required this.title,
       required this.will_new_learn_count,
@@ -3930,6 +3950,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     if (!nullToAbsent || start_time != null) {
       map['start_time'] = Variable<DateTime>(start_time);
     }
+    {
+      final converter = $MemoryGroupsTable.$converterstudy_status;
+      map['study_status'] = Variable<String>(converter.toSql(study_status));
+    }
     map['sync_version'] = Variable<int>(sync_version);
     map['title'] = Variable<String>(title);
     map['will_new_learn_count'] = Variable<int>(will_new_learn_count);
@@ -3953,6 +3977,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       start_time: start_time == null && nullToAbsent
           ? const Value.absent()
           : Value(start_time),
+      study_status: Value(study_status),
       sync_version: Value(sync_version),
       title: Value(title),
       will_new_learn_count: Value(will_new_learn_count),
@@ -3978,6 +4003,8 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           .fromJson(serializer.fromJson<String>(json['review_display_order'])),
       review_interval: serializer.fromJson<DateTime>(json['review_interval']),
       start_time: serializer.fromJson<DateTime?>(json['start_time']),
+      study_status: $MemoryGroupsTable.$converterstudy_status
+          .fromJson(serializer.fromJson<String>(json['study_status'])),
       sync_version: serializer.fromJson<int>(json['sync_version']),
       title: serializer.fromJson<String>(json['title']),
       will_new_learn_count:
@@ -4005,6 +4032,8 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           .toJson(review_display_order)),
       'review_interval': serializer.toJson<DateTime>(review_interval),
       'start_time': serializer.toJson<DateTime?>(start_time),
+      'study_status': serializer.toJson<String>(
+          $MemoryGroupsTable.$converterstudy_status.toJson(study_status)),
       'sync_version': serializer.toJson<int>(sync_version),
       'title': serializer.toJson<String>(title),
       'will_new_learn_count': serializer.toJson<int>(will_new_learn_count),
@@ -4023,6 +4052,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           ReviewDisplayOrder? review_display_order,
           DateTime? review_interval,
           Value<DateTime?> start_time = const Value.absent(),
+          StudyStatus? study_status,
           int? sync_version,
           String? title,
           int? will_new_learn_count,
@@ -4041,6 +4071,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
         review_display_order: review_display_order ?? this.review_display_order,
         review_interval: review_interval ?? this.review_interval,
         start_time: start_time.present ? start_time.value : this.start_time,
+        study_status: study_status ?? this.study_status,
         sync_version: sync_version ?? this.sync_version,
         title: title ?? this.title,
         will_new_learn_count: will_new_learn_count ?? this.will_new_learn_count,
@@ -4059,6 +4090,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           ..write('review_display_order: $review_display_order, ')
           ..write('review_interval: $review_interval, ')
           ..write('start_time: $start_time, ')
+          ..write('study_status: $study_status, ')
           ..write('sync_version: $sync_version, ')
           ..write('title: $title, ')
           ..write('will_new_learn_count: $will_new_learn_count, ')
@@ -4079,6 +4111,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       review_display_order,
       review_interval,
       start_time,
+      study_status,
       sync_version,
       title,
       will_new_learn_count,
@@ -4097,6 +4130,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           other.review_display_order == this.review_display_order &&
           other.review_interval == this.review_interval &&
           other.start_time == this.start_time &&
+          other.study_status == this.study_status &&
           other.sync_version == this.sync_version &&
           other.title == this.title &&
           other.will_new_learn_count == this.will_new_learn_count &&
@@ -4114,6 +4148,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   Value<ReviewDisplayOrder> review_display_order;
   Value<DateTime> review_interval;
   Value<DateTime?> start_time;
+  Value<StudyStatus> study_status;
   Value<int> sync_version;
   Value<String> title;
   Value<int> will_new_learn_count;
@@ -4129,6 +4164,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     this.review_display_order = const Value.absent(),
     this.review_interval = const Value.absent(),
     this.start_time = const Value.absent(),
+    this.study_status = const Value.absent(),
     this.sync_version = const Value.absent(),
     this.title = const Value.absent(),
     this.will_new_learn_count = const Value.absent(),
@@ -4145,6 +4181,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     required ReviewDisplayOrder review_display_order,
     required DateTime review_interval,
     this.start_time = const Value.absent(),
+    required StudyStatus study_status,
     required int sync_version,
     required String title,
     required int will_new_learn_count,
@@ -4157,6 +4194,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
         new_review_display_order = Value(new_review_display_order),
         review_display_order = Value(review_display_order),
         review_interval = Value(review_interval),
+        study_status = Value(study_status),
         sync_version = Value(sync_version),
         title = Value(title),
         will_new_learn_count = Value(will_new_learn_count),
@@ -4171,6 +4209,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     Expression<String>? review_display_order,
     Expression<DateTime>? review_interval,
     Expression<DateTime>? start_time,
+    Expression<String>? study_status,
     Expression<int>? sync_version,
     Expression<String>? title,
     Expression<int>? will_new_learn_count,
@@ -4189,6 +4228,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
         'review_display_order': review_display_order,
       if (review_interval != null) 'review_interval': review_interval,
       if (start_time != null) 'start_time': start_time,
+      if (study_status != null) 'study_status': study_status,
       if (sync_version != null) 'sync_version': sync_version,
       if (title != null) 'title': title,
       if (will_new_learn_count != null)
@@ -4208,6 +4248,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
       Value<ReviewDisplayOrder>? review_display_order,
       Value<DateTime>? review_interval,
       Value<DateTime?>? start_time,
+      Value<StudyStatus>? study_status,
       Value<int>? sync_version,
       Value<String>? title,
       Value<int>? will_new_learn_count,
@@ -4224,6 +4265,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
       review_display_order: review_display_order ?? this.review_display_order,
       review_interval: review_interval ?? this.review_interval,
       start_time: start_time ?? this.start_time,
+      study_status: study_status ?? this.study_status,
       sync_version: sync_version ?? this.sync_version,
       title: title ?? this.title,
       will_new_learn_count: will_new_learn_count ?? this.will_new_learn_count,
@@ -4269,6 +4311,12 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     if (start_time.present) {
       map['start_time'] = Variable<DateTime>(start_time.value);
     }
+    if (study_status.present) {
+      final converter = $MemoryGroupsTable.$converterstudy_status;
+
+      map['study_status'] =
+          Variable<String>(converter.toSql(study_status.value));
+    }
     if (sync_version.present) {
       map['sync_version'] = Variable<int>(sync_version.value);
     }
@@ -4301,6 +4349,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
           ..write('review_display_order: $review_display_order, ')
           ..write('review_interval: $review_interval, ')
           ..write('start_time: $start_time, ')
+          ..write('study_status: $study_status, ')
           ..write('sync_version: $sync_version, ')
           ..write('title: $title, ')
           ..write('will_new_learn_count: $will_new_learn_count, ')

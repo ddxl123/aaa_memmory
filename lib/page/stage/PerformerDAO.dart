@@ -42,7 +42,7 @@ class PerformerQuery {
       return null;
     }
     final selInfo = driftDb.select(driftDb.fragmentMemoryInfos);
-    selInfo.where((tbl) => tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(StudyStatus.never));
+    selInfo.where((tbl) => tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.never));
     if (mg.new_display_order == NewDisplayOrder.random) {
       selInfo.orderBy([(_) => OrderingTerm.random()]);
     } else {
@@ -75,7 +75,9 @@ class PerformerQuery {
       selInfo.addColumns([lastNextPlanedShowTimeExpr]);
       selInfo.where(
         (tbl) {
-          final expr = tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(StudyStatus.review) & lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(reviewIntervalDiff);
+          final expr = tbl.memory_group_id.equals(mg.id) &
+              tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
+              lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(reviewIntervalDiff);
           if (isExpire) {
             return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(timeDifference(target: DateTime.now(), start: mg.start_time!));
           } else {
@@ -120,7 +122,7 @@ class PerformerQuery {
   }
 
   /// [InternalVariableConstantHandler.k2CountNewConst]
-  Future<int> queryFragmentCountByStudyStatus({required int memoryGroupId, required StudyStatus studyStatus}) async {
+  Future<int> queryFragmentCountByStudyStatus({required int memoryGroupId, required FragmentMemoryInfoStudyStatus studyStatus}) async {
     return await driftDb.generalQueryDAO.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: studyStatus);
   }
 

@@ -67,7 +67,7 @@ class Crt {
     required int memory_group_id,
     required String next_plan_show_time,
     required String show_familiarity,
-    required StudyStatus study_status,
+    required FragmentMemoryInfoStudyStatus study_status,
     required int sync_version,
   }) {
     return FragmentMemoryInfo(
@@ -171,6 +171,7 @@ class Crt {
     required ReviewDisplayOrder review_display_order,
     required DateTime review_interval,
     required DateTime? start_time,
+    required StudyStatus study_status,
     required int sync_version,
     required String title,
     required int will_new_learn_count,
@@ -184,6 +185,7 @@ class Crt {
       review_display_order: review_display_order,
       review_interval: review_interval,
       start_time: start_time,
+      study_status: study_status,
       sync_version: sync_version,
       title: title,
       will_new_learn_count: will_new_learn_count,

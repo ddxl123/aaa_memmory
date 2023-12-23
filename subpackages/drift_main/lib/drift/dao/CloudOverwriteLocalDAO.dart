@@ -56,7 +56,6 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
             await uploadResult.handleCode(
               code151401: (String showMessage) async {
                 // 记忆组同步成功
-
                 final newLocalAll = await driftDb.generalQueryDAO.queryAllMemoryGroups();
                 await onSuccess(newLocalAll);
               },
@@ -128,6 +127,32 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
       onSuccess: (String showMessage, SingleRowInsertVo vo) async {
         // 插入到本地
         final result = await driftDb.into(memoryModels).insertReturning(MemoryModel.fromJson(vo.row), mode: InsertMode.insert);
+        await onSuccess(result);
+      },
+      onError: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
+
+  /// 将修改后的 [memoryModel] 进行云端更新，并覆盖本地。
+  Future<void> updateCloudMemoryModelAndOverwriteLocal({
+    required MemoryModel memoryModel,
+    required Future<void> Function(MemoryModel memoryModel) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    await requestSingleRowModify(
+      isLoginRequired: true,
+      singleRowModifyDto: SingleRowModifyDto(
+        table_name: driftDb.memoryModels.actualTableName,
+        row: memoryModel,
+      ),
+      onSuccess: (String showMessage, SingleRowModifyVo vo) async {
+        final result = MemoryModel.fromJson(vo.row);
+        // 更新到本地
+        await driftDb.update(memoryModels).replace(result);
         await onSuccess(result);
       },
       onError: onError == null

@@ -27,6 +27,8 @@ class MemoryGroups extends CloudTableBase  {
 
   DateTimeColumn get start_time => dateTime().named("start_time").nullable()();
 
+  TextColumn get study_status => textEnum<StudyStatus>().named("study_status")();
+
   IntColumn get sync_version => integer().named("sync_version")();
 
   TextColumn get title => text().named("title")();

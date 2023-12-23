@@ -82,7 +82,7 @@ class CurrentCircleWidget extends StatelessWidget {
                   ),
                   scrollPadding: EdgeInsets.zero,
                   onChanged: (v) {
-                    c.memoryGroupAb.refreshInevitable((obj) => obj..title = v);
+                    c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.title = v);
                   },
                 ),
               ),
@@ -105,12 +105,11 @@ class CurrentCircleWidget extends StatelessWidget {
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
                 child: AbBuilder<MemoryGroupGizmoEditPageAbController>(
                   builder: (gzC, gzAbw) {
-                    return Text(gzC.memoryModelAb(gzAbw)?.title ?? '点击选择');
+                    return Text(gzC.cloneMemoryGroupAndOtherAb(gzAbw).getMemoryModel?.title ?? '点击选择');
                   },
                 ),
                 onPressed: () async {
-                  await showSelectMemoryModelInMemoryGroupDialog(mg: c.memoryGroupAb, selectedMemoryModelAb: c.memoryModelAb);
-                  c.memoryGroupAb.refreshInevitable((obj) => obj..memory_model_id = c.memoryModelAb()?.id);
+                  await showSelectMemoryModelInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
                 },
               ),
               // TODO:
@@ -132,7 +131,7 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('碎片数量：'),
               TextButton(
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
-                child: Text('共 ${c.fragmentCountAb(abw)} 个', style: const TextStyle(fontSize: 16)),
+                child: Text('共 ${c.cloneMemoryGroupAndOtherAb(abw).fragmentCount} 个', style: const TextStyle(fontSize: 16)),
                 onPressed: () {
                   // Navigator.of(c.context).push(
                   //   DefaultSheetRoute(
@@ -191,36 +190,38 @@ class CurrentCircleWidget extends StatelessWidget {
               Expanded(
                 child: StfBuilder1<int>(
                   // 保留上一次的设置
-                  initValue: c.memoryGroupAb(abw).will_new_learn_count,
+                  initValue: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.will_new_learn_count,
                   builder: (int value, BuildContext context, ResetValue<int> resetValue) {
                     int changeValue = value;
 
+                    final mgAndOtherAb = c.cloneMemoryGroupAndOtherAb(abw);
+
                     // 不能超过最大值
-                    if (changeValue > c.remainNeverFragmentsCount(abw)) {
-                      changeValue = c.remainNeverFragmentsCount(abw);
+                    if (changeValue > mgAndOtherAb.remainNeverFragmentsCount) {
+                      changeValue = mgAndOtherAb.remainNeverFragmentsCount;
                     }
                     // 如果没有 space，则 0/300，其中 0 字符长度会动态的变宽成 10 或 100，从而导致刷新的时候滑块抖动。
                     // space 意味着将 0 前面添加两个 0，即 000/300。
-                    int space = c.remainNeverFragmentsCount().toString().length - changeValue.toInt().toString().length;
+                    int space = mgAndOtherAb.remainNeverFragmentsCount.toString().length - changeValue.toInt().toString().length;
                     return Row(
                       children: [
                         Expanded(
                           child: Slider(
                             label: changeValue.toInt().toString(),
                             min: 0,
-                            max: c.remainNeverFragmentsCount().toDouble(),
+                            max: mgAndOtherAb.remainNeverFragmentsCount.toDouble(),
                             value: changeValue.toDouble(),
-                            divisions: c.remainNeverFragmentsCount() == 0 ? null : c.remainNeverFragmentsCount(),
+                            divisions: mgAndOtherAb.remainNeverFragmentsCount == 0 ? null : mgAndOtherAb.remainNeverFragmentsCount,
                             onChanged: (n) {
                               resetValue(n.toInt(), true);
                             },
                             onChangeEnd: (n) {
-                              c.memoryGroupAb().will_new_learn_count = n.floor();
-                              c.memoryGroupAb.refreshForce();
+                              mgAndOtherAb.memoryGroup.will_new_learn_count = n.floor();
+                              c.cloneMemoryGroupAndOtherAb.refreshForce();
                             },
                           ),
                         ),
-                        Text('${'0' * space}${changeValue.toInt()}/${c.remainNeverFragmentsCount()}')
+                        Text('${'0' * space}${changeValue.toInt()}/${mgAndOtherAb.remainNeverFragmentsCount}')
                       ],
                     );
                   },
@@ -243,14 +244,14 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('新 | 复习碎片：'),
               Spacer(),
               CustomDropdownBodyButton<NewReviewDisplayOrder>(
-                initValue: c.memoryGroupAb(abw).new_review_display_order,
+                initValue: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.new_review_display_order,
                 items: [
                   CustomItem(value: NewReviewDisplayOrder.mix, text: '混合'),
                   CustomItem(value: NewReviewDisplayOrder.new_review, text: '优先新碎片'),
                   CustomItem(value: NewReviewDisplayOrder.review_new, text: '优先复习碎片'),
                 ],
                 onChanged: (v) {
-                  c.memoryGroupAb.refreshInevitable((obj) => obj..new_review_display_order = v!);
+                  c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.new_review_display_order = v!);
                 },
               ),
             ],
@@ -270,14 +271,14 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('新碎片：'),
               Spacer(),
               CustomDropdownBodyButton<NewDisplayOrder>(
-                initValue: c.memoryGroupAb(abw).new_display_order,
+                initValue: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.new_display_order,
                 items: [
                   CustomItem(value: NewDisplayOrder.random, text: '随机'),
                   CustomItem(value: NewDisplayOrder.title_a_2_z, text: '标题首字母A~Z顺序'),
                   CustomItem(value: NewDisplayOrder.create_early_2_late, text: '创建时间'),
                 ],
                 onChanged: (v) {
-                  c.memoryGroupAb.refreshInevitable((obj) => obj..new_display_order = v!);
+                  c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.new_display_order = v!);
                 },
               ),
             ],
@@ -297,14 +298,14 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('复习碎片：'),
               Spacer(),
               CustomDropdownBodyButton<ReviewDisplayOrder>(
-                initValue: c.memoryGroupAb(abw).review_display_order,
+                initValue: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.review_display_order,
                 items: [
                   CustomItem(value: ReviewDisplayOrder.expire_first, text: '过期优先'),
                   CustomItem(value: ReviewDisplayOrder.no_expire_first, text: '未过期优先'),
                   CustomItem(value: ReviewDisplayOrder.ignore_expire, text: '忽略过期'),
                 ],
                 onChanged: (v) {
-                  c.memoryGroupAb.refreshInevitable((obj) => obj..review_display_order = v!);
+                  c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.review_display_order = v!);
                 },
               ),
             ],
@@ -325,7 +326,7 @@ class ReviewIntervalWidget extends StatefulWidget {
 class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
   int reviewTotalCount = 0;
 
-  final MemoryGroupGizmoEditPageAbController memoryGroupGizmoEditPageAbController = Aber.find<MemoryGroupGizmoEditPageAbController>();
+  final MemoryGroupGizmoEditPageAbController c = Aber.find<MemoryGroupGizmoEditPageAbController>();
 
   @override
   void initState() {
@@ -334,18 +335,18 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
   }
 
   Future<void> queryReviewTotalCount() async {
-    print(memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time);
-    if (memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time == null) {
+    final mgAndOther = c.cloneMemoryGroupAndOtherAb();
+    if (mgAndOther.memoryGroup.start_time == null) {
       reviewTotalCount = 0;
       setState(() {});
       return;
     }
-    final diff = memoryGroupGizmoEditPageAbController.memoryGroupAb().review_interval.difference(memoryGroupGizmoEditPageAbController.memoryGroupAb().start_time!);
+    final diff = mgAndOther.memoryGroup.review_interval.difference(mgAndOther.memoryGroup.start_time!);
     final count = driftDb.fragmentMemoryInfos.id.count();
     final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
     sel.where(
-      driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroupGizmoEditPageAbController.memoryGroupId) &
-          driftDb.fragmentMemoryInfos.study_status.equalsValue(StudyStatus.review) &
+      driftDb.fragmentMemoryInfos.memory_group_id.equals(mgAndOther.memoryGroup.id) &
+          driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
           driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isSmallerOrEqualValue(diff.inSeconds),
     );
     sel.addColumns([count]);
@@ -369,7 +370,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
                     children: [
                       TextSpan(
                         text: time2TextTime(
-                          longSeconds: c.memoryGroupAb(abw).review_interval.difference(DateTime.now()).inSeconds,
+                          longSeconds: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.review_interval.difference(DateTime.now()).inSeconds,
                           canNegative: true,
                         ),
                         style: TextStyle(decoration: TextDecoration.underline),
@@ -379,9 +380,9 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
                               c.context,
                               locale: LocaleType.zh,
                               minTime: DateTime.now(),
-                              currentTime: c.memoryGroupAb().review_interval,
+                              currentTime: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.review_interval,
                               onConfirm: (v) {
-                                c.memoryGroupAb.refreshInevitable((obj) => obj..review_interval = v);
+                                c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.review_interval = v);
                                 queryReviewTotalCount();
                               },
                             );

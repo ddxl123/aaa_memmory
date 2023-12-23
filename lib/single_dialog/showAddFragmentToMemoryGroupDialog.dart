@@ -61,7 +61,7 @@ class _AddFragmentToMemoryGroupDialogWidgetState extends State<AddFragmentToMemo
             path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_FRAGMENTS_COUNT_QUERY,
             dtoData: MemoryGroupFragmentsCountQueryDto(
               memory_group_id: element.id,
-              memory_group_ids_list: null,
+              dto_padding_1: null,
             ),
             parseResponseVoData: MemoryGroupFragmentsCountQueryVo.fromJson,
           );
@@ -157,7 +157,7 @@ class _AddFragmentToMemoryGroupDialogWidgetState extends State<AddFragmentToMemo
                     content_value: [].toJsonString(),
                     next_plan_show_time: [].toJsonString(),
                     show_familiarity: [].toJsonString(),
-                    study_status: StudyStatus.never,
+                    study_status: FragmentMemoryInfoStudyStatus.never,
                     sync_version: 0,
                     be_synced: false,
                   ))

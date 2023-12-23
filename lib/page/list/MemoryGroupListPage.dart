@@ -31,12 +31,11 @@ class MemoryGroupListPage extends StatelessWidget {
             onRefresh: () async {
               await Future.delayed(const Duration(milliseconds: 200));
               await c.refreshPage();
-              c.refreshController.refreshCompleted();
             },
           );
         },
       ),
-      floatingActionButton: FloatingRoundCornerButton(
+      floatingActionButton: CustomRoundCornerButton(
         text: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -70,33 +69,13 @@ class MemoryGroupListPage extends StatelessWidget {
     );
   }
 
-  Color _statusButtonBackgroundColorFilter(MemoryGroup memoryGroup) {
-    if (memoryGroup.start_time == null) {
-      return Colors.amberAccent;
-    } else if (memoryGroup.start_time == DateTime.fromMicrosecondsSinceEpoch(0)) {
-      return Colors.grey;
-    } else {
-      return Colors.greenAccent;
-    }
-  }
-
-  String _statusButtonTextFilter(MemoryGroup memoryGroup) {
-    if (memoryGroup.start_time == null) {
-      return '未执行';
-    } else if (memoryGroup.start_time == DateTime.fromMicrosecondsSinceEpoch(0)) {
-      return '已完成';
-    } else {
-      return '继续';
-    }
-  }
-
   Widget _memoryGroupGizmoWidget(int index) {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        final mgAndOther = c.memoryGroupAndOthersAb(abw)[index];
+        final mgAndOtherAb = c.memoryGroupAndOthersAb(abw)[index];
         return Hero(
-          tag: mgAndOther.hashCode,
+          tag: mgAndOtherAb.hashCode,
           child: GestureDetector(
             child: Card(
               child: Column(
@@ -106,23 +85,16 @@ class MemoryGroupListPage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          mgAndOther.memoryGroup.title,
+                          mgAndOtherAb(abw).memoryGroup.title,
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                       AbwBuilder(
                         builder: (abw) {
-                          return OutlinedButton(
-                            style: ButtonStyle(
-                              side: MaterialStateProperty.all(const BorderSide(color: Colors.blue, width: 1)),
-                              backgroundColor: MaterialStateProperty.all(_statusButtonBackgroundColorFilter(mgAndOther.memoryGroup)),
-                            ),
-                            child: () {
-                              return Text(_statusButtonTextFilter(mgAndOther.memoryGroup));
-                            }(),
-                            onPressed: () {
-                              c.onStatusTap(mgAndOther.memoryGroup);
-                            },
+                          return StatusButton(
+                            listPageC: c,
+                            editPageC: null,
+                            memoryGroupAndOtherAb: mgAndOtherAb,
                           );
                         },
                       ),
@@ -136,7 +108,7 @@ class MemoryGroupListPage extends StatelessWidget {
                 c.context,
                 MaterialPageRoute(
                   builder: (_) => MemoryGroupGizmoPage(
-                    memoryGroupGizmo: mgAndOther.memoryGroup,
+                    memoryGroupGizmo: mgAndOtherAb().memoryGroup,
                     innerMemoryGroupGizmoWidget: _memoryGroupGizmoWidget(index),
                   ),
                 ),

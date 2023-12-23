@@ -209,7 +209,7 @@ class PersonalHomePageAbController extends AbController {
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
             floatingActionButton: isSelf
-                ? FloatingRoundCornerButton(
+                ? CustomRoundCornerButton(
                     text: Text("修改头像"),
                     onPressed: () async {
                       final picker = ImagePicker();

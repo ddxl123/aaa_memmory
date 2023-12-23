@@ -47,9 +47,9 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
     return await select(memoryGroups).get();
   }
 
-  // Future<MemoryModel?> queryOrNullMemoryModel({required int memoryModelId}) async {
-  //   return await (select(memoryModels)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
-  // }
+  Future<MemoryModel?> queryOrNullMemoryModel({required int memoryModelId}) async {
+    return await (select(memoryModels)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
+  }
 
   // Future<List<MemoryModel>> queryAllMemoryModels() async {
   //   return await select(memoryModels).get();
@@ -62,7 +62,7 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
 
   Future<int> queryFragmentCountByStudyStatus({
     required int memoryGroupId,
-    required StudyStatus studyStatus,
+    required FragmentMemoryInfoStudyStatus studyStatus,
   }) async {
     final result = await (select(fragmentMemoryInfos)..where((tbl) => tbl.memory_group_id.equals(memoryGroupId) & tbl.study_status.equalsValue(studyStatus))).get();
     return result.length;
@@ -70,7 +70,7 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
 
   Future<int> queryManyFragmentByStudyStatusCount({
     required int memoryGroupId,
-    required StudyStatus studyStatus,
+    required FragmentMemoryInfoStudyStatus studyStatus,
   }) async {
     final count = fragmentMemoryInfos.id.count();
     final sel = selectOnly(fragmentMemoryInfos);

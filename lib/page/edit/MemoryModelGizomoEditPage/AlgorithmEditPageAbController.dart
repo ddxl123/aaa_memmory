@@ -88,7 +88,7 @@ class AlgorithmEditPageAbController extends AbController {
       },
       orElse: null,
     );
-    await memoryModelGizmoEditPageAbController.save();
+    await memoryModelGizmoEditPageAbController.updateSave();
   }
 
   Future<void> analysis() async {
