@@ -5,10 +5,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../global/GlobalAbController.dart';
 
-class MemoryModeListPageAbController extends AbController {
+class MemoryAlgorithmListPageAbController extends AbController {
   final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  final memoryModelsAb = <MemoryModel>[].ab;
+  final memoryAlgorithmsAb = <MemoryAlgorithm>[].ab;
 
   @override
   void onDispose() {
@@ -17,10 +17,10 @@ class MemoryModeListPageAbController extends AbController {
   }
 
   Future<void> refreshPage() async {
-    await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryModelOverwriteLocal(
+    await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryAlgorithmOverwriteLocal(
       userId: Aber.find<GlobalAbController>().loggedInUser()!.id,
       onSuccess: (mms) async {
-        memoryModelsAb.refreshInevitable((obj) => obj
+        memoryAlgorithmsAb.refreshInevitable((obj) => obj
           ..clear()
           ..addAll(mms));
       },

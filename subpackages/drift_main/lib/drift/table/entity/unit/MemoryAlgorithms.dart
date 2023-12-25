@@ -2,9 +2,9 @@
 part of drift_db;
 
 @ReferenceTo([])
-class MemoryModels extends CloudTableBase  {
+class MemoryAlgorithms extends CloudTableBase  {
   @override
-  String? get tableName => "memory_models";
+  String? get tableName => "memory_algorithms";
   
   @override
   Set<Column>? get primaryKey => {id};
@@ -13,19 +13,31 @@ class MemoryModels extends CloudTableBase  {
 
   TextColumn get button_algorithm_remark => text().named("button_algorithm_remark").nullable()();
 
+  TextColumn get completed_algorithm => text().named("completed_algorithm").nullable()();
+
+  TextColumn get completed_algorithm_remark => text().named("completed_algorithm_remark").nullable()();
+
   @ReferenceTo([Users])
   IntColumn get creator_user_id => integer().named("creator_user_id")();
+
+  TextColumn get explain => text().named("explain")();
 
   TextColumn get familiarity_algorithm => text().named("familiarity_algorithm").nullable()();
 
   TextColumn get familiarity_algorithm_remark => text().named("familiarity_algorithm_remark").nullable()();
 
-  @ReferenceTo([Fragments])
-  IntColumn get father_memory_model_id => integer().named("father_memory_model_id").nullable()();
+  @ReferenceTo([MemoryAlgorithms])
+  IntColumn get father_memory_algorithm_id => integer().named("father_memory_algorithm_id").nullable()();
 
   TextColumn get next_time_algorithm => text().named("next_time_algorithm").nullable()();
 
   TextColumn get next_time_algorithm_remark => text().named("next_time_algorithm_remark").nullable()();
+
+  TextColumn get suggest_count_for_new_and_review => text().named("suggest_count_for_new_and_review").nullable()();
+
+  TextColumn get suggest_count_for_new_and_review_remark => text().named("suggest_count_for_new_and_review_remark").nullable()();
+
+  TextColumn get suggest_loop_cycle => text().named("suggest_loop_cycle").nullable()();
 
   TextColumn get title => text().named("title")();
 

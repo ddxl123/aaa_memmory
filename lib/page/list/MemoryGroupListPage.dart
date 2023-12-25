@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:dotted_border/dotted_border.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:tools/tools.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +13,8 @@ import '../gizmo/MemoryGroupGizmoPage.dart';
 import 'MemoryGroupListPageAbController.dart';
 
 class MemoryGroupListPage extends StatelessWidget {
-  const MemoryGroupListPage({Key? key, required this.user}) : super(key: key);
+  const MemoryGroupListPage({super.key, required this.user});
+
   final User user;
 
   @override
@@ -69,38 +75,181 @@ class MemoryGroupListPage extends StatelessWidget {
     );
   }
 
+  /// 总共xxx个，总已完成xxx个，总待复习xxx个，总待新学xxx个
+  /// 总约定期限xxx，剩余期限xxx，在学时长xxx
+  /// 本周期共xxx个，已完成xxx个，待复习xxx个，待新学xxx个
+  /// 本周期约定期限xxx，剩余期限xxx，在学时长xxx
   Widget _memoryGroupGizmoWidget(int index) {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         final mgAndOtherAb = c.memoryGroupAndOthersAb(abw)[index];
+
         return Hero(
           tag: mgAndOtherAb.hashCode,
           child: GestureDetector(
             child: Card(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          mgAndOtherAb(abw).memoryGroup.title,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            mgAndOtherAb(abw).memoryGroup.title,
+                            style: Theme.of(c.context).textTheme.titleMedium,
+                          ),
                         ),
-                      ),
-                      AbwBuilder(
-                        builder: (abw) {
-                          return StatusButton(
-                            listPageC: c,
-                            editPageC: null,
-                            memoryGroupAndOtherAb: mgAndOtherAb,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
+                        Icon(Icons.chevron_right, color: Colors.grey, size: 18),
+                      ],
+                    ),
+                    Divider(color: Colors.grey.withOpacity(0.2)),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        DottedBorder(
+                          borderType: BorderType.RRect,
+                          radius: Radius.circular(5),
+                          color: Colors.grey,
+                          padding: EdgeInsets.all(5),
+                          child: Column(
+                            children: [
+                              Text("本"),
+                              Text("周"),
+                              Text("期"),
+                              Transform.rotate(
+                                angle: pi / 2,
+                                child: Icon(Icons.arrow_right, color: Colors.black, size: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                                    decoration: BoxDecoration(color: Colors.orangeAccent.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("待新学", style: TextStyle(color: Colors.deepOrange)),
+                                        Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.deepOrange)),
+                                        Text("9999", style: TextStyle(color: Colors.deepOrange)),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                                    decoration: BoxDecoration(color: Colors.amberAccent.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("待复习", style: TextStyle(color: Colors.orange)),
+                                        Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.orange)),
+                                        Text("9999", style: TextStyle(color: Colors.orange)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Container(
+                                        decoration: BoxDecoration(color: Colors.grey.withOpacity(0.3)),
+                                        height: 8,
+                                        child: Row(
+                                          children: [
+                                            Flexible(
+                                              flex: 1,
+                                              child: Container(
+                                                decoration: BoxDecoration(color: Colors.green),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              flex: 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(color: Colors.orange),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              flex: 2,
+                                              child: Container(
+                                                decoration: BoxDecoration(color: Colors.amberAccent),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              flex: 2,
+                                              child: Container(
+                                                  // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(" 123354/44899", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                  SizedBox(width: 10),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                // crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                                        text: "剩余期限 ",
+                                        children: [
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.black),
+                                            text: "xxx",
+                                          ),
+                                          TextSpan(
+                                            style: TextStyle(color: Colors.grey),
+                                            text: "    在学时长 ",
+                                            children: [
+                                              TextSpan(
+                                                style: TextStyle(color: Colors.grey),
+                                                text: "xxx",
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  AbwBuilder(
+                                    builder: (abw) {
+                                      return StatusButton(
+                                        listPageC: c,
+                                        editPageC: null,
+                                        memoryGroupAndOtherAb: mgAndOtherAb,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             onTap: () {

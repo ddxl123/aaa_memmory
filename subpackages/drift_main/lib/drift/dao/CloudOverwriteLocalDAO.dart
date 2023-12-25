@@ -74,9 +74,9 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
   /// 查询云端全部记忆算法，并覆盖本地，如本地有多余，则清除
   ///
   /// [userId] - 查询哪个用户的全部记忆算法
-  Future<void> queryCloudAllMemoryModelOverwriteLocal({
+  Future<void> queryCloudAllMemoryAlgorithmOverwriteLocal({
     required int userId,
-    required Future<void> Function(List<MemoryModel> memoryModels) onSuccess,
+    required Future<void> Function(List<MemoryAlgorithm> memoryAlgorithms) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
   }) async {
     final result = await request(
@@ -93,11 +93,11 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
           () async {
             await driftDb.batch(
               (batch) {
-                batch.deleteAll(memoryModels);
-                batch.insertAll(memoryModels, vo.memory_models_list);
+                batch.deleteAll(memoryAlgorithms);
+                batch.insertAll(memoryAlgorithms, vo.memory_models_list);
               },
             );
-            final result = driftDb.select(memoryModels);
+            final result = driftDb.select(memoryAlgorithms);
             await onSuccess(await result.get());
           },
         );
@@ -113,20 +113,20 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
   /// 将 [crtEntity] 实体插入云端，并存入本地
   ///
   /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
-  Future<void> insertCloudMemoryModelAndOverwriteLocal({
-    required MemoryModel crtEntity,
-    required Future<void> Function(MemoryModel memoryModel) onSuccess,
+  Future<void> insertCloudMemoryAlgorithmAndOverwriteLocal({
+    required MemoryAlgorithm crtEntity,
+    required Future<void> Function(MemoryAlgorithm memoryAlgorithm) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
   }) async {
     await requestSingleRowInsert(
       isLoginRequired: true,
       singleRowInsertDto: SingleRowInsertDto(
-        table_name: driftDb.memoryModels.actualTableName,
+        table_name: driftDb.memoryAlgorithms.actualTableName,
         row: crtEntity,
       ),
       onSuccess: (String showMessage, SingleRowInsertVo vo) async {
         // 插入到本地
-        final result = await driftDb.into(memoryModels).insertReturning(MemoryModel.fromJson(vo.row), mode: InsertMode.insert);
+        final result = await driftDb.into(memoryAlgorithms).insertReturning(MemoryAlgorithm.fromJson(vo.row), mode: InsertMode.insert);
         await onSuccess(result);
       },
       onError: onError == null
@@ -137,22 +137,22 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
     );
   }
 
-  /// 将修改后的 [memoryModel] 进行云端更新，并覆盖本地。
-  Future<void> updateCloudMemoryModelAndOverwriteLocal({
-    required MemoryModel memoryModel,
-    required Future<void> Function(MemoryModel memoryModel) onSuccess,
+  /// 将修改后的 [memoryAlgorithm] 进行云端更新，并覆盖本地。
+  Future<void> updateCloudMemoryAlgorithmAndOverwriteLocal({
+    required MemoryAlgorithm memoryAlgorithm,
+    required Future<void> Function(MemoryAlgorithm memoryAlgorithm) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
   }) async {
     await requestSingleRowModify(
       isLoginRequired: true,
       singleRowModifyDto: SingleRowModifyDto(
-        table_name: driftDb.memoryModels.actualTableName,
-        row: memoryModel,
+        table_name: driftDb.memoryAlgorithms.actualTableName,
+        row: memoryAlgorithm,
       ),
       onSuccess: (String showMessage, SingleRowModifyVo vo) async {
-        final result = MemoryModel.fromJson(vo.row);
+        final result = MemoryAlgorithm.fromJson(vo.row);
         // 更新到本地
-        await driftDb.update(memoryModels).replace(result);
+        await driftDb.update(memoryAlgorithms).replace(result);
         await onSuccess(result);
       },
       onError: onError == null

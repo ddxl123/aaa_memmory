@@ -47,6 +47,8 @@ part 'table/entity/info/FragmentGroupInfos.dart';
 
 part 'table/entity/info/FragmentMemoryInfos.dart';
 
+part 'table/entity/info/MemoryGroupCycleInfos.dart';
+
 part 'table/entity/other/FragmentGroupTags.dart';
 
 part 'table/entity/r/RFragment2FragmentGroups.dart';
@@ -57,9 +59,9 @@ part 'table/entity/test/Tests.dart';
 
 part 'table/entity/unit/Fragments.dart';
 
-part 'table/entity/unit/MemoryGroups.dart';
+part 'table/entity/unit/MemoryAlgorithms.dart';
 
-part 'table/entity/unit/MemoryModels.dart';
+part 'table/entity/unit/MemoryGroups.dart';
 
 part 'table/entity/unit/Shorthands.dart';
 
@@ -85,6 +87,8 @@ const List<Type> tableClasses = [
 
   FragmentMemoryInfos,
 
+  MemoryGroupCycleInfos,
+
   FragmentGroupTags,
 
   RFragment2FragmentGroups,
@@ -95,9 +99,9 @@ const List<Type> tableClasses = [
 
   Fragments,
 
-  MemoryGroups,
+  MemoryAlgorithms,
 
-  MemoryModels,
+  MemoryGroups,
 
   Shorthands,
 

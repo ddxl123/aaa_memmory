@@ -5,16 +5,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../algorithm_parser/parser.dart';
 import 'AlgorithmEditPage.dart';
-import 'MemoryModelGizmoEditPageAbController.dart';
+import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 
-class MemoryModelGizmoEditPage extends StatelessWidget {
-  const MemoryModelGizmoEditPage({Key? key, required this.memoryModel}) : super(key: key);
-  final MemoryModel memoryModel;
+class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
+  const MemoryAlgorithmGizmoEditPage({super.key, required this.memoryAlgorithm});
+  final MemoryAlgorithm memoryAlgorithm;
 
   @override
   Widget build(BuildContext context) {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
-      putController: MemoryModelGizmoEditPageAbController(memoryModel: memoryModel),
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
+      putController: MemoryAlgorithmGizmoEditPageAbController(memoryAlgorithm: memoryAlgorithm),
       tag: Aber.single,
       builder: (c, abw) {
         return Scaffold(
@@ -65,16 +65,16 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
   }
 
   Widget _appBarTitleWidget() {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        return Text(c.memoryModel.title);
+        return Text(c.memoryAlgorithm.title);
       },
     );
   }
 
   Widget _appBarRightAnalyzeWidget() {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         return TextButton(
@@ -86,7 +86,7 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
   }
 
   Widget _appBarRightButtonWidget() {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         return IconButton(
@@ -100,7 +100,7 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
   }
 
   Widget _titleWidget() {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         return Padding(
@@ -114,7 +114,7 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
                 controller: c.titleEditingController,
                 decoration: const InputDecoration(border: InputBorder.none, labelText: '名称：'),
                 onChanged: (v) {
-                  c.memoryModel.title = v;
+                  c.memoryAlgorithm.title = v;
                 },
               ),
             ),
@@ -137,11 +137,11 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
             MaterialPageRoute(
               builder: (ctx) => AlgorithmEditPage(
                 name: name,
-                memoryModel: memoryModel,
+                memoryAlgorithm: memoryAlgorithm,
               ),
             ),
           );
-          Aber.findOrNull<MemoryModelGizmoEditPageAbController>()?.thisRefresh();
+          Aber.findOrNull<MemoryAlgorithmGizmoEditPageAbController>()?.thisRefresh();
         },
         child: Card(
           child: Padding(
@@ -154,9 +154,9 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
                     filter(
                               from: name,
                               targets: {
-                                [ButtonDataState.name]: () => memoryModel.button_algorithm,
-                                [FamiliarityState.name]: () => memoryModel.familiarity_algorithm,
-                                [NextShowTimeState.name]: () => memoryModel.next_time_algorithm,
+                                [ButtonDataState.name]: () => memoryAlgorithm.button_algorithm,
+                                [FamiliarityState.name]: () => memoryAlgorithm.familiarity_algorithm,
+                                [NextShowTimeState.name]: () => memoryAlgorithm.next_time_algorithm,
                               },
                               orElse: null,
                             ) ==
@@ -175,9 +175,9 @@ class MemoryModelGizmoEditPage extends StatelessWidget {
                         filter(
                               from: name,
                               targets: {
-                                [ButtonDataState.name]: () => memoryModel.button_algorithm_remark,
-                                [FamiliarityState.name]: () => memoryModel.familiarity_algorithm_remark,
-                                [NextShowTimeState.name]: () => memoryModel.next_time_algorithm_remark,
+                                [ButtonDataState.name]: () => memoryAlgorithm.button_algorithm_remark,
+                                [FamiliarityState.name]: () => memoryAlgorithm.familiarity_algorithm_remark,
+                                [NextShowTimeState.name]: () => memoryAlgorithm.next_time_algorithm_remark,
                               },
                               orElse: null,
                             ) ??

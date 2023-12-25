@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../push_page/push_page.dart';
-import '../../single_dialog/showCreateMemoryModelDialog.dart';
-import 'MemoryModeListPageAbController.dart';
+import '../../single_dialog/showCreateMemoryAlgorithmDialog.dart';
+import 'MemoryAlgorithmListPageAbController.dart';
 
-class MemoryModeListPage extends StatelessWidget {
-  const MemoryModeListPage({super.key});
+class MemoryAlgorithmListPage extends StatelessWidget {
+  const MemoryAlgorithmListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AbBuilder<MemoryModeListPageAbController>(
-      putController: MemoryModeListPageAbController(),
+    return AbBuilder<MemoryAlgorithmListPageAbController>(
+      putController: MemoryAlgorithmListPageAbController(),
       tag: Aber.single,
       builder: (c, abw) {
         return Scaffold(
@@ -27,7 +27,7 @@ class MemoryModeListPage extends StatelessWidget {
               ],
             ),
             onPressed: () {
-              showCreateMemoryModelDialog();
+              showCreateMemoryAlgorithmDialog();
             },
           ),
         );
@@ -36,7 +36,7 @@ class MemoryModeListPage extends StatelessWidget {
   }
 
   Widget _body() {
-    return AbBuilder<MemoryModeListPageAbController>(
+    return AbBuilder<MemoryAlgorithmListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         return Padding(
@@ -60,10 +60,10 @@ class MemoryModeListPage extends StatelessWidget {
   }
 
   Widget _memoryModel() {
-    return AbBuilder<MemoryModeListPageAbController>(
+    return AbBuilder<MemoryAlgorithmListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        return c.memoryModelsAb(abw).isEmpty
+        return c.memoryAlgorithmsAb(abw).isEmpty
             ? SliverToBoxAdapter(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("还没有记忆算法~")]))
             : SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -72,16 +72,16 @@ class MemoryModeListPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: TextButton(
-                            child: Text(c.memoryModelsAb()[index].title.toString()),
+                            child: Text(c.memoryAlgorithmsAb()[index].title.toString()),
                             onPressed: () {
-                              pushToMemoryModelGizmoEditPage(context: context, memoryModel: c.memoryModelsAb()[index]);
+                              pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithm: c.memoryAlgorithmsAb()[index]);
                             },
                           ),
                         ),
                       ],
                     );
                   },
-                  childCount: c.memoryModelsAb(abw).length,
+                  childCount: c.memoryAlgorithmsAb(abw).length,
                 ),
               );
       },

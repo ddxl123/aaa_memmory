@@ -4,13 +4,13 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 import '../../../algorithm_parser/AlgorithmException.dart';
 import '../../../algorithm_parser/parser.dart';
-import 'MemoryModelGizmoEditPageAbController.dart';
+import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 
 class AlgorithmEditPageAbController extends AbController {
   AlgorithmEditPageAbController({required this.name});
 
   final String name;
-  final memoryModelGizmoEditPageAbController = Aber.findLast<MemoryModelGizmoEditPageAbController>();
+  final memoryModelGizmoEditPageAbController = Aber.findLast<MemoryAlgorithmGizmoEditPageAbController>();
 
   final freeBoxController = FreeBoxController();
   final currentAlgorithmWrapper = Ab<AlgorithmWrapper>.late();
@@ -23,7 +23,7 @@ class AlgorithmEditPageAbController extends AbController {
   @override
   Future<bool> backListener(bool hasRoute) async {
     final empty = AlgorithmWrapper.emptyAlgorithmWrapper.toJsonString();
-    final mm = memoryModelGizmoEditPageAbController.memoryModel;
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
     final current = currentAlgorithmWrapper().toJsonString();
     final isModified = filter(
       from: name,
@@ -64,7 +64,7 @@ class AlgorithmEditPageAbController extends AbController {
 
   String content() {
     final ea = AlgorithmWrapper.emptyAlgorithmWrapper.toJsonString();
-    final mm = memoryModelGizmoEditPageAbController.memoryModel;
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
     return filter(
       from: name,
       targets: {
@@ -78,7 +78,7 @@ class AlgorithmEditPageAbController extends AbController {
 
   Future<void> save() async {
     rawToView();
-    final mm = memoryModelGizmoEditPageAbController.memoryModel;
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
     filter(
       from: name,
       targets: {

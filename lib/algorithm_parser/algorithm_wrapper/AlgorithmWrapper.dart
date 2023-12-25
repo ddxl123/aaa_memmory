@@ -62,7 +62,7 @@ class AlgorithmWrapper {
   }
 
   Widget toWidget() {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         refresh = abw.refresh;

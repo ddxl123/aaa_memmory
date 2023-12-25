@@ -8,6 +8,8 @@ mixin _$GeneralQueryDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -15,8 +17,9 @@ mixin _$GeneralQueryDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -34,6 +37,8 @@ mixin _$InsertDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -41,8 +46,9 @@ mixin _$InsertDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -60,6 +66,8 @@ mixin _$RawDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -67,8 +75,9 @@ mixin _$RawDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -86,6 +95,8 @@ mixin _$RegisterOrLoginDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -93,8 +104,9 @@ mixin _$RegisterOrLoginDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -112,6 +124,8 @@ mixin _$UpdateDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -119,8 +133,9 @@ mixin _$UpdateDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -138,6 +153,8 @@ mixin _$DeleteDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -145,8 +162,9 @@ mixin _$DeleteDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -164,6 +182,8 @@ mixin _$CloudOverwriteLocalDAOMixin on DatabaseAccessor<DriftDb> {
       attachedDatabase.fragmentGroupInfos;
   $FragmentMemoryInfosTable get fragmentMemoryInfos =>
       attachedDatabase.fragmentMemoryInfos;
+  $MemoryGroupCycleInfosTable get memoryGroupCycleInfos =>
+      attachedDatabase.memoryGroupCycleInfos;
   $FragmentGroupTagsTable get fragmentGroupTags =>
       attachedDatabase.fragmentGroupTags;
   $RFragment2FragmentGroupsTable get rFragment2FragmentGroups =>
@@ -171,8 +191,9 @@ mixin _$CloudOverwriteLocalDAOMixin on DatabaseAccessor<DriftDb> {
   $Test2sTable get test2s => attachedDatabase.test2s;
   $TestsTable get tests => attachedDatabase.tests;
   $FragmentsTable get fragments => attachedDatabase.fragments;
+  $MemoryAlgorithmsTable get memoryAlgorithms =>
+      attachedDatabase.memoryAlgorithms;
   $MemoryGroupsTable get memoryGroups => attachedDatabase.memoryGroups;
-  $MemoryModelsTable get memoryModels => attachedDatabase.memoryModels;
   $ShorthandsTable get shorthands => attachedDatabase.shorthands;
   $FragmentGroupBeSavedsTable get fragmentGroupBeSaveds =>
       attachedDatabase.fragmentGroupBeSaveds;
@@ -2008,6 +2029,479 @@ class FragmentMemoryInfosCompanion extends UpdateCompanion<FragmentMemoryInfo> {
   }
 }
 
+class $MemoryGroupCycleInfosTable extends MemoryGroupCycleInfos
+    with TableInfo<$MemoryGroupCycleInfosTable, MemoryGroupCycleInfo> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MemoryGroupCycleInfosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _creator_user_idMeta =
+      const VerificationMeta('creator_user_id');
+  @override
+  late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
+      'creator_user_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _end_timeMeta =
+      const VerificationMeta('end_time');
+  @override
+  late final GeneratedColumn<DateTime> end_time = GeneratedColumn<DateTime>(
+      'end_time', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _memory_algorithm_idMeta =
+      const VerificationMeta('memory_algorithm_id');
+  @override
+  late final GeneratedColumn<int> memory_algorithm_id = GeneratedColumn<int>(
+      'memory_algorithm_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _memory_group_idMeta =
+      const VerificationMeta('memory_group_id');
+  @override
+  late final GeneratedColumn<int> memory_group_id = GeneratedColumn<int>(
+      'memory_group_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _should_new_learn_countMeta =
+      const VerificationMeta('should_new_learn_count');
+  @override
+  late final GeneratedColumn<int> should_new_learn_count = GeneratedColumn<int>(
+      'should_new_learn_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _should_review_countMeta =
+      const VerificationMeta('should_review_count');
+  @override
+  late final GeneratedColumn<int> should_review_count = GeneratedColumn<int>(
+      'should_review_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _created_atMeta =
+      const VerificationMeta('created_at');
+  @override
+  late final GeneratedColumn<DateTime> created_at = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _updated_atMeta =
+      const VerificationMeta('updated_at');
+  @override
+  late final GeneratedColumn<DateTime> updated_at = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        creator_user_id,
+        end_time,
+        memory_algorithm_id,
+        memory_group_id,
+        should_new_learn_count,
+        should_review_count,
+        created_at,
+        id,
+        updated_at
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'memory_group_cycle_infos';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<MemoryGroupCycleInfo> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('creator_user_id')) {
+      context.handle(
+          _creator_user_idMeta,
+          creator_user_id.isAcceptableOrUnknown(
+              data['creator_user_id']!, _creator_user_idMeta));
+    } else if (isInserting) {
+      context.missing(_creator_user_idMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(_end_timeMeta,
+          end_time.isAcceptableOrUnknown(data['end_time']!, _end_timeMeta));
+    } else if (isInserting) {
+      context.missing(_end_timeMeta);
+    }
+    if (data.containsKey('memory_algorithm_id')) {
+      context.handle(
+          _memory_algorithm_idMeta,
+          memory_algorithm_id.isAcceptableOrUnknown(
+              data['memory_algorithm_id']!, _memory_algorithm_idMeta));
+    } else if (isInserting) {
+      context.missing(_memory_algorithm_idMeta);
+    }
+    if (data.containsKey('memory_group_id')) {
+      context.handle(
+          _memory_group_idMeta,
+          memory_group_id.isAcceptableOrUnknown(
+              data['memory_group_id']!, _memory_group_idMeta));
+    } else if (isInserting) {
+      context.missing(_memory_group_idMeta);
+    }
+    if (data.containsKey('should_new_learn_count')) {
+      context.handle(
+          _should_new_learn_countMeta,
+          should_new_learn_count.isAcceptableOrUnknown(
+              data['should_new_learn_count']!, _should_new_learn_countMeta));
+    } else if (isInserting) {
+      context.missing(_should_new_learn_countMeta);
+    }
+    if (data.containsKey('should_review_count')) {
+      context.handle(
+          _should_review_countMeta,
+          should_review_count.isAcceptableOrUnknown(
+              data['should_review_count']!, _should_review_countMeta));
+    } else if (isInserting) {
+      context.missing(_should_review_countMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+          _created_atMeta,
+          created_at.isAcceptableOrUnknown(
+              data['created_at']!, _created_atMeta));
+    } else if (isInserting) {
+      context.missing(_created_atMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+          _updated_atMeta,
+          updated_at.isAcceptableOrUnknown(
+              data['updated_at']!, _updated_atMeta));
+    } else if (isInserting) {
+      context.missing(_updated_atMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MemoryGroupCycleInfo map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MemoryGroupCycleInfo(
+      creator_user_id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
+      end_time: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_time'])!,
+      memory_algorithm_id: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}memory_algorithm_id'])!,
+      memory_group_id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}memory_group_id'])!,
+      should_new_learn_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}should_new_learn_count'])!,
+      should_review_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}should_review_count'])!,
+      created_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updated_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $MemoryGroupCycleInfosTable createAlias(String alias) {
+    return $MemoryGroupCycleInfosTable(attachedDatabase, alias);
+  }
+}
+
+class MemoryGroupCycleInfo extends DataClass
+    implements Insertable<MemoryGroupCycleInfo> {
+  int creator_user_id;
+  DateTime end_time;
+  int memory_algorithm_id;
+  int memory_group_id;
+  int should_new_learn_count;
+  int should_review_count;
+  DateTime created_at;
+  int id;
+  DateTime updated_at;
+  MemoryGroupCycleInfo(
+      {required this.creator_user_id,
+      required this.end_time,
+      required this.memory_algorithm_id,
+      required this.memory_group_id,
+      required this.should_new_learn_count,
+      required this.should_review_count,
+      required this.created_at,
+      required this.id,
+      required this.updated_at});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['creator_user_id'] = Variable<int>(creator_user_id);
+    map['end_time'] = Variable<DateTime>(end_time);
+    map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id);
+    map['memory_group_id'] = Variable<int>(memory_group_id);
+    map['should_new_learn_count'] = Variable<int>(should_new_learn_count);
+    map['should_review_count'] = Variable<int>(should_review_count);
+    map['created_at'] = Variable<DateTime>(created_at);
+    map['id'] = Variable<int>(id);
+    map['updated_at'] = Variable<DateTime>(updated_at);
+    return map;
+  }
+
+  MemoryGroupCycleInfosCompanion toCompanion(bool nullToAbsent) {
+    return MemoryGroupCycleInfosCompanion(
+      creator_user_id: Value(creator_user_id),
+      end_time: Value(end_time),
+      memory_algorithm_id: Value(memory_algorithm_id),
+      memory_group_id: Value(memory_group_id),
+      should_new_learn_count: Value(should_new_learn_count),
+      should_review_count: Value(should_review_count),
+      created_at: Value(created_at),
+      id: Value(id),
+      updated_at: Value(updated_at),
+    );
+  }
+
+  factory MemoryGroupCycleInfo.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MemoryGroupCycleInfo(
+      creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
+      end_time: serializer.fromJson<DateTime>(json['end_time']),
+      memory_algorithm_id:
+          serializer.fromJson<int>(json['memory_algorithm_id']),
+      memory_group_id: serializer.fromJson<int>(json['memory_group_id']),
+      should_new_learn_count:
+          serializer.fromJson<int>(json['should_new_learn_count']),
+      should_review_count:
+          serializer.fromJson<int>(json['should_review_count']),
+      created_at: serializer.fromJson<DateTime>(json['created_at']),
+      id: serializer.fromJson<int>(json['id']),
+      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'creator_user_id': serializer.toJson<int>(creator_user_id),
+      'end_time': serializer.toJson<DateTime>(end_time),
+      'memory_algorithm_id': serializer.toJson<int>(memory_algorithm_id),
+      'memory_group_id': serializer.toJson<int>(memory_group_id),
+      'should_new_learn_count': serializer.toJson<int>(should_new_learn_count),
+      'should_review_count': serializer.toJson<int>(should_review_count),
+      'created_at': serializer.toJson<DateTime>(created_at),
+      'id': serializer.toJson<int>(id),
+      'updated_at': serializer.toJson<DateTime>(updated_at),
+    };
+  }
+
+  MemoryGroupCycleInfo copyWith(
+          {int? creator_user_id,
+          DateTime? end_time,
+          int? memory_algorithm_id,
+          int? memory_group_id,
+          int? should_new_learn_count,
+          int? should_review_count,
+          DateTime? created_at,
+          int? id,
+          DateTime? updated_at}) =>
+      MemoryGroupCycleInfo(
+        creator_user_id: creator_user_id ?? this.creator_user_id,
+        end_time: end_time ?? this.end_time,
+        memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
+        memory_group_id: memory_group_id ?? this.memory_group_id,
+        should_new_learn_count:
+            should_new_learn_count ?? this.should_new_learn_count,
+        should_review_count: should_review_count ?? this.should_review_count,
+        created_at: created_at ?? this.created_at,
+        id: id ?? this.id,
+        updated_at: updated_at ?? this.updated_at,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('MemoryGroupCycleInfo(')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('end_time: $end_time, ')
+          ..write('memory_algorithm_id: $memory_algorithm_id, ')
+          ..write('memory_group_id: $memory_group_id, ')
+          ..write('should_new_learn_count: $should_new_learn_count, ')
+          ..write('should_review_count: $should_review_count, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      creator_user_id,
+      end_time,
+      memory_algorithm_id,
+      memory_group_id,
+      should_new_learn_count,
+      should_review_count,
+      created_at,
+      id,
+      updated_at);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MemoryGroupCycleInfo &&
+          other.creator_user_id == this.creator_user_id &&
+          other.end_time == this.end_time &&
+          other.memory_algorithm_id == this.memory_algorithm_id &&
+          other.memory_group_id == this.memory_group_id &&
+          other.should_new_learn_count == this.should_new_learn_count &&
+          other.should_review_count == this.should_review_count &&
+          other.created_at == this.created_at &&
+          other.id == this.id &&
+          other.updated_at == this.updated_at);
+}
+
+class MemoryGroupCycleInfosCompanion
+    extends UpdateCompanion<MemoryGroupCycleInfo> {
+  Value<int> creator_user_id;
+  Value<DateTime> end_time;
+  Value<int> memory_algorithm_id;
+  Value<int> memory_group_id;
+  Value<int> should_new_learn_count;
+  Value<int> should_review_count;
+  Value<DateTime> created_at;
+  Value<int> id;
+  Value<DateTime> updated_at;
+  MemoryGroupCycleInfosCompanion({
+    this.creator_user_id = const Value.absent(),
+    this.end_time = const Value.absent(),
+    this.memory_algorithm_id = const Value.absent(),
+    this.memory_group_id = const Value.absent(),
+    this.should_new_learn_count = const Value.absent(),
+    this.should_review_count = const Value.absent(),
+    this.created_at = const Value.absent(),
+    this.id = const Value.absent(),
+    this.updated_at = const Value.absent(),
+  });
+  MemoryGroupCycleInfosCompanion.insert({
+    required int creator_user_id,
+    required DateTime end_time,
+    required int memory_algorithm_id,
+    required int memory_group_id,
+    required int should_new_learn_count,
+    required int should_review_count,
+    required DateTime created_at,
+    this.id = const Value.absent(),
+    required DateTime updated_at,
+  })  : creator_user_id = Value(creator_user_id),
+        end_time = Value(end_time),
+        memory_algorithm_id = Value(memory_algorithm_id),
+        memory_group_id = Value(memory_group_id),
+        should_new_learn_count = Value(should_new_learn_count),
+        should_review_count = Value(should_review_count),
+        created_at = Value(created_at),
+        updated_at = Value(updated_at);
+  static Insertable<MemoryGroupCycleInfo> custom({
+    Expression<int>? creator_user_id,
+    Expression<DateTime>? end_time,
+    Expression<int>? memory_algorithm_id,
+    Expression<int>? memory_group_id,
+    Expression<int>? should_new_learn_count,
+    Expression<int>? should_review_count,
+    Expression<DateTime>? created_at,
+    Expression<int>? id,
+    Expression<DateTime>? updated_at,
+  }) {
+    return RawValuesInsertable({
+      if (creator_user_id != null) 'creator_user_id': creator_user_id,
+      if (end_time != null) 'end_time': end_time,
+      if (memory_algorithm_id != null)
+        'memory_algorithm_id': memory_algorithm_id,
+      if (memory_group_id != null) 'memory_group_id': memory_group_id,
+      if (should_new_learn_count != null)
+        'should_new_learn_count': should_new_learn_count,
+      if (should_review_count != null)
+        'should_review_count': should_review_count,
+      if (created_at != null) 'created_at': created_at,
+      if (id != null) 'id': id,
+      if (updated_at != null) 'updated_at': updated_at,
+    });
+  }
+
+  MemoryGroupCycleInfosCompanion copyWith(
+      {Value<int>? creator_user_id,
+      Value<DateTime>? end_time,
+      Value<int>? memory_algorithm_id,
+      Value<int>? memory_group_id,
+      Value<int>? should_new_learn_count,
+      Value<int>? should_review_count,
+      Value<DateTime>? created_at,
+      Value<int>? id,
+      Value<DateTime>? updated_at}) {
+    return MemoryGroupCycleInfosCompanion(
+      creator_user_id: creator_user_id ?? this.creator_user_id,
+      end_time: end_time ?? this.end_time,
+      memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
+      memory_group_id: memory_group_id ?? this.memory_group_id,
+      should_new_learn_count:
+          should_new_learn_count ?? this.should_new_learn_count,
+      should_review_count: should_review_count ?? this.should_review_count,
+      created_at: created_at ?? this.created_at,
+      id: id ?? this.id,
+      updated_at: updated_at ?? this.updated_at,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (creator_user_id.present) {
+      map['creator_user_id'] = Variable<int>(creator_user_id.value);
+    }
+    if (end_time.present) {
+      map['end_time'] = Variable<DateTime>(end_time.value);
+    }
+    if (memory_algorithm_id.present) {
+      map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id.value);
+    }
+    if (memory_group_id.present) {
+      map['memory_group_id'] = Variable<int>(memory_group_id.value);
+    }
+    if (should_new_learn_count.present) {
+      map['should_new_learn_count'] =
+          Variable<int>(should_new_learn_count.value);
+    }
+    if (should_review_count.present) {
+      map['should_review_count'] = Variable<int>(should_review_count.value);
+    }
+    if (created_at.present) {
+      map['created_at'] = Variable<DateTime>(created_at.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updated_at.present) {
+      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MemoryGroupCycleInfosCompanion(')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('end_time: $end_time, ')
+          ..write('memory_algorithm_id: $memory_algorithm_id, ')
+          ..write('memory_group_id: $memory_group_id, ')
+          ..write('should_new_learn_count: $should_new_learn_count, ')
+          ..write('should_review_count: $should_review_count, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $FragmentGroupTagsTable extends FragmentGroupTags
     with TableInfo<$FragmentGroupTagsTable, FragmentGroupTag> {
   @override
@@ -3607,6 +4101,950 @@ class FragmentsCompanion extends UpdateCompanion<Fragment> {
   }
 }
 
+class $MemoryAlgorithmsTable extends MemoryAlgorithms
+    with TableInfo<$MemoryAlgorithmsTable, MemoryAlgorithm> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MemoryAlgorithmsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _button_algorithmMeta =
+      const VerificationMeta('button_algorithm');
+  @override
+  late final GeneratedColumn<String> button_algorithm = GeneratedColumn<String>(
+      'button_algorithm', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _button_algorithm_remarkMeta =
+      const VerificationMeta('button_algorithm_remark');
+  @override
+  late final GeneratedColumn<String> button_algorithm_remark =
+      GeneratedColumn<String>('button_algorithm_remark', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _completed_algorithmMeta =
+      const VerificationMeta('completed_algorithm');
+  @override
+  late final GeneratedColumn<String> completed_algorithm =
+      GeneratedColumn<String>('completed_algorithm', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _completed_algorithm_remarkMeta =
+      const VerificationMeta('completed_algorithm_remark');
+  @override
+  late final GeneratedColumn<String> completed_algorithm_remark =
+      GeneratedColumn<String>('completed_algorithm_remark', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _creator_user_idMeta =
+      const VerificationMeta('creator_user_id');
+  @override
+  late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
+      'creator_user_id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _explainMeta =
+      const VerificationMeta('explain');
+  @override
+  late final GeneratedColumn<String> explain = GeneratedColumn<String>(
+      'explain', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _familiarity_algorithmMeta =
+      const VerificationMeta('familiarity_algorithm');
+  @override
+  late final GeneratedColumn<String> familiarity_algorithm =
+      GeneratedColumn<String>('familiarity_algorithm', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _familiarity_algorithm_remarkMeta =
+      const VerificationMeta('familiarity_algorithm_remark');
+  @override
+  late final GeneratedColumn<String> familiarity_algorithm_remark =
+      GeneratedColumn<String>('familiarity_algorithm_remark', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _father_memory_algorithm_idMeta =
+      const VerificationMeta('father_memory_algorithm_id');
+  @override
+  late final GeneratedColumn<int> father_memory_algorithm_id =
+      GeneratedColumn<int>('father_memory_algorithm_id', aliasedName, true,
+          type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _next_time_algorithmMeta =
+      const VerificationMeta('next_time_algorithm');
+  @override
+  late final GeneratedColumn<String> next_time_algorithm =
+      GeneratedColumn<String>('next_time_algorithm', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _next_time_algorithm_remarkMeta =
+      const VerificationMeta('next_time_algorithm_remark');
+  @override
+  late final GeneratedColumn<String> next_time_algorithm_remark =
+      GeneratedColumn<String>('next_time_algorithm_remark', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _suggest_count_for_new_and_reviewMeta =
+      const VerificationMeta('suggest_count_for_new_and_review');
+  @override
+  late final GeneratedColumn<String> suggest_count_for_new_and_review =
+      GeneratedColumn<String>(
+          'suggest_count_for_new_and_review', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _suggest_count_for_new_and_review_remarkMeta =
+      const VerificationMeta('suggest_count_for_new_and_review_remark');
+  @override
+  late final GeneratedColumn<String> suggest_count_for_new_and_review_remark =
+      GeneratedColumn<String>(
+          'suggest_count_for_new_and_review_remark', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _suggest_loop_cycleMeta =
+      const VerificationMeta('suggest_loop_cycle');
+  @override
+  late final GeneratedColumn<String> suggest_loop_cycle =
+      GeneratedColumn<String>('suggest_loop_cycle', aliasedName, true,
+          type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _created_atMeta =
+      const VerificationMeta('created_at');
+  @override
+  late final GeneratedColumn<DateTime> created_at = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _updated_atMeta =
+      const VerificationMeta('updated_at');
+  @override
+  late final GeneratedColumn<DateTime> updated_at = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        button_algorithm,
+        button_algorithm_remark,
+        completed_algorithm,
+        completed_algorithm_remark,
+        creator_user_id,
+        explain,
+        familiarity_algorithm,
+        familiarity_algorithm_remark,
+        father_memory_algorithm_id,
+        next_time_algorithm,
+        next_time_algorithm_remark,
+        suggest_count_for_new_and_review,
+        suggest_count_for_new_and_review_remark,
+        suggest_loop_cycle,
+        title,
+        created_at,
+        id,
+        updated_at
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'memory_algorithms';
+  @override
+  VerificationContext validateIntegrity(Insertable<MemoryAlgorithm> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('button_algorithm')) {
+      context.handle(
+          _button_algorithmMeta,
+          button_algorithm.isAcceptableOrUnknown(
+              data['button_algorithm']!, _button_algorithmMeta));
+    }
+    if (data.containsKey('button_algorithm_remark')) {
+      context.handle(
+          _button_algorithm_remarkMeta,
+          button_algorithm_remark.isAcceptableOrUnknown(
+              data['button_algorithm_remark']!, _button_algorithm_remarkMeta));
+    }
+    if (data.containsKey('completed_algorithm')) {
+      context.handle(
+          _completed_algorithmMeta,
+          completed_algorithm.isAcceptableOrUnknown(
+              data['completed_algorithm']!, _completed_algorithmMeta));
+    }
+    if (data.containsKey('completed_algorithm_remark')) {
+      context.handle(
+          _completed_algorithm_remarkMeta,
+          completed_algorithm_remark.isAcceptableOrUnknown(
+              data['completed_algorithm_remark']!,
+              _completed_algorithm_remarkMeta));
+    }
+    if (data.containsKey('creator_user_id')) {
+      context.handle(
+          _creator_user_idMeta,
+          creator_user_id.isAcceptableOrUnknown(
+              data['creator_user_id']!, _creator_user_idMeta));
+    } else if (isInserting) {
+      context.missing(_creator_user_idMeta);
+    }
+    if (data.containsKey('explain')) {
+      context.handle(_explainMeta,
+          explain.isAcceptableOrUnknown(data['explain']!, _explainMeta));
+    } else if (isInserting) {
+      context.missing(_explainMeta);
+    }
+    if (data.containsKey('familiarity_algorithm')) {
+      context.handle(
+          _familiarity_algorithmMeta,
+          familiarity_algorithm.isAcceptableOrUnknown(
+              data['familiarity_algorithm']!, _familiarity_algorithmMeta));
+    }
+    if (data.containsKey('familiarity_algorithm_remark')) {
+      context.handle(
+          _familiarity_algorithm_remarkMeta,
+          familiarity_algorithm_remark.isAcceptableOrUnknown(
+              data['familiarity_algorithm_remark']!,
+              _familiarity_algorithm_remarkMeta));
+    }
+    if (data.containsKey('father_memory_algorithm_id')) {
+      context.handle(
+          _father_memory_algorithm_idMeta,
+          father_memory_algorithm_id.isAcceptableOrUnknown(
+              data['father_memory_algorithm_id']!,
+              _father_memory_algorithm_idMeta));
+    }
+    if (data.containsKey('next_time_algorithm')) {
+      context.handle(
+          _next_time_algorithmMeta,
+          next_time_algorithm.isAcceptableOrUnknown(
+              data['next_time_algorithm']!, _next_time_algorithmMeta));
+    }
+    if (data.containsKey('next_time_algorithm_remark')) {
+      context.handle(
+          _next_time_algorithm_remarkMeta,
+          next_time_algorithm_remark.isAcceptableOrUnknown(
+              data['next_time_algorithm_remark']!,
+              _next_time_algorithm_remarkMeta));
+    }
+    if (data.containsKey('suggest_count_for_new_and_review')) {
+      context.handle(
+          _suggest_count_for_new_and_reviewMeta,
+          suggest_count_for_new_and_review.isAcceptableOrUnknown(
+              data['suggest_count_for_new_and_review']!,
+              _suggest_count_for_new_and_reviewMeta));
+    }
+    if (data.containsKey('suggest_count_for_new_and_review_remark')) {
+      context.handle(
+          _suggest_count_for_new_and_review_remarkMeta,
+          suggest_count_for_new_and_review_remark.isAcceptableOrUnknown(
+              data['suggest_count_for_new_and_review_remark']!,
+              _suggest_count_for_new_and_review_remarkMeta));
+    }
+    if (data.containsKey('suggest_loop_cycle')) {
+      context.handle(
+          _suggest_loop_cycleMeta,
+          suggest_loop_cycle.isAcceptableOrUnknown(
+              data['suggest_loop_cycle']!, _suggest_loop_cycleMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+          _created_atMeta,
+          created_at.isAcceptableOrUnknown(
+              data['created_at']!, _created_atMeta));
+    } else if (isInserting) {
+      context.missing(_created_atMeta);
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+          _updated_atMeta,
+          updated_at.isAcceptableOrUnknown(
+              data['updated_at']!, _updated_atMeta));
+    } else if (isInserting) {
+      context.missing(_updated_atMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MemoryAlgorithm map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MemoryAlgorithm(
+      button_algorithm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}button_algorithm']),
+      button_algorithm_remark: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}button_algorithm_remark']),
+      completed_algorithm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}completed_algorithm']),
+      completed_algorithm_remark: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}completed_algorithm_remark']),
+      creator_user_id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
+      explain: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}explain'])!,
+      familiarity_algorithm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}familiarity_algorithm']),
+      familiarity_algorithm_remark: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}familiarity_algorithm_remark']),
+      father_memory_algorithm_id: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}father_memory_algorithm_id']),
+      next_time_algorithm: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}next_time_algorithm']),
+      next_time_algorithm_remark: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}next_time_algorithm_remark']),
+      suggest_count_for_new_and_review: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}suggest_count_for_new_and_review']),
+      suggest_count_for_new_and_review_remark: attachedDatabase.typeMapping
+          .read(
+              DriftSqlType.string,
+              data[
+                  '${effectivePrefix}suggest_count_for_new_and_review_remark']),
+      suggest_loop_cycle: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}suggest_loop_cycle']),
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      created_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updated_at: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $MemoryAlgorithmsTable createAlias(String alias) {
+    return $MemoryAlgorithmsTable(attachedDatabase, alias);
+  }
+}
+
+class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
+  String? button_algorithm;
+  String? button_algorithm_remark;
+  String? completed_algorithm;
+  String? completed_algorithm_remark;
+  int creator_user_id;
+  String explain;
+  String? familiarity_algorithm;
+  String? familiarity_algorithm_remark;
+  int? father_memory_algorithm_id;
+  String? next_time_algorithm;
+  String? next_time_algorithm_remark;
+  String? suggest_count_for_new_and_review;
+  String? suggest_count_for_new_and_review_remark;
+  String? suggest_loop_cycle;
+  String title;
+  DateTime created_at;
+  int id;
+  DateTime updated_at;
+  MemoryAlgorithm(
+      {this.button_algorithm,
+      this.button_algorithm_remark,
+      this.completed_algorithm,
+      this.completed_algorithm_remark,
+      required this.creator_user_id,
+      required this.explain,
+      this.familiarity_algorithm,
+      this.familiarity_algorithm_remark,
+      this.father_memory_algorithm_id,
+      this.next_time_algorithm,
+      this.next_time_algorithm_remark,
+      this.suggest_count_for_new_and_review,
+      this.suggest_count_for_new_and_review_remark,
+      this.suggest_loop_cycle,
+      required this.title,
+      required this.created_at,
+      required this.id,
+      required this.updated_at});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || button_algorithm != null) {
+      map['button_algorithm'] = Variable<String>(button_algorithm);
+    }
+    if (!nullToAbsent || button_algorithm_remark != null) {
+      map['button_algorithm_remark'] =
+          Variable<String>(button_algorithm_remark);
+    }
+    if (!nullToAbsent || completed_algorithm != null) {
+      map['completed_algorithm'] = Variable<String>(completed_algorithm);
+    }
+    if (!nullToAbsent || completed_algorithm_remark != null) {
+      map['completed_algorithm_remark'] =
+          Variable<String>(completed_algorithm_remark);
+    }
+    map['creator_user_id'] = Variable<int>(creator_user_id);
+    map['explain'] = Variable<String>(explain);
+    if (!nullToAbsent || familiarity_algorithm != null) {
+      map['familiarity_algorithm'] = Variable<String>(familiarity_algorithm);
+    }
+    if (!nullToAbsent || familiarity_algorithm_remark != null) {
+      map['familiarity_algorithm_remark'] =
+          Variable<String>(familiarity_algorithm_remark);
+    }
+    if (!nullToAbsent || father_memory_algorithm_id != null) {
+      map['father_memory_algorithm_id'] =
+          Variable<int>(father_memory_algorithm_id);
+    }
+    if (!nullToAbsent || next_time_algorithm != null) {
+      map['next_time_algorithm'] = Variable<String>(next_time_algorithm);
+    }
+    if (!nullToAbsent || next_time_algorithm_remark != null) {
+      map['next_time_algorithm_remark'] =
+          Variable<String>(next_time_algorithm_remark);
+    }
+    if (!nullToAbsent || suggest_count_for_new_and_review != null) {
+      map['suggest_count_for_new_and_review'] =
+          Variable<String>(suggest_count_for_new_and_review);
+    }
+    if (!nullToAbsent || suggest_count_for_new_and_review_remark != null) {
+      map['suggest_count_for_new_and_review_remark'] =
+          Variable<String>(suggest_count_for_new_and_review_remark);
+    }
+    if (!nullToAbsent || suggest_loop_cycle != null) {
+      map['suggest_loop_cycle'] = Variable<String>(suggest_loop_cycle);
+    }
+    map['title'] = Variable<String>(title);
+    map['created_at'] = Variable<DateTime>(created_at);
+    map['id'] = Variable<int>(id);
+    map['updated_at'] = Variable<DateTime>(updated_at);
+    return map;
+  }
+
+  MemoryAlgorithmsCompanion toCompanion(bool nullToAbsent) {
+    return MemoryAlgorithmsCompanion(
+      button_algorithm: button_algorithm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(button_algorithm),
+      button_algorithm_remark: button_algorithm_remark == null && nullToAbsent
+          ? const Value.absent()
+          : Value(button_algorithm_remark),
+      completed_algorithm: completed_algorithm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completed_algorithm),
+      completed_algorithm_remark:
+          completed_algorithm_remark == null && nullToAbsent
+              ? const Value.absent()
+              : Value(completed_algorithm_remark),
+      creator_user_id: Value(creator_user_id),
+      explain: Value(explain),
+      familiarity_algorithm: familiarity_algorithm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(familiarity_algorithm),
+      familiarity_algorithm_remark:
+          familiarity_algorithm_remark == null && nullToAbsent
+              ? const Value.absent()
+              : Value(familiarity_algorithm_remark),
+      father_memory_algorithm_id:
+          father_memory_algorithm_id == null && nullToAbsent
+              ? const Value.absent()
+              : Value(father_memory_algorithm_id),
+      next_time_algorithm: next_time_algorithm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(next_time_algorithm),
+      next_time_algorithm_remark:
+          next_time_algorithm_remark == null && nullToAbsent
+              ? const Value.absent()
+              : Value(next_time_algorithm_remark),
+      suggest_count_for_new_and_review:
+          suggest_count_for_new_and_review == null && nullToAbsent
+              ? const Value.absent()
+              : Value(suggest_count_for_new_and_review),
+      suggest_count_for_new_and_review_remark:
+          suggest_count_for_new_and_review_remark == null && nullToAbsent
+              ? const Value.absent()
+              : Value(suggest_count_for_new_and_review_remark),
+      suggest_loop_cycle: suggest_loop_cycle == null && nullToAbsent
+          ? const Value.absent()
+          : Value(suggest_loop_cycle),
+      title: Value(title),
+      created_at: Value(created_at),
+      id: Value(id),
+      updated_at: Value(updated_at),
+    );
+  }
+
+  factory MemoryAlgorithm.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MemoryAlgorithm(
+      button_algorithm: serializer.fromJson<String?>(json['button_algorithm']),
+      button_algorithm_remark:
+          serializer.fromJson<String?>(json['button_algorithm_remark']),
+      completed_algorithm:
+          serializer.fromJson<String?>(json['completed_algorithm']),
+      completed_algorithm_remark:
+          serializer.fromJson<String?>(json['completed_algorithm_remark']),
+      creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
+      explain: serializer.fromJson<String>(json['explain']),
+      familiarity_algorithm:
+          serializer.fromJson<String?>(json['familiarity_algorithm']),
+      familiarity_algorithm_remark:
+          serializer.fromJson<String?>(json['familiarity_algorithm_remark']),
+      father_memory_algorithm_id:
+          serializer.fromJson<int?>(json['father_memory_algorithm_id']),
+      next_time_algorithm:
+          serializer.fromJson<String?>(json['next_time_algorithm']),
+      next_time_algorithm_remark:
+          serializer.fromJson<String?>(json['next_time_algorithm_remark']),
+      suggest_count_for_new_and_review: serializer
+          .fromJson<String?>(json['suggest_count_for_new_and_review']),
+      suggest_count_for_new_and_review_remark: serializer
+          .fromJson<String?>(json['suggest_count_for_new_and_review_remark']),
+      suggest_loop_cycle:
+          serializer.fromJson<String?>(json['suggest_loop_cycle']),
+      title: serializer.fromJson<String>(json['title']),
+      created_at: serializer.fromJson<DateTime>(json['created_at']),
+      id: serializer.fromJson<int>(json['id']),
+      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'button_algorithm': serializer.toJson<String?>(button_algorithm),
+      'button_algorithm_remark':
+          serializer.toJson<String?>(button_algorithm_remark),
+      'completed_algorithm': serializer.toJson<String?>(completed_algorithm),
+      'completed_algorithm_remark':
+          serializer.toJson<String?>(completed_algorithm_remark),
+      'creator_user_id': serializer.toJson<int>(creator_user_id),
+      'explain': serializer.toJson<String>(explain),
+      'familiarity_algorithm':
+          serializer.toJson<String?>(familiarity_algorithm),
+      'familiarity_algorithm_remark':
+          serializer.toJson<String?>(familiarity_algorithm_remark),
+      'father_memory_algorithm_id':
+          serializer.toJson<int?>(father_memory_algorithm_id),
+      'next_time_algorithm': serializer.toJson<String?>(next_time_algorithm),
+      'next_time_algorithm_remark':
+          serializer.toJson<String?>(next_time_algorithm_remark),
+      'suggest_count_for_new_and_review':
+          serializer.toJson<String?>(suggest_count_for_new_and_review),
+      'suggest_count_for_new_and_review_remark':
+          serializer.toJson<String?>(suggest_count_for_new_and_review_remark),
+      'suggest_loop_cycle': serializer.toJson<String?>(suggest_loop_cycle),
+      'title': serializer.toJson<String>(title),
+      'created_at': serializer.toJson<DateTime>(created_at),
+      'id': serializer.toJson<int>(id),
+      'updated_at': serializer.toJson<DateTime>(updated_at),
+    };
+  }
+
+  MemoryAlgorithm copyWith(
+          {Value<String?> button_algorithm = const Value.absent(),
+          Value<String?> button_algorithm_remark = const Value.absent(),
+          Value<String?> completed_algorithm = const Value.absent(),
+          Value<String?> completed_algorithm_remark = const Value.absent(),
+          int? creator_user_id,
+          String? explain,
+          Value<String?> familiarity_algorithm = const Value.absent(),
+          Value<String?> familiarity_algorithm_remark = const Value.absent(),
+          Value<int?> father_memory_algorithm_id = const Value.absent(),
+          Value<String?> next_time_algorithm = const Value.absent(),
+          Value<String?> next_time_algorithm_remark = const Value.absent(),
+          Value<String?> suggest_count_for_new_and_review =
+              const Value.absent(),
+          Value<String?> suggest_count_for_new_and_review_remark =
+              const Value.absent(),
+          Value<String?> suggest_loop_cycle = const Value.absent(),
+          String? title,
+          DateTime? created_at,
+          int? id,
+          DateTime? updated_at}) =>
+      MemoryAlgorithm(
+        button_algorithm: button_algorithm.present
+            ? button_algorithm.value
+            : this.button_algorithm,
+        button_algorithm_remark: button_algorithm_remark.present
+            ? button_algorithm_remark.value
+            : this.button_algorithm_remark,
+        completed_algorithm: completed_algorithm.present
+            ? completed_algorithm.value
+            : this.completed_algorithm,
+        completed_algorithm_remark: completed_algorithm_remark.present
+            ? completed_algorithm_remark.value
+            : this.completed_algorithm_remark,
+        creator_user_id: creator_user_id ?? this.creator_user_id,
+        explain: explain ?? this.explain,
+        familiarity_algorithm: familiarity_algorithm.present
+            ? familiarity_algorithm.value
+            : this.familiarity_algorithm,
+        familiarity_algorithm_remark: familiarity_algorithm_remark.present
+            ? familiarity_algorithm_remark.value
+            : this.familiarity_algorithm_remark,
+        father_memory_algorithm_id: father_memory_algorithm_id.present
+            ? father_memory_algorithm_id.value
+            : this.father_memory_algorithm_id,
+        next_time_algorithm: next_time_algorithm.present
+            ? next_time_algorithm.value
+            : this.next_time_algorithm,
+        next_time_algorithm_remark: next_time_algorithm_remark.present
+            ? next_time_algorithm_remark.value
+            : this.next_time_algorithm_remark,
+        suggest_count_for_new_and_review:
+            suggest_count_for_new_and_review.present
+                ? suggest_count_for_new_and_review.value
+                : this.suggest_count_for_new_and_review,
+        suggest_count_for_new_and_review_remark:
+            suggest_count_for_new_and_review_remark.present
+                ? suggest_count_for_new_and_review_remark.value
+                : this.suggest_count_for_new_and_review_remark,
+        suggest_loop_cycle: suggest_loop_cycle.present
+            ? suggest_loop_cycle.value
+            : this.suggest_loop_cycle,
+        title: title ?? this.title,
+        created_at: created_at ?? this.created_at,
+        id: id ?? this.id,
+        updated_at: updated_at ?? this.updated_at,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('MemoryAlgorithm(')
+          ..write('button_algorithm: $button_algorithm, ')
+          ..write('button_algorithm_remark: $button_algorithm_remark, ')
+          ..write('completed_algorithm: $completed_algorithm, ')
+          ..write('completed_algorithm_remark: $completed_algorithm_remark, ')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('explain: $explain, ')
+          ..write('familiarity_algorithm: $familiarity_algorithm, ')
+          ..write(
+              'familiarity_algorithm_remark: $familiarity_algorithm_remark, ')
+          ..write('father_memory_algorithm_id: $father_memory_algorithm_id, ')
+          ..write('next_time_algorithm: $next_time_algorithm, ')
+          ..write('next_time_algorithm_remark: $next_time_algorithm_remark, ')
+          ..write(
+              'suggest_count_for_new_and_review: $suggest_count_for_new_and_review, ')
+          ..write(
+              'suggest_count_for_new_and_review_remark: $suggest_count_for_new_and_review_remark, ')
+          ..write('suggest_loop_cycle: $suggest_loop_cycle, ')
+          ..write('title: $title, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      button_algorithm,
+      button_algorithm_remark,
+      completed_algorithm,
+      completed_algorithm_remark,
+      creator_user_id,
+      explain,
+      familiarity_algorithm,
+      familiarity_algorithm_remark,
+      father_memory_algorithm_id,
+      next_time_algorithm,
+      next_time_algorithm_remark,
+      suggest_count_for_new_and_review,
+      suggest_count_for_new_and_review_remark,
+      suggest_loop_cycle,
+      title,
+      created_at,
+      id,
+      updated_at);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MemoryAlgorithm &&
+          other.button_algorithm == this.button_algorithm &&
+          other.button_algorithm_remark == this.button_algorithm_remark &&
+          other.completed_algorithm == this.completed_algorithm &&
+          other.completed_algorithm_remark == this.completed_algorithm_remark &&
+          other.creator_user_id == this.creator_user_id &&
+          other.explain == this.explain &&
+          other.familiarity_algorithm == this.familiarity_algorithm &&
+          other.familiarity_algorithm_remark ==
+              this.familiarity_algorithm_remark &&
+          other.father_memory_algorithm_id == this.father_memory_algorithm_id &&
+          other.next_time_algorithm == this.next_time_algorithm &&
+          other.next_time_algorithm_remark == this.next_time_algorithm_remark &&
+          other.suggest_count_for_new_and_review ==
+              this.suggest_count_for_new_and_review &&
+          other.suggest_count_for_new_and_review_remark ==
+              this.suggest_count_for_new_and_review_remark &&
+          other.suggest_loop_cycle == this.suggest_loop_cycle &&
+          other.title == this.title &&
+          other.created_at == this.created_at &&
+          other.id == this.id &&
+          other.updated_at == this.updated_at);
+}
+
+class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
+  Value<String?> button_algorithm;
+  Value<String?> button_algorithm_remark;
+  Value<String?> completed_algorithm;
+  Value<String?> completed_algorithm_remark;
+  Value<int> creator_user_id;
+  Value<String> explain;
+  Value<String?> familiarity_algorithm;
+  Value<String?> familiarity_algorithm_remark;
+  Value<int?> father_memory_algorithm_id;
+  Value<String?> next_time_algorithm;
+  Value<String?> next_time_algorithm_remark;
+  Value<String?> suggest_count_for_new_and_review;
+  Value<String?> suggest_count_for_new_and_review_remark;
+  Value<String?> suggest_loop_cycle;
+  Value<String> title;
+  Value<DateTime> created_at;
+  Value<int> id;
+  Value<DateTime> updated_at;
+  MemoryAlgorithmsCompanion({
+    this.button_algorithm = const Value.absent(),
+    this.button_algorithm_remark = const Value.absent(),
+    this.completed_algorithm = const Value.absent(),
+    this.completed_algorithm_remark = const Value.absent(),
+    this.creator_user_id = const Value.absent(),
+    this.explain = const Value.absent(),
+    this.familiarity_algorithm = const Value.absent(),
+    this.familiarity_algorithm_remark = const Value.absent(),
+    this.father_memory_algorithm_id = const Value.absent(),
+    this.next_time_algorithm = const Value.absent(),
+    this.next_time_algorithm_remark = const Value.absent(),
+    this.suggest_count_for_new_and_review = const Value.absent(),
+    this.suggest_count_for_new_and_review_remark = const Value.absent(),
+    this.suggest_loop_cycle = const Value.absent(),
+    this.title = const Value.absent(),
+    this.created_at = const Value.absent(),
+    this.id = const Value.absent(),
+    this.updated_at = const Value.absent(),
+  });
+  MemoryAlgorithmsCompanion.insert({
+    this.button_algorithm = const Value.absent(),
+    this.button_algorithm_remark = const Value.absent(),
+    this.completed_algorithm = const Value.absent(),
+    this.completed_algorithm_remark = const Value.absent(),
+    required int creator_user_id,
+    required String explain,
+    this.familiarity_algorithm = const Value.absent(),
+    this.familiarity_algorithm_remark = const Value.absent(),
+    this.father_memory_algorithm_id = const Value.absent(),
+    this.next_time_algorithm = const Value.absent(),
+    this.next_time_algorithm_remark = const Value.absent(),
+    this.suggest_count_for_new_and_review = const Value.absent(),
+    this.suggest_count_for_new_and_review_remark = const Value.absent(),
+    this.suggest_loop_cycle = const Value.absent(),
+    required String title,
+    required DateTime created_at,
+    this.id = const Value.absent(),
+    required DateTime updated_at,
+  })  : creator_user_id = Value(creator_user_id),
+        explain = Value(explain),
+        title = Value(title),
+        created_at = Value(created_at),
+        updated_at = Value(updated_at);
+  static Insertable<MemoryAlgorithm> custom({
+    Expression<String>? button_algorithm,
+    Expression<String>? button_algorithm_remark,
+    Expression<String>? completed_algorithm,
+    Expression<String>? completed_algorithm_remark,
+    Expression<int>? creator_user_id,
+    Expression<String>? explain,
+    Expression<String>? familiarity_algorithm,
+    Expression<String>? familiarity_algorithm_remark,
+    Expression<int>? father_memory_algorithm_id,
+    Expression<String>? next_time_algorithm,
+    Expression<String>? next_time_algorithm_remark,
+    Expression<String>? suggest_count_for_new_and_review,
+    Expression<String>? suggest_count_for_new_and_review_remark,
+    Expression<String>? suggest_loop_cycle,
+    Expression<String>? title,
+    Expression<DateTime>? created_at,
+    Expression<int>? id,
+    Expression<DateTime>? updated_at,
+  }) {
+    return RawValuesInsertable({
+      if (button_algorithm != null) 'button_algorithm': button_algorithm,
+      if (button_algorithm_remark != null)
+        'button_algorithm_remark': button_algorithm_remark,
+      if (completed_algorithm != null)
+        'completed_algorithm': completed_algorithm,
+      if (completed_algorithm_remark != null)
+        'completed_algorithm_remark': completed_algorithm_remark,
+      if (creator_user_id != null) 'creator_user_id': creator_user_id,
+      if (explain != null) 'explain': explain,
+      if (familiarity_algorithm != null)
+        'familiarity_algorithm': familiarity_algorithm,
+      if (familiarity_algorithm_remark != null)
+        'familiarity_algorithm_remark': familiarity_algorithm_remark,
+      if (father_memory_algorithm_id != null)
+        'father_memory_algorithm_id': father_memory_algorithm_id,
+      if (next_time_algorithm != null)
+        'next_time_algorithm': next_time_algorithm,
+      if (next_time_algorithm_remark != null)
+        'next_time_algorithm_remark': next_time_algorithm_remark,
+      if (suggest_count_for_new_and_review != null)
+        'suggest_count_for_new_and_review': suggest_count_for_new_and_review,
+      if (suggest_count_for_new_and_review_remark != null)
+        'suggest_count_for_new_and_review_remark':
+            suggest_count_for_new_and_review_remark,
+      if (suggest_loop_cycle != null) 'suggest_loop_cycle': suggest_loop_cycle,
+      if (title != null) 'title': title,
+      if (created_at != null) 'created_at': created_at,
+      if (id != null) 'id': id,
+      if (updated_at != null) 'updated_at': updated_at,
+    });
+  }
+
+  MemoryAlgorithmsCompanion copyWith(
+      {Value<String?>? button_algorithm,
+      Value<String?>? button_algorithm_remark,
+      Value<String?>? completed_algorithm,
+      Value<String?>? completed_algorithm_remark,
+      Value<int>? creator_user_id,
+      Value<String>? explain,
+      Value<String?>? familiarity_algorithm,
+      Value<String?>? familiarity_algorithm_remark,
+      Value<int?>? father_memory_algorithm_id,
+      Value<String?>? next_time_algorithm,
+      Value<String?>? next_time_algorithm_remark,
+      Value<String?>? suggest_count_for_new_and_review,
+      Value<String?>? suggest_count_for_new_and_review_remark,
+      Value<String?>? suggest_loop_cycle,
+      Value<String>? title,
+      Value<DateTime>? created_at,
+      Value<int>? id,
+      Value<DateTime>? updated_at}) {
+    return MemoryAlgorithmsCompanion(
+      button_algorithm: button_algorithm ?? this.button_algorithm,
+      button_algorithm_remark:
+          button_algorithm_remark ?? this.button_algorithm_remark,
+      completed_algorithm: completed_algorithm ?? this.completed_algorithm,
+      completed_algorithm_remark:
+          completed_algorithm_remark ?? this.completed_algorithm_remark,
+      creator_user_id: creator_user_id ?? this.creator_user_id,
+      explain: explain ?? this.explain,
+      familiarity_algorithm:
+          familiarity_algorithm ?? this.familiarity_algorithm,
+      familiarity_algorithm_remark:
+          familiarity_algorithm_remark ?? this.familiarity_algorithm_remark,
+      father_memory_algorithm_id:
+          father_memory_algorithm_id ?? this.father_memory_algorithm_id,
+      next_time_algorithm: next_time_algorithm ?? this.next_time_algorithm,
+      next_time_algorithm_remark:
+          next_time_algorithm_remark ?? this.next_time_algorithm_remark,
+      suggest_count_for_new_and_review: suggest_count_for_new_and_review ??
+          this.suggest_count_for_new_and_review,
+      suggest_count_for_new_and_review_remark:
+          suggest_count_for_new_and_review_remark ??
+              this.suggest_count_for_new_and_review_remark,
+      suggest_loop_cycle: suggest_loop_cycle ?? this.suggest_loop_cycle,
+      title: title ?? this.title,
+      created_at: created_at ?? this.created_at,
+      id: id ?? this.id,
+      updated_at: updated_at ?? this.updated_at,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (button_algorithm.present) {
+      map['button_algorithm'] = Variable<String>(button_algorithm.value);
+    }
+    if (button_algorithm_remark.present) {
+      map['button_algorithm_remark'] =
+          Variable<String>(button_algorithm_remark.value);
+    }
+    if (completed_algorithm.present) {
+      map['completed_algorithm'] = Variable<String>(completed_algorithm.value);
+    }
+    if (completed_algorithm_remark.present) {
+      map['completed_algorithm_remark'] =
+          Variable<String>(completed_algorithm_remark.value);
+    }
+    if (creator_user_id.present) {
+      map['creator_user_id'] = Variable<int>(creator_user_id.value);
+    }
+    if (explain.present) {
+      map['explain'] = Variable<String>(explain.value);
+    }
+    if (familiarity_algorithm.present) {
+      map['familiarity_algorithm'] =
+          Variable<String>(familiarity_algorithm.value);
+    }
+    if (familiarity_algorithm_remark.present) {
+      map['familiarity_algorithm_remark'] =
+          Variable<String>(familiarity_algorithm_remark.value);
+    }
+    if (father_memory_algorithm_id.present) {
+      map['father_memory_algorithm_id'] =
+          Variable<int>(father_memory_algorithm_id.value);
+    }
+    if (next_time_algorithm.present) {
+      map['next_time_algorithm'] = Variable<String>(next_time_algorithm.value);
+    }
+    if (next_time_algorithm_remark.present) {
+      map['next_time_algorithm_remark'] =
+          Variable<String>(next_time_algorithm_remark.value);
+    }
+    if (suggest_count_for_new_and_review.present) {
+      map['suggest_count_for_new_and_review'] =
+          Variable<String>(suggest_count_for_new_and_review.value);
+    }
+    if (suggest_count_for_new_and_review_remark.present) {
+      map['suggest_count_for_new_and_review_remark'] =
+          Variable<String>(suggest_count_for_new_and_review_remark.value);
+    }
+    if (suggest_loop_cycle.present) {
+      map['suggest_loop_cycle'] = Variable<String>(suggest_loop_cycle.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (created_at.present) {
+      map['created_at'] = Variable<DateTime>(created_at.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updated_at.present) {
+      map['updated_at'] = Variable<DateTime>(updated_at.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MemoryAlgorithmsCompanion(')
+          ..write('button_algorithm: $button_algorithm, ')
+          ..write('button_algorithm_remark: $button_algorithm_remark, ')
+          ..write('completed_algorithm: $completed_algorithm, ')
+          ..write('completed_algorithm_remark: $completed_algorithm_remark, ')
+          ..write('creator_user_id: $creator_user_id, ')
+          ..write('explain: $explain, ')
+          ..write('familiarity_algorithm: $familiarity_algorithm, ')
+          ..write(
+              'familiarity_algorithm_remark: $familiarity_algorithm_remark, ')
+          ..write('father_memory_algorithm_id: $father_memory_algorithm_id, ')
+          ..write('next_time_algorithm: $next_time_algorithm, ')
+          ..write('next_time_algorithm_remark: $next_time_algorithm_remark, ')
+          ..write(
+              'suggest_count_for_new_and_review: $suggest_count_for_new_and_review, ')
+          ..write(
+              'suggest_count_for_new_and_review_remark: $suggest_count_for_new_and_review_remark, ')
+          ..write('suggest_loop_cycle: $suggest_loop_cycle, ')
+          ..write('title: $title, ')
+          ..write('created_at: $created_at, ')
+          ..write('id: $id, ')
+          ..write('updated_at: $updated_at')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $MemoryGroupsTable extends MemoryGroups
     with TableInfo<$MemoryGroupsTable, MemoryGroup> {
   @override
@@ -3628,11 +5066,11 @@ class $MemoryGroupsTable extends MemoryGroups
   late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
       'creator_user_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _memory_model_idMeta =
-      const VerificationMeta('memory_model_id');
+  static const VerificationMeta _memory_algorithm_idMeta =
+      const VerificationMeta('memory_algorithm_id');
   @override
-  late final GeneratedColumn<int> memory_model_id = GeneratedColumn<int>(
-      'memory_model_id', aliasedName, true,
+  late final GeneratedColumn<int> memory_algorithm_id = GeneratedColumn<int>(
+      'memory_algorithm_id', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _new_display_orderMeta =
       const VerificationMeta('new_display_order');
@@ -3719,7 +5157,7 @@ class $MemoryGroupsTable extends MemoryGroups
   List<GeneratedColumn> get $columns => [
         be_synced,
         creator_user_id,
-        memory_model_id,
+        memory_algorithm_id,
         new_display_order,
         new_review_display_order,
         review_display_order,
@@ -3757,11 +5195,11 @@ class $MemoryGroupsTable extends MemoryGroups
     } else if (isInserting) {
       context.missing(_creator_user_idMeta);
     }
-    if (data.containsKey('memory_model_id')) {
+    if (data.containsKey('memory_algorithm_id')) {
       context.handle(
-          _memory_model_idMeta,
-          memory_model_id.isAcceptableOrUnknown(
-              data['memory_model_id']!, _memory_model_idMeta));
+          _memory_algorithm_idMeta,
+          memory_algorithm_id.isAcceptableOrUnknown(
+              data['memory_algorithm_id']!, _memory_algorithm_idMeta));
     }
     context.handle(_new_display_orderMeta, const VerificationResult.success());
     context.handle(
@@ -3837,8 +5275,8 @@ class $MemoryGroupsTable extends MemoryGroups
           .read(DriftSqlType.bool, data['${effectivePrefix}be_synced'])!,
       creator_user_id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
-      memory_model_id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}memory_model_id']),
+      memory_algorithm_id: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}memory_algorithm_id']),
       new_display_order: $MemoryGroupsTable.$converternew_display_order.fromSql(
           attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}new_display_order'])!),
@@ -3894,7 +5332,7 @@ class $MemoryGroupsTable extends MemoryGroups
 class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   bool be_synced;
   int creator_user_id;
-  int? memory_model_id;
+  int? memory_algorithm_id;
   NewDisplayOrder new_display_order;
   NewReviewDisplayOrder new_review_display_order;
   ReviewDisplayOrder review_display_order;
@@ -3910,7 +5348,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   MemoryGroup(
       {required this.be_synced,
       required this.creator_user_id,
-      this.memory_model_id,
+      this.memory_algorithm_id,
       required this.new_display_order,
       required this.new_review_display_order,
       required this.review_display_order,
@@ -3928,8 +5366,8 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     final map = <String, Expression>{};
     map['be_synced'] = Variable<bool>(be_synced);
     map['creator_user_id'] = Variable<int>(creator_user_id);
-    if (!nullToAbsent || memory_model_id != null) {
-      map['memory_model_id'] = Variable<int>(memory_model_id);
+    if (!nullToAbsent || memory_algorithm_id != null) {
+      map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id);
     }
     {
       final converter = $MemoryGroupsTable.$converternew_display_order;
@@ -3967,9 +5405,9 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     return MemoryGroupsCompanion(
       be_synced: Value(be_synced),
       creator_user_id: Value(creator_user_id),
-      memory_model_id: memory_model_id == null && nullToAbsent
+      memory_algorithm_id: memory_algorithm_id == null && nullToAbsent
           ? const Value.absent()
-          : Value(memory_model_id),
+          : Value(memory_algorithm_id),
       new_display_order: Value(new_display_order),
       new_review_display_order: Value(new_review_display_order),
       review_display_order: Value(review_display_order),
@@ -3993,7 +5431,8 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     return MemoryGroup(
       be_synced: serializer.fromJson<bool>(json['be_synced']),
       creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
-      memory_model_id: serializer.fromJson<int?>(json['memory_model_id']),
+      memory_algorithm_id:
+          serializer.fromJson<int?>(json['memory_algorithm_id']),
       new_display_order: $MemoryGroupsTable.$converternew_display_order
           .fromJson(serializer.fromJson<String>(json['new_display_order'])),
       new_review_display_order:
@@ -4020,7 +5459,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     return <String, dynamic>{
       'be_synced': serializer.toJson<bool>(be_synced),
       'creator_user_id': serializer.toJson<int>(creator_user_id),
-      'memory_model_id': serializer.toJson<int?>(memory_model_id),
+      'memory_algorithm_id': serializer.toJson<int?>(memory_algorithm_id),
       'new_display_order': serializer.toJson<String>($MemoryGroupsTable
           .$converternew_display_order
           .toJson(new_display_order)),
@@ -4046,7 +5485,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   MemoryGroup copyWith(
           {bool? be_synced,
           int? creator_user_id,
-          Value<int?> memory_model_id = const Value.absent(),
+          Value<int?> memory_algorithm_id = const Value.absent(),
           NewDisplayOrder? new_display_order,
           NewReviewDisplayOrder? new_review_display_order,
           ReviewDisplayOrder? review_display_order,
@@ -4062,9 +5501,9 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       MemoryGroup(
         be_synced: be_synced ?? this.be_synced,
         creator_user_id: creator_user_id ?? this.creator_user_id,
-        memory_model_id: memory_model_id.present
-            ? memory_model_id.value
-            : this.memory_model_id,
+        memory_algorithm_id: memory_algorithm_id.present
+            ? memory_algorithm_id.value
+            : this.memory_algorithm_id,
         new_display_order: new_display_order ?? this.new_display_order,
         new_review_display_order:
             new_review_display_order ?? this.new_review_display_order,
@@ -4084,7 +5523,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     return (StringBuffer('MemoryGroup(')
           ..write('be_synced: $be_synced, ')
           ..write('creator_user_id: $creator_user_id, ')
-          ..write('memory_model_id: $memory_model_id, ')
+          ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('new_display_order: $new_display_order, ')
           ..write('new_review_display_order: $new_review_display_order, ')
           ..write('review_display_order: $review_display_order, ')
@@ -4105,7 +5544,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   int get hashCode => Object.hash(
       be_synced,
       creator_user_id,
-      memory_model_id,
+      memory_algorithm_id,
       new_display_order,
       new_review_display_order,
       review_display_order,
@@ -4124,7 +5563,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       (other is MemoryGroup &&
           other.be_synced == this.be_synced &&
           other.creator_user_id == this.creator_user_id &&
-          other.memory_model_id == this.memory_model_id &&
+          other.memory_algorithm_id == this.memory_algorithm_id &&
           other.new_display_order == this.new_display_order &&
           other.new_review_display_order == this.new_review_display_order &&
           other.review_display_order == this.review_display_order &&
@@ -4142,7 +5581,7 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
 class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   Value<bool> be_synced;
   Value<int> creator_user_id;
-  Value<int?> memory_model_id;
+  Value<int?> memory_algorithm_id;
   Value<NewDisplayOrder> new_display_order;
   Value<NewReviewDisplayOrder> new_review_display_order;
   Value<ReviewDisplayOrder> review_display_order;
@@ -4158,7 +5597,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   MemoryGroupsCompanion({
     this.be_synced = const Value.absent(),
     this.creator_user_id = const Value.absent(),
-    this.memory_model_id = const Value.absent(),
+    this.memory_algorithm_id = const Value.absent(),
     this.new_display_order = const Value.absent(),
     this.new_review_display_order = const Value.absent(),
     this.review_display_order = const Value.absent(),
@@ -4175,7 +5614,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   MemoryGroupsCompanion.insert({
     required bool be_synced,
     required int creator_user_id,
-    this.memory_model_id = const Value.absent(),
+    this.memory_algorithm_id = const Value.absent(),
     required NewDisplayOrder new_display_order,
     required NewReviewDisplayOrder new_review_display_order,
     required ReviewDisplayOrder review_display_order,
@@ -4203,7 +5642,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   static Insertable<MemoryGroup> custom({
     Expression<bool>? be_synced,
     Expression<int>? creator_user_id,
-    Expression<int>? memory_model_id,
+    Expression<int>? memory_algorithm_id,
     Expression<String>? new_display_order,
     Expression<String>? new_review_display_order,
     Expression<String>? review_display_order,
@@ -4220,7 +5659,8 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     return RawValuesInsertable({
       if (be_synced != null) 'be_synced': be_synced,
       if (creator_user_id != null) 'creator_user_id': creator_user_id,
-      if (memory_model_id != null) 'memory_model_id': memory_model_id,
+      if (memory_algorithm_id != null)
+        'memory_algorithm_id': memory_algorithm_id,
       if (new_display_order != null) 'new_display_order': new_display_order,
       if (new_review_display_order != null)
         'new_review_display_order': new_review_display_order,
@@ -4242,7 +5682,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   MemoryGroupsCompanion copyWith(
       {Value<bool>? be_synced,
       Value<int>? creator_user_id,
-      Value<int?>? memory_model_id,
+      Value<int?>? memory_algorithm_id,
       Value<NewDisplayOrder>? new_display_order,
       Value<NewReviewDisplayOrder>? new_review_display_order,
       Value<ReviewDisplayOrder>? review_display_order,
@@ -4258,7 +5698,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     return MemoryGroupsCompanion(
       be_synced: be_synced ?? this.be_synced,
       creator_user_id: creator_user_id ?? this.creator_user_id,
-      memory_model_id: memory_model_id ?? this.memory_model_id,
+      memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
       new_display_order: new_display_order ?? this.new_display_order,
       new_review_display_order:
           new_review_display_order ?? this.new_review_display_order,
@@ -4284,8 +5724,8 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     if (creator_user_id.present) {
       map['creator_user_id'] = Variable<int>(creator_user_id.value);
     }
-    if (memory_model_id.present) {
-      map['memory_model_id'] = Variable<int>(memory_model_id.value);
+    if (memory_algorithm_id.present) {
+      map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id.value);
     }
     if (new_display_order.present) {
       final converter = $MemoryGroupsTable.$converternew_display_order;
@@ -4343,7 +5783,7 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     return (StringBuffer('MemoryGroupsCompanion(')
           ..write('be_synced: $be_synced, ')
           ..write('creator_user_id: $creator_user_id, ')
-          ..write('memory_model_id: $memory_model_id, ')
+          ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('new_display_order: $new_display_order, ')
           ..write('new_review_display_order: $new_review_display_order, ')
           ..write('review_display_order: $review_display_order, ')
@@ -4353,646 +5793,6 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
           ..write('sync_version: $sync_version, ')
           ..write('title: $title, ')
           ..write('will_new_learn_count: $will_new_learn_count, ')
-          ..write('created_at: $created_at, ')
-          ..write('id: $id, ')
-          ..write('updated_at: $updated_at')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $MemoryModelsTable extends MemoryModels
-    with TableInfo<$MemoryModelsTable, MemoryModel> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $MemoryModelsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _button_algorithmMeta =
-      const VerificationMeta('button_algorithm');
-  @override
-  late final GeneratedColumn<String> button_algorithm = GeneratedColumn<String>(
-      'button_algorithm', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _button_algorithm_remarkMeta =
-      const VerificationMeta('button_algorithm_remark');
-  @override
-  late final GeneratedColumn<String> button_algorithm_remark =
-      GeneratedColumn<String>('button_algorithm_remark', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _creator_user_idMeta =
-      const VerificationMeta('creator_user_id');
-  @override
-  late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
-      'creator_user_id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _familiarity_algorithmMeta =
-      const VerificationMeta('familiarity_algorithm');
-  @override
-  late final GeneratedColumn<String> familiarity_algorithm =
-      GeneratedColumn<String>('familiarity_algorithm', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _familiarity_algorithm_remarkMeta =
-      const VerificationMeta('familiarity_algorithm_remark');
-  @override
-  late final GeneratedColumn<String> familiarity_algorithm_remark =
-      GeneratedColumn<String>('familiarity_algorithm_remark', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _father_memory_model_idMeta =
-      const VerificationMeta('father_memory_model_id');
-  @override
-  late final GeneratedColumn<int> father_memory_model_id = GeneratedColumn<int>(
-      'father_memory_model_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _next_time_algorithmMeta =
-      const VerificationMeta('next_time_algorithm');
-  @override
-  late final GeneratedColumn<String> next_time_algorithm =
-      GeneratedColumn<String>('next_time_algorithm', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _next_time_algorithm_remarkMeta =
-      const VerificationMeta('next_time_algorithm_remark');
-  @override
-  late final GeneratedColumn<String> next_time_algorithm_remark =
-      GeneratedColumn<String>('next_time_algorithm_remark', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
-  @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _created_atMeta =
-      const VerificationMeta('created_at');
-  @override
-  late final GeneratedColumn<DateTime> created_at = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _updated_atMeta =
-      const VerificationMeta('updated_at');
-  @override
-  late final GeneratedColumn<DateTime> updated_at = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [
-        button_algorithm,
-        button_algorithm_remark,
-        creator_user_id,
-        familiarity_algorithm,
-        familiarity_algorithm_remark,
-        father_memory_model_id,
-        next_time_algorithm,
-        next_time_algorithm_remark,
-        title,
-        created_at,
-        id,
-        updated_at
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'memory_models';
-  @override
-  VerificationContext validateIntegrity(Insertable<MemoryModel> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('button_algorithm')) {
-      context.handle(
-          _button_algorithmMeta,
-          button_algorithm.isAcceptableOrUnknown(
-              data['button_algorithm']!, _button_algorithmMeta));
-    }
-    if (data.containsKey('button_algorithm_remark')) {
-      context.handle(
-          _button_algorithm_remarkMeta,
-          button_algorithm_remark.isAcceptableOrUnknown(
-              data['button_algorithm_remark']!, _button_algorithm_remarkMeta));
-    }
-    if (data.containsKey('creator_user_id')) {
-      context.handle(
-          _creator_user_idMeta,
-          creator_user_id.isAcceptableOrUnknown(
-              data['creator_user_id']!, _creator_user_idMeta));
-    } else if (isInserting) {
-      context.missing(_creator_user_idMeta);
-    }
-    if (data.containsKey('familiarity_algorithm')) {
-      context.handle(
-          _familiarity_algorithmMeta,
-          familiarity_algorithm.isAcceptableOrUnknown(
-              data['familiarity_algorithm']!, _familiarity_algorithmMeta));
-    }
-    if (data.containsKey('familiarity_algorithm_remark')) {
-      context.handle(
-          _familiarity_algorithm_remarkMeta,
-          familiarity_algorithm_remark.isAcceptableOrUnknown(
-              data['familiarity_algorithm_remark']!,
-              _familiarity_algorithm_remarkMeta));
-    }
-    if (data.containsKey('father_memory_model_id')) {
-      context.handle(
-          _father_memory_model_idMeta,
-          father_memory_model_id.isAcceptableOrUnknown(
-              data['father_memory_model_id']!, _father_memory_model_idMeta));
-    }
-    if (data.containsKey('next_time_algorithm')) {
-      context.handle(
-          _next_time_algorithmMeta,
-          next_time_algorithm.isAcceptableOrUnknown(
-              data['next_time_algorithm']!, _next_time_algorithmMeta));
-    }
-    if (data.containsKey('next_time_algorithm_remark')) {
-      context.handle(
-          _next_time_algorithm_remarkMeta,
-          next_time_algorithm_remark.isAcceptableOrUnknown(
-              data['next_time_algorithm_remark']!,
-              _next_time_algorithm_remarkMeta));
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-          _created_atMeta,
-          created_at.isAcceptableOrUnknown(
-              data['created_at']!, _created_atMeta));
-    } else if (isInserting) {
-      context.missing(_created_atMeta);
-    }
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-          _updated_atMeta,
-          updated_at.isAcceptableOrUnknown(
-              data['updated_at']!, _updated_atMeta));
-    } else if (isInserting) {
-      context.missing(_updated_atMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  MemoryModel map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MemoryModel(
-      button_algorithm: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}button_algorithm']),
-      button_algorithm_remark: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}button_algorithm_remark']),
-      creator_user_id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
-      familiarity_algorithm: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}familiarity_algorithm']),
-      familiarity_algorithm_remark: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}familiarity_algorithm_remark']),
-      father_memory_model_id: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}father_memory_model_id']),
-      next_time_algorithm: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}next_time_algorithm']),
-      next_time_algorithm_remark: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}next_time_algorithm_remark']),
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      created_at: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      updated_at: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
-    );
-  }
-
-  @override
-  $MemoryModelsTable createAlias(String alias) {
-    return $MemoryModelsTable(attachedDatabase, alias);
-  }
-}
-
-class MemoryModel extends DataClass implements Insertable<MemoryModel> {
-  String? button_algorithm;
-  String? button_algorithm_remark;
-  int creator_user_id;
-  String? familiarity_algorithm;
-  String? familiarity_algorithm_remark;
-  int? father_memory_model_id;
-  String? next_time_algorithm;
-  String? next_time_algorithm_remark;
-  String title;
-  DateTime created_at;
-  int id;
-  DateTime updated_at;
-  MemoryModel(
-      {this.button_algorithm,
-      this.button_algorithm_remark,
-      required this.creator_user_id,
-      this.familiarity_algorithm,
-      this.familiarity_algorithm_remark,
-      this.father_memory_model_id,
-      this.next_time_algorithm,
-      this.next_time_algorithm_remark,
-      required this.title,
-      required this.created_at,
-      required this.id,
-      required this.updated_at});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (!nullToAbsent || button_algorithm != null) {
-      map['button_algorithm'] = Variable<String>(button_algorithm);
-    }
-    if (!nullToAbsent || button_algorithm_remark != null) {
-      map['button_algorithm_remark'] =
-          Variable<String>(button_algorithm_remark);
-    }
-    map['creator_user_id'] = Variable<int>(creator_user_id);
-    if (!nullToAbsent || familiarity_algorithm != null) {
-      map['familiarity_algorithm'] = Variable<String>(familiarity_algorithm);
-    }
-    if (!nullToAbsent || familiarity_algorithm_remark != null) {
-      map['familiarity_algorithm_remark'] =
-          Variable<String>(familiarity_algorithm_remark);
-    }
-    if (!nullToAbsent || father_memory_model_id != null) {
-      map['father_memory_model_id'] = Variable<int>(father_memory_model_id);
-    }
-    if (!nullToAbsent || next_time_algorithm != null) {
-      map['next_time_algorithm'] = Variable<String>(next_time_algorithm);
-    }
-    if (!nullToAbsent || next_time_algorithm_remark != null) {
-      map['next_time_algorithm_remark'] =
-          Variable<String>(next_time_algorithm_remark);
-    }
-    map['title'] = Variable<String>(title);
-    map['created_at'] = Variable<DateTime>(created_at);
-    map['id'] = Variable<int>(id);
-    map['updated_at'] = Variable<DateTime>(updated_at);
-    return map;
-  }
-
-  MemoryModelsCompanion toCompanion(bool nullToAbsent) {
-    return MemoryModelsCompanion(
-      button_algorithm: button_algorithm == null && nullToAbsent
-          ? const Value.absent()
-          : Value(button_algorithm),
-      button_algorithm_remark: button_algorithm_remark == null && nullToAbsent
-          ? const Value.absent()
-          : Value(button_algorithm_remark),
-      creator_user_id: Value(creator_user_id),
-      familiarity_algorithm: familiarity_algorithm == null && nullToAbsent
-          ? const Value.absent()
-          : Value(familiarity_algorithm),
-      familiarity_algorithm_remark:
-          familiarity_algorithm_remark == null && nullToAbsent
-              ? const Value.absent()
-              : Value(familiarity_algorithm_remark),
-      father_memory_model_id: father_memory_model_id == null && nullToAbsent
-          ? const Value.absent()
-          : Value(father_memory_model_id),
-      next_time_algorithm: next_time_algorithm == null && nullToAbsent
-          ? const Value.absent()
-          : Value(next_time_algorithm),
-      next_time_algorithm_remark:
-          next_time_algorithm_remark == null && nullToAbsent
-              ? const Value.absent()
-              : Value(next_time_algorithm_remark),
-      title: Value(title),
-      created_at: Value(created_at),
-      id: Value(id),
-      updated_at: Value(updated_at),
-    );
-  }
-
-  factory MemoryModel.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MemoryModel(
-      button_algorithm: serializer.fromJson<String?>(json['button_algorithm']),
-      button_algorithm_remark:
-          serializer.fromJson<String?>(json['button_algorithm_remark']),
-      creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
-      familiarity_algorithm:
-          serializer.fromJson<String?>(json['familiarity_algorithm']),
-      familiarity_algorithm_remark:
-          serializer.fromJson<String?>(json['familiarity_algorithm_remark']),
-      father_memory_model_id:
-          serializer.fromJson<int?>(json['father_memory_model_id']),
-      next_time_algorithm:
-          serializer.fromJson<String?>(json['next_time_algorithm']),
-      next_time_algorithm_remark:
-          serializer.fromJson<String?>(json['next_time_algorithm_remark']),
-      title: serializer.fromJson<String>(json['title']),
-      created_at: serializer.fromJson<DateTime>(json['created_at']),
-      id: serializer.fromJson<int>(json['id']),
-      updated_at: serializer.fromJson<DateTime>(json['updated_at']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'button_algorithm': serializer.toJson<String?>(button_algorithm),
-      'button_algorithm_remark':
-          serializer.toJson<String?>(button_algorithm_remark),
-      'creator_user_id': serializer.toJson<int>(creator_user_id),
-      'familiarity_algorithm':
-          serializer.toJson<String?>(familiarity_algorithm),
-      'familiarity_algorithm_remark':
-          serializer.toJson<String?>(familiarity_algorithm_remark),
-      'father_memory_model_id': serializer.toJson<int?>(father_memory_model_id),
-      'next_time_algorithm': serializer.toJson<String?>(next_time_algorithm),
-      'next_time_algorithm_remark':
-          serializer.toJson<String?>(next_time_algorithm_remark),
-      'title': serializer.toJson<String>(title),
-      'created_at': serializer.toJson<DateTime>(created_at),
-      'id': serializer.toJson<int>(id),
-      'updated_at': serializer.toJson<DateTime>(updated_at),
-    };
-  }
-
-  MemoryModel copyWith(
-          {Value<String?> button_algorithm = const Value.absent(),
-          Value<String?> button_algorithm_remark = const Value.absent(),
-          int? creator_user_id,
-          Value<String?> familiarity_algorithm = const Value.absent(),
-          Value<String?> familiarity_algorithm_remark = const Value.absent(),
-          Value<int?> father_memory_model_id = const Value.absent(),
-          Value<String?> next_time_algorithm = const Value.absent(),
-          Value<String?> next_time_algorithm_remark = const Value.absent(),
-          String? title,
-          DateTime? created_at,
-          int? id,
-          DateTime? updated_at}) =>
-      MemoryModel(
-        button_algorithm: button_algorithm.present
-            ? button_algorithm.value
-            : this.button_algorithm,
-        button_algorithm_remark: button_algorithm_remark.present
-            ? button_algorithm_remark.value
-            : this.button_algorithm_remark,
-        creator_user_id: creator_user_id ?? this.creator_user_id,
-        familiarity_algorithm: familiarity_algorithm.present
-            ? familiarity_algorithm.value
-            : this.familiarity_algorithm,
-        familiarity_algorithm_remark: familiarity_algorithm_remark.present
-            ? familiarity_algorithm_remark.value
-            : this.familiarity_algorithm_remark,
-        father_memory_model_id: father_memory_model_id.present
-            ? father_memory_model_id.value
-            : this.father_memory_model_id,
-        next_time_algorithm: next_time_algorithm.present
-            ? next_time_algorithm.value
-            : this.next_time_algorithm,
-        next_time_algorithm_remark: next_time_algorithm_remark.present
-            ? next_time_algorithm_remark.value
-            : this.next_time_algorithm_remark,
-        title: title ?? this.title,
-        created_at: created_at ?? this.created_at,
-        id: id ?? this.id,
-        updated_at: updated_at ?? this.updated_at,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('MemoryModel(')
-          ..write('button_algorithm: $button_algorithm, ')
-          ..write('button_algorithm_remark: $button_algorithm_remark, ')
-          ..write('creator_user_id: $creator_user_id, ')
-          ..write('familiarity_algorithm: $familiarity_algorithm, ')
-          ..write(
-              'familiarity_algorithm_remark: $familiarity_algorithm_remark, ')
-          ..write('father_memory_model_id: $father_memory_model_id, ')
-          ..write('next_time_algorithm: $next_time_algorithm, ')
-          ..write('next_time_algorithm_remark: $next_time_algorithm_remark, ')
-          ..write('title: $title, ')
-          ..write('created_at: $created_at, ')
-          ..write('id: $id, ')
-          ..write('updated_at: $updated_at')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      button_algorithm,
-      button_algorithm_remark,
-      creator_user_id,
-      familiarity_algorithm,
-      familiarity_algorithm_remark,
-      father_memory_model_id,
-      next_time_algorithm,
-      next_time_algorithm_remark,
-      title,
-      created_at,
-      id,
-      updated_at);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is MemoryModel &&
-          other.button_algorithm == this.button_algorithm &&
-          other.button_algorithm_remark == this.button_algorithm_remark &&
-          other.creator_user_id == this.creator_user_id &&
-          other.familiarity_algorithm == this.familiarity_algorithm &&
-          other.familiarity_algorithm_remark ==
-              this.familiarity_algorithm_remark &&
-          other.father_memory_model_id == this.father_memory_model_id &&
-          other.next_time_algorithm == this.next_time_algorithm &&
-          other.next_time_algorithm_remark == this.next_time_algorithm_remark &&
-          other.title == this.title &&
-          other.created_at == this.created_at &&
-          other.id == this.id &&
-          other.updated_at == this.updated_at);
-}
-
-class MemoryModelsCompanion extends UpdateCompanion<MemoryModel> {
-  Value<String?> button_algorithm;
-  Value<String?> button_algorithm_remark;
-  Value<int> creator_user_id;
-  Value<String?> familiarity_algorithm;
-  Value<String?> familiarity_algorithm_remark;
-  Value<int?> father_memory_model_id;
-  Value<String?> next_time_algorithm;
-  Value<String?> next_time_algorithm_remark;
-  Value<String> title;
-  Value<DateTime> created_at;
-  Value<int> id;
-  Value<DateTime> updated_at;
-  MemoryModelsCompanion({
-    this.button_algorithm = const Value.absent(),
-    this.button_algorithm_remark = const Value.absent(),
-    this.creator_user_id = const Value.absent(),
-    this.familiarity_algorithm = const Value.absent(),
-    this.familiarity_algorithm_remark = const Value.absent(),
-    this.father_memory_model_id = const Value.absent(),
-    this.next_time_algorithm = const Value.absent(),
-    this.next_time_algorithm_remark = const Value.absent(),
-    this.title = const Value.absent(),
-    this.created_at = const Value.absent(),
-    this.id = const Value.absent(),
-    this.updated_at = const Value.absent(),
-  });
-  MemoryModelsCompanion.insert({
-    this.button_algorithm = const Value.absent(),
-    this.button_algorithm_remark = const Value.absent(),
-    required int creator_user_id,
-    this.familiarity_algorithm = const Value.absent(),
-    this.familiarity_algorithm_remark = const Value.absent(),
-    this.father_memory_model_id = const Value.absent(),
-    this.next_time_algorithm = const Value.absent(),
-    this.next_time_algorithm_remark = const Value.absent(),
-    required String title,
-    required DateTime created_at,
-    this.id = const Value.absent(),
-    required DateTime updated_at,
-  })  : creator_user_id = Value(creator_user_id),
-        title = Value(title),
-        created_at = Value(created_at),
-        updated_at = Value(updated_at);
-  static Insertable<MemoryModel> custom({
-    Expression<String>? button_algorithm,
-    Expression<String>? button_algorithm_remark,
-    Expression<int>? creator_user_id,
-    Expression<String>? familiarity_algorithm,
-    Expression<String>? familiarity_algorithm_remark,
-    Expression<int>? father_memory_model_id,
-    Expression<String>? next_time_algorithm,
-    Expression<String>? next_time_algorithm_remark,
-    Expression<String>? title,
-    Expression<DateTime>? created_at,
-    Expression<int>? id,
-    Expression<DateTime>? updated_at,
-  }) {
-    return RawValuesInsertable({
-      if (button_algorithm != null) 'button_algorithm': button_algorithm,
-      if (button_algorithm_remark != null)
-        'button_algorithm_remark': button_algorithm_remark,
-      if (creator_user_id != null) 'creator_user_id': creator_user_id,
-      if (familiarity_algorithm != null)
-        'familiarity_algorithm': familiarity_algorithm,
-      if (familiarity_algorithm_remark != null)
-        'familiarity_algorithm_remark': familiarity_algorithm_remark,
-      if (father_memory_model_id != null)
-        'father_memory_model_id': father_memory_model_id,
-      if (next_time_algorithm != null)
-        'next_time_algorithm': next_time_algorithm,
-      if (next_time_algorithm_remark != null)
-        'next_time_algorithm_remark': next_time_algorithm_remark,
-      if (title != null) 'title': title,
-      if (created_at != null) 'created_at': created_at,
-      if (id != null) 'id': id,
-      if (updated_at != null) 'updated_at': updated_at,
-    });
-  }
-
-  MemoryModelsCompanion copyWith(
-      {Value<String?>? button_algorithm,
-      Value<String?>? button_algorithm_remark,
-      Value<int>? creator_user_id,
-      Value<String?>? familiarity_algorithm,
-      Value<String?>? familiarity_algorithm_remark,
-      Value<int?>? father_memory_model_id,
-      Value<String?>? next_time_algorithm,
-      Value<String?>? next_time_algorithm_remark,
-      Value<String>? title,
-      Value<DateTime>? created_at,
-      Value<int>? id,
-      Value<DateTime>? updated_at}) {
-    return MemoryModelsCompanion(
-      button_algorithm: button_algorithm ?? this.button_algorithm,
-      button_algorithm_remark:
-          button_algorithm_remark ?? this.button_algorithm_remark,
-      creator_user_id: creator_user_id ?? this.creator_user_id,
-      familiarity_algorithm:
-          familiarity_algorithm ?? this.familiarity_algorithm,
-      familiarity_algorithm_remark:
-          familiarity_algorithm_remark ?? this.familiarity_algorithm_remark,
-      father_memory_model_id:
-          father_memory_model_id ?? this.father_memory_model_id,
-      next_time_algorithm: next_time_algorithm ?? this.next_time_algorithm,
-      next_time_algorithm_remark:
-          next_time_algorithm_remark ?? this.next_time_algorithm_remark,
-      title: title ?? this.title,
-      created_at: created_at ?? this.created_at,
-      id: id ?? this.id,
-      updated_at: updated_at ?? this.updated_at,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (button_algorithm.present) {
-      map['button_algorithm'] = Variable<String>(button_algorithm.value);
-    }
-    if (button_algorithm_remark.present) {
-      map['button_algorithm_remark'] =
-          Variable<String>(button_algorithm_remark.value);
-    }
-    if (creator_user_id.present) {
-      map['creator_user_id'] = Variable<int>(creator_user_id.value);
-    }
-    if (familiarity_algorithm.present) {
-      map['familiarity_algorithm'] =
-          Variable<String>(familiarity_algorithm.value);
-    }
-    if (familiarity_algorithm_remark.present) {
-      map['familiarity_algorithm_remark'] =
-          Variable<String>(familiarity_algorithm_remark.value);
-    }
-    if (father_memory_model_id.present) {
-      map['father_memory_model_id'] =
-          Variable<int>(father_memory_model_id.value);
-    }
-    if (next_time_algorithm.present) {
-      map['next_time_algorithm'] = Variable<String>(next_time_algorithm.value);
-    }
-    if (next_time_algorithm_remark.present) {
-      map['next_time_algorithm_remark'] =
-          Variable<String>(next_time_algorithm_remark.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (created_at.present) {
-      map['created_at'] = Variable<DateTime>(created_at.value);
-    }
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (updated_at.present) {
-      map['updated_at'] = Variable<DateTime>(updated_at.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('MemoryModelsCompanion(')
-          ..write('button_algorithm: $button_algorithm, ')
-          ..write('button_algorithm_remark: $button_algorithm_remark, ')
-          ..write('creator_user_id: $creator_user_id, ')
-          ..write('familiarity_algorithm: $familiarity_algorithm, ')
-          ..write(
-              'familiarity_algorithm_remark: $familiarity_algorithm_remark, ')
-          ..write('father_memory_model_id: $father_memory_model_id, ')
-          ..write('next_time_algorithm: $next_time_algorithm, ')
-          ..write('next_time_algorithm_remark: $next_time_algorithm_remark, ')
-          ..write('title: $title, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')
@@ -7806,6 +8606,8 @@ abstract class _$DriftDb extends GeneratedDatabase {
       $FragmentGroupInfosTable(this);
   late final $FragmentMemoryInfosTable fragmentMemoryInfos =
       $FragmentMemoryInfosTable(this);
+  late final $MemoryGroupCycleInfosTable memoryGroupCycleInfos =
+      $MemoryGroupCycleInfosTable(this);
   late final $FragmentGroupTagsTable fragmentGroupTags =
       $FragmentGroupTagsTable(this);
   late final $RFragment2FragmentGroupsTable rFragment2FragmentGroups =
@@ -7813,8 +8615,9 @@ abstract class _$DriftDb extends GeneratedDatabase {
   late final $Test2sTable test2s = $Test2sTable(this);
   late final $TestsTable tests = $TestsTable(this);
   late final $FragmentsTable fragments = $FragmentsTable(this);
+  late final $MemoryAlgorithmsTable memoryAlgorithms =
+      $MemoryAlgorithmsTable(this);
   late final $MemoryGroupsTable memoryGroups = $MemoryGroupsTable(this);
-  late final $MemoryModelsTable memoryModels = $MemoryModelsTable(this);
   late final $ShorthandsTable shorthands = $ShorthandsTable(this);
   late final $FragmentGroupBeSavedsTable fragmentGroupBeSaveds =
       $FragmentGroupBeSavedsTable(this);
@@ -7842,13 +8645,14 @@ abstract class _$DriftDb extends GeneratedDatabase {
         syncs,
         fragmentGroupInfos,
         fragmentMemoryInfos,
+        memoryGroupCycleInfos,
         fragmentGroupTags,
         rFragment2FragmentGroups,
         test2s,
         tests,
         fragments,
+        memoryAlgorithms,
         memoryGroups,
-        memoryModels,
         shorthands,
         fragmentGroupBeSaveds,
         fragmentGroupLikes,

@@ -30,7 +30,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
           topKeepWidget: Row(
             children: [
               _appBarLeadingWidget(),
-              Text("本轮", style: Theme.of(context).textTheme.titleMedium),
+              Text("本周期", style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               _appBarRightButtonWidget(),
             ],

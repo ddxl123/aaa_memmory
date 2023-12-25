@@ -32,7 +32,7 @@ Future<void> showCreateMemoryGroupDialog() async {
               table_name: driftDb.memoryGroups.actualTableName,
               row: Crt.memoryGroupEntity(
                 start_time: null,
-                memory_model_id: null,
+                memory_algorithm_id: null,
                 title: tec.text.trim(),
                 will_new_learn_count: 0,
                 review_interval: DateTime.now(),

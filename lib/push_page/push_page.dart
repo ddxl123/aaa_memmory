@@ -6,10 +6,8 @@ import '../home/personal_home_page/PersonalHomePage.dart';
 import '../page/edit/FragmentGizmoEditPage/FragmentGizmoEditPage.dart';
 import '../page/edit/FragmentGizmoEditPage/FragmentTemplate/base/FragmentTemplate.dart';
 import '../page/edit/FragmentGroupGizmoEditPage.dart';
-import '../page/edit/MemoryGroupGizmoEditPage/MemoryGroupGizmoEditPage.dart';
-import '../page/edit/MemoryModelGizomoEditPage/MemoryModelGizmoEditPage.dart';
+import '../page/edit/MemoryAlgorithmGizmoEditPage/MemoryAlgorithmGizmoEditPage.dart';
 import '../page/edit/ShorthandGizmoEditPage.dart';
-import '../page/edit/edit_page_type.dart';
 import '../page/fragment_group_view/FragmentGroupListView.dart';
 import '../page/fragment_group_view/FragmentGroupSelectView.dart';
 import '../page/login_register/LoginPage.dart';
@@ -19,15 +17,15 @@ import '../page/stage/InAppStage.dart';
 import '../page/stage/fragment_template_pages/MultiFragmentTemplatePage.dart';
 import '../page/stage/fragment_template_pages/SingleFragmentTemplatePage.dart';
 
-Future<void> pushToMemoryModelGizmoEditPage({
+Future<void> pushToMemoryAlgorithmGizmoEditPage({
   required BuildContext context,
-  required MemoryModel memoryModel,
+  required MemoryAlgorithm memoryAlgorithm,
 }) async {
   await Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (ctx) => MemoryModelGizmoEditPage(
-        memoryModel: memoryModel,
+      builder: (ctx) => MemoryAlgorithmGizmoEditPage(
+        memoryAlgorithm: memoryAlgorithm,
       ),
     ),
   );

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:tools/tools.dart';
 
-import '../../../single_dialog/showSelectMemoryModelInMemoryGroupDialog.dart';
+import '../../../single_dialog/showSelectMemoryAlgorithmInMemoryGroupDialog.dart';
 import 'MemoryGroupGizmoEditPageAbController.dart';
 
 class CurrentCircleWidget extends StatelessWidget {
@@ -105,11 +105,11 @@ class CurrentCircleWidget extends StatelessWidget {
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
                 child: AbBuilder<MemoryGroupGizmoEditPageAbController>(
                   builder: (gzC, gzAbw) {
-                    return Text(gzC.cloneMemoryGroupAndOtherAb(gzAbw).getMemoryModel?.title ?? '点击选择');
+                    return Text(gzC.cloneMemoryGroupAndOtherAb(gzAbw).getMemoryAlgorithm?.title ?? '点击选择');
                   },
                 ),
                 onPressed: () async {
-                  await showSelectMemoryModelInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
+                  await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
                 },
               ),
               // TODO:
@@ -131,7 +131,7 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('碎片数量：'),
               TextButton(
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
-                child: Text('共 ${c.cloneMemoryGroupAndOtherAb(abw).fragmentCount} 个', style: const TextStyle(fontSize: 16)),
+                child: Text('共 ${c.cloneMemoryGroupAndOtherAb(abw).totalFragmentCount} 个', style: const TextStyle(fontSize: 16)),
                 onPressed: () {
                   // Navigator.of(c.context).push(
                   //   DefaultSheetRoute(
@@ -197,21 +197,21 @@ class CurrentCircleWidget extends StatelessWidget {
                     final mgAndOtherAb = c.cloneMemoryGroupAndOtherAb(abw);
 
                     // 不能超过最大值
-                    if (changeValue > mgAndOtherAb.remainNeverFragmentsCount) {
-                      changeValue = mgAndOtherAb.remainNeverFragmentsCount;
+                    if (changeValue > mgAndOtherAb.totalWaitNewLearnCount) {
+                      changeValue = mgAndOtherAb.totalWaitNewLearnCount;
                     }
                     // 如果没有 space，则 0/300，其中 0 字符长度会动态的变宽成 10 或 100，从而导致刷新的时候滑块抖动。
                     // space 意味着将 0 前面添加两个 0，即 000/300。
-                    int space = mgAndOtherAb.remainNeverFragmentsCount.toString().length - changeValue.toInt().toString().length;
+                    int space = mgAndOtherAb.totalWaitNewLearnCount.toString().length - changeValue.toInt().toString().length;
                     return Row(
                       children: [
                         Expanded(
                           child: Slider(
                             label: changeValue.toInt().toString(),
                             min: 0,
-                            max: mgAndOtherAb.remainNeverFragmentsCount.toDouble(),
+                            max: mgAndOtherAb.totalWaitNewLearnCount.toDouble(),
                             value: changeValue.toDouble(),
-                            divisions: mgAndOtherAb.remainNeverFragmentsCount == 0 ? null : mgAndOtherAb.remainNeverFragmentsCount,
+                            divisions: mgAndOtherAb.totalWaitNewLearnCount == 0 ? null : mgAndOtherAb.totalWaitNewLearnCount,
                             onChanged: (n) {
                               resetValue(n.toInt(), true);
                             },
@@ -221,7 +221,7 @@ class CurrentCircleWidget extends StatelessWidget {
                             },
                           ),
                         ),
-                        Text('${'0' * space}${changeValue.toInt()}/${mgAndOtherAb.remainNeverFragmentsCount}')
+                        Text('${'0' * space}${changeValue.toInt()}/${mgAndOtherAb.totalWaitNewLearnCount}')
                       ],
                     );
                   },

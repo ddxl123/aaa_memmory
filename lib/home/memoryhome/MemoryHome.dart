@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../global/GlobalAbController.dart';
 import '../../page/list/MemoryGroupListPage.dart';
-import '../../page/list/MemoryModeListPage.dart';
+import '../../page/list/MemoryAlgorithmListPage.dart';
 import 'MemoryHomeAbController.dart';
 
 class MemoryHome extends StatefulWidget {
@@ -35,7 +35,7 @@ class _MemoryHomeState extends State<MemoryHome> {
                 child: MemoryGroupListPage(user: Aber.find<GlobalAbController>().loggedInUser()!),
               ),
               KeepStateWidget(
-                child: const MemoryModeListPage(),
+                child: const MemoryAlgorithmListPage(),
               ),
               KeepStateWidget(
                 child: const Text('统计'),

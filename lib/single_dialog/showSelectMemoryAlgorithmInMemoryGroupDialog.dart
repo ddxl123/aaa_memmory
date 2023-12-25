@@ -3,35 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 import '../page/list/MemoryGroupListPageAbController.dart';
-import '../page/list/MemoryModeListPageAbController.dart';
+import '../page/list/MemoryAlgorithmListPageAbController.dart';
 import '../push_page/push_page.dart';
-import 'showCreateMemoryModelDialog.dart';
+import 'showCreateMemoryAlgorithmDialog.dart';
 
-Future<void> showSelectMemoryModelInMemoryGroupDialog({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
-  await showCustomDialog(builder: (_) => SelectMemoryModelInMemoryGroupDialogWidget(mgAndOtherAb: mgAndOtherAb));
+Future<void> showSelectMemoryAlgorithmInMemoryGroupDialog({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
+  await showCustomDialog(builder: (_) => SelectMemoryAlgorithmInMemoryGroupDialogWidget(mgAndOtherAb: mgAndOtherAb));
 }
 
-class SelectMemoryModelInMemoryGroupDialogWidget extends StatefulWidget {
-  const SelectMemoryModelInMemoryGroupDialogWidget({super.key, required this.mgAndOtherAb});
+class SelectMemoryAlgorithmInMemoryGroupDialogWidget extends StatefulWidget {
+  const SelectMemoryAlgorithmInMemoryGroupDialogWidget({super.key, required this.mgAndOtherAb});
 
   final Ab<MemoryGroupAndOther> mgAndOtherAb;
 
   @override
-  State<SelectMemoryModelInMemoryGroupDialogWidget> createState() => _SelectMemoryModelInMemoryGroupDialogWidgetState();
+  State<SelectMemoryAlgorithmInMemoryGroupDialogWidget> createState() => _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState();
 }
 
-class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemoryModelInMemoryGroupDialogWidget> {
-  final memoryModels = <MemoryModel>[];
+class _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState extends State<SelectMemoryAlgorithmInMemoryGroupDialogWidget> {
+  final memoryAlgorithms = <MemoryAlgorithm>[];
 
-  final memoryModeListPageAbController = MemoryModeListPageAbController();
+  final memoryAlgorithmListPageAbController = MemoryAlgorithmListPageAbController();
 
-  MemoryModel? _selectedMm;
+  MemoryAlgorithm? _selectedMa;
 
   Future<void> getMms() async {
-    await memoryModeListPageAbController.refreshPage();
+    await memoryAlgorithmListPageAbController.refreshPage();
 
-    memoryModels.clear();
-    memoryModels.addAll(memoryModeListPageAbController.memoryModelsAb());
+    memoryAlgorithms.clear();
+    memoryAlgorithms.addAll(memoryAlgorithmListPageAbController.memoryAlgorithmsAb());
     if (mounted) {
       setState(() {});
     }
@@ -40,7 +40,7 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
   @override
   void initState() {
     super.initState();
-    _selectedMm = widget.mgAndOtherAb().getMemoryModel;
+    _selectedMa = widget.mgAndOtherAb().getMemoryAlgorithm;
     getMms();
   }
 
@@ -49,14 +49,14 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
       icon: const Icon(Icons.add),
       style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.zero), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
       onPressed: () async {
-        await showCreateMemoryModelDialog();
+        await showCreateMemoryAlgorithmDialog();
         await getMms();
       },
     );
   }
 
   List<Widget> _columnChildren() {
-    return memoryModels.map(
+    return memoryAlgorithms.map(
       (e) {
         return Row(
           children: [
@@ -65,7 +65,7 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
                 style: const ButtonStyle(alignment: Alignment.centerLeft),
                 child: Text(e.title),
                 onPressed: () async {
-                  await pushToMemoryModelGizmoEditPage(context: context, memoryModel: e);
+                  await pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithm: e);
                   if (mounted) setState(() {});
                 },
               ),
@@ -73,17 +73,17 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
             IconButton(
               padding: const EdgeInsets.all(0),
               icon: () {
-                if (_selectedMm?.id == e.id) {
+                if (_selectedMa?.id == e.id) {
                   return const SolidCircleIcon();
                 } else {
                   return const SolidCircleGreyIcon();
                 }
               }(),
               onPressed: () {
-                if (_selectedMm?.id == e.id) {
-                  _selectedMm = null;
+                if (_selectedMa?.id == e.id) {
+                  _selectedMa = null;
                 } else {
-                  _selectedMm = e;
+                  _selectedMa = e;
                 }
                 setState(() {});
               },
@@ -95,8 +95,8 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
   }
 
   Future<void> _onOk() async {
-    widget.mgAndOtherAb.refreshInevitable((obj) => obj..setMemoryModel = _selectedMm);
-    if (_selectedMm == null) {
+    widget.mgAndOtherAb.refreshInevitable((obj) => obj..setMemoryAlgorithm = _selectedMa);
+    if (_selectedMa == null) {
       SmartDialog.showToast('不选择');
     } else {
       SmartDialog.showToast('选择成功！');
@@ -109,7 +109,7 @@ class _SelectMemoryModelInMemoryGroupDialogWidgetState extends State<SelectMemor
     return OkAndCancelDialogWidget(
       title: '选择记忆算法：',
       topRightAction: _topRightAction(),
-      columnChildren: memoryModels.isEmpty ? const [Text('未创建记忆组', style: TextStyle(color: Colors.grey))] : _columnChildren(),
+      columnChildren: memoryAlgorithms.isEmpty ? const [Text('未创建记忆组', style: TextStyle(color: Colors.grey))] : _columnChildren(),
       cancelText: '稍后',
       okText: '选择',
       onCancel: () async {

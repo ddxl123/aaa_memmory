@@ -105,11 +105,11 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       SmartDialog.showToast("复习区间至少10分钟(600秒)以上哦~");
       return;
     }
-    if (cloneMemoryGroupAndOtherAb().getMemoryModel == null) {
+    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm == null) {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return;
     }
-    if (cloneMemoryGroupAndOtherAb().fragmentCount == 0) {
+    if (cloneMemoryGroupAndOtherAb().totalFragmentCount == 0) {
       SmartDialog.showToast("碎片数量不能为 0");
       return;
     }

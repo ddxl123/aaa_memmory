@@ -7,7 +7,7 @@ part of httper;
 class MemoryModelsQueryVo extends BaseObject{
 
     /// 
-    List<MemoryModel> memory_models_list;
+    List<MemoryAlgorithm> memory_models_list;
 
 
 MemoryModelsQueryVo({

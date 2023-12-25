@@ -10,7 +10,7 @@ class MemoryGroupPageFirstQueryVo extends BaseObject{
     MemoryGroup memory_group;
 
     /// 
-    MemoryModel? memory_model;
+    MemoryAlgorithm? memory_model;
 
 
 MemoryGroupPageFirstQueryVo({

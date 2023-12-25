@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tools/src/other.dart';
 
 /// 需要配套使用 [FloatingRoundCornerButtonLocation]
 ///
@@ -11,6 +12,7 @@ class CustomRoundCornerButton extends StatelessWidget {
     this.border,
     this.color = Colors.tealAccent,
     this.isElevated = true,
+    this.isMinVisualDensity = false,
   });
 
   final Widget text;
@@ -18,11 +20,13 @@ class CustomRoundCornerButton extends StatelessWidget {
   final OutlinedBorder? border;
   final Color color;
   final bool isElevated;
+  final bool isMinVisualDensity;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
+        visualDensity: isMinVisualDensity ? kMinVisualDensity : null,
         backgroundColor: MaterialStateProperty.all(color),
         padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10, horizontal: 15)),
         elevation: isElevated == true ? MaterialStateProperty.all(5) : null,

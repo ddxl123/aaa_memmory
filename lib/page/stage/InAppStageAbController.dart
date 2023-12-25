@@ -36,7 +36,7 @@ class InAppStageAbController extends AbController {
 
   final memoryGroupAb = Ab<MemoryGroup>.late();
 
-  final memoryModelAb = Ab<MemoryModel>.late();
+  final memoryAlgorithmAb = Ab<MemoryAlgorithm>.late();
 
   final performerQuery = PerformerQuery();
 
@@ -78,7 +78,7 @@ class InAppStageAbController extends AbController {
                 TextButton(
                   child: Text("点击此处查看算法"),
                   onPressed: () {
-                    pushToMemoryModelGizmoEditPage(context: context, memoryModel: memoryModelAb());
+                    pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithm: memoryAlgorithmAb());
                   },
                 ),
               ],
@@ -108,8 +108,8 @@ class InAppStageAbController extends AbController {
     final mg = (await driftDb.generalQueryDAO.queryOrNullMemoryGroup(memoryGroupId: memoryGroupId))!;
     memoryGroupAb.lateAssign(mg);
 
-    final mm = (await driftDb.generalQueryDAO.queryOrNullMemoryModel(memoryModelId: mg.memory_model_id!))!;
-    memoryModelAb.lateAssign(mm);
+    final mm = (await driftDb.generalQueryDAO.queryOrNullMemoryAlgorithm(memoryModelId: mg.memory_algorithm_id!))!;
+    memoryAlgorithmAb.lateAssign(mm);
 
     await _executeNext();
   }
@@ -183,7 +183,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseStartFamiliarity() async {
     await AlgorithmParser.parse<FamiliarityState, void>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryModelAb().familiarity_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -278,7 +278,7 @@ class InAppStageAbController extends AbController {
   Future<double?> _parseClickFamiliarity(ButtonDataValue2NextShowTime buttonDataValue2NextShowTime) async {
     return await AlgorithmParser.parse<FamiliarityState, double?>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryModelAb().familiarity_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -373,7 +373,7 @@ class InAppStageAbController extends AbController {
   Future<ButtonDataState> _parseStartButtonDatas() async {
     return await AlgorithmParser.parse<ButtonDataState, ButtonDataState>(
       stateFunc: () => ButtonDataState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryModelAb().button_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().button_algorithm),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -468,7 +468,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseSingleButtonNextShowTime({required ButtonDataValue2NextShowTime buttonDataValue2NextShowTime}) async {
     await AlgorithmParser.parse<NextShowTimeState, void>(
       stateFunc: () => NextShowTimeState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryModelAb().next_time_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().next_time_algorithm),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(

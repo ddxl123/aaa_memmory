@@ -6,12 +6,12 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tools/tools.dart';
 
-class MemoryModelGizmoEditPageAbController extends AbController {
-  MemoryModelGizmoEditPageAbController({
-    required this.memoryModel,
+class MemoryAlgorithmGizmoEditPageAbController extends AbController {
+  MemoryAlgorithmGizmoEditPageAbController({
+    required this.memoryAlgorithm,
   });
 
-  final MemoryModel memoryModel;
+  final MemoryAlgorithm memoryAlgorithm;
 
   final titleEditingController = TextEditingController();
 
@@ -22,7 +22,7 @@ class MemoryModelGizmoEditPageAbController extends AbController {
   @override
   void onInit() {
     super.onInit();
-    titleEditingController.text = memoryModel.title;
+    titleEditingController.text = memoryAlgorithm.title;
   }
 
   @override
@@ -46,11 +46,11 @@ class MemoryModelGizmoEditPageAbController extends AbController {
     return !isBack;
   }
 
-  /// 将 [copyMemoryModelAb] 的数据传递给 [memoryModel]，并对数据库进行修改。
+  /// 将 [copyMemoryModelAb] 的数据传递给 [memoryAlgorithm]，并对数据库进行修改。
   Future<void> updateSave() async {
-    await driftDb.cloudOverwriteLocalDAO.updateCloudMemoryModelAndOverwriteLocal(
-      memoryModel: memoryModel,
-      onSuccess: (MemoryModel memoryModel) async {
+    await driftDb.cloudOverwriteLocalDAO.updateCloudMemoryAlgorithmAndOverwriteLocal(
+      memoryAlgorithm: memoryAlgorithm,
+      onSuccess: (MemoryAlgorithm memoryAlgorithm) async {
         SmartDialog.showToast("保存成功！");
         Navigator.pop(context);
       },

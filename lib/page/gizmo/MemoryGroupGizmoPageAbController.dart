@@ -10,13 +10,13 @@ class MemoryGroupGizmoPageAbController extends AbController {
 
   final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  final Ab<MemoryModel?> memoryModel = Ab(null);
+  final Ab<MemoryAlgorithm?> memoryAlgorithm = Ab(null);
 
   final fragments = <Fragment>[].ab;
 
   Future<void> refreshPage() async {
     await refreshFragments();
-    await refreshMemoryModels();
+    await refreshMemoryAlgorithms();
   }
 
   Future<void> refreshFragments() async {
@@ -39,7 +39,7 @@ class MemoryGroupGizmoPageAbController extends AbController {
     );
   }
 
-  Future<void> refreshMemoryModels() async {
+  Future<void> refreshMemoryAlgorithms() async {
     // TODO
     // final mg = await db.generalQueryDAO.queryMemoryModelInMemoryGroup(memoryGroup: memoryGroupGizmo());
     // memoryModel.refreshEasy((oldValue) => mg);

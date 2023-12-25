@@ -7,7 +7,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import '../global/GlobalAbController.dart';
 
 /// 创建记忆模型的 dialog。
-Future<void> showCreateMemoryModelDialog() async {
+Future<void> showCreateMemoryAlgorithmDialog() async {
   await showCustomDialog(
     builder: (_) {
       return TextField1DialogWidget(
@@ -24,19 +24,25 @@ Future<void> showCreateMemoryModelDialog() async {
             SmartDialog.showToast('名称不能为空！');
             return;
           }
-          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryModelAndOverwriteLocal(
-            crtEntity: Crt.memoryModelEntity(
+          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryAlgorithmAndOverwriteLocal(
+            crtEntity: Crt.memoryAlgorithmEntity(
               title: tec.text.trim(),
               creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-              father_memory_model_id: null,
+              father_memory_algorithm_id: null,
               button_algorithm: null,
               button_algorithm_remark: null,
               familiarity_algorithm: null,
               familiarity_algorithm_remark: null,
               next_time_algorithm: null,
               next_time_algorithm_remark: null,
+              completed_algorithm: null,
+              completed_algorithm_remark: null,
+              explain: '无说明',
+              suggest_count_for_new_and_review: null,
+              suggest_count_for_new_and_review_remark: null,
+              suggest_loop_cycle: null,
             ),
-            onSuccess: (MemoryModel memoryModel) async {
+            onSuccess: (MemoryAlgorithm memoryAlgorithm) async {
               SmartDialog.dismiss(status: SmartStatus.dialog);
               SmartDialog.showToast('创建成功！');
             },

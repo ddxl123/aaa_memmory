@@ -13,7 +13,7 @@ enum QueryFragmentWhereType {
   tables: tableClasses,
 )
 class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMixin {
-  GeneralQueryDAO(DriftDb attachedDatabase) : super(attachedDatabase);
+  GeneralQueryDAO(super.attachedDatabase);
 
   Future<User?> queryUserOrNull() async {
     final manyUsers = await select(users).get();
@@ -47,8 +47,8 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
     return await select(memoryGroups).get();
   }
 
-  Future<MemoryModel?> queryOrNullMemoryModel({required int memoryModelId}) async {
-    return await (select(memoryModels)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
+  Future<MemoryAlgorithm?> queryOrNullMemoryAlgorithm({required int memoryModelId}) async {
+    return await (select(memoryAlgorithms)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
   }
 
   // Future<List<MemoryModel>> queryAllMemoryModels() async {

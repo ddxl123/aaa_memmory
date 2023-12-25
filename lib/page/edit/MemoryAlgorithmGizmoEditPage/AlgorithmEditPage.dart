@@ -6,16 +6,16 @@ import 'package:tools/tools.dart';
 
 import '../../../algorithm_parser/default.dart';
 import 'AlgorithmEditPageAbController.dart';
-import 'MemoryModelGizmoEditPageAbController.dart';
+import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 
 class AlgorithmEditPage extends StatefulWidget {
   const AlgorithmEditPage({
-    Key? key,
+    super.key,
     required this.name,
-    required this.memoryModel,
-  }) : super(key: key);
+    required this.memoryAlgorithm,
+  });
   final String name;
-  final MemoryModel memoryModel;
+  final MemoryAlgorithm memoryAlgorithm;
 
   @override
   State<AlgorithmEditPage> createState() => _AlgorithmEditPageState();
@@ -24,7 +24,7 @@ class AlgorithmEditPage extends StatefulWidget {
 class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
   @override
   Widget build(BuildContext context) {
-    return AbBuilder<MemoryModelGizmoEditPageAbController>(
+    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
         return AbBuilder<AlgorithmEditPageAbController>(

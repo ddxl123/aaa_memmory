@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
-import '../page/list/MemoryModeListPageAbController.dart';
+import '../page/list/MemoryAlgorithmListPageAbController.dart';
 
 /// 创建记忆模型的 dialog。
 Future<void> showCreateArticleDialog() async {
@@ -47,7 +47,7 @@ Future<void> showCreateArticleDialog() async {
           //   syncTag: await SyncTag.create(),
           //   isCloudTableWithSync: true,
           // );
-          Aber.findOrNullLast<MemoryModeListPageAbController>()?.refreshPage();
+          Aber.findOrNullLast<MemoryAlgorithmListPageAbController>()?.refreshPage();
 
           SmartDialog.dismiss();
           SmartDialog.showToast('创建成功！');

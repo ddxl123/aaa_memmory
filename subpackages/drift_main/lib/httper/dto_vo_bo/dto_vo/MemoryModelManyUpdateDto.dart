@@ -7,7 +7,7 @@ part of httper;
 class MemoryModelManyUpdateDto extends BaseObject{
 
     /// 
-    List<MemoryModel> memory_models_list;
+    List<MemoryAlgorithm> memory_models_list;
 
     /// 填充字段1
     bool? dto_padding_1;

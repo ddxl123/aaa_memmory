@@ -14,8 +14,8 @@ class MemoryGroups extends CloudTableBase  {
   @ReferenceTo([Users])
   IntColumn get creator_user_id => integer().named("creator_user_id")();
 
-  @ReferenceTo([MemoryModels])
-  IntColumn get memory_model_id => integer().named("memory_model_id").nullable()();
+  @ReferenceTo([MemoryAlgorithms])
+  IntColumn get memory_algorithm_id => integer().named("memory_algorithm_id").nullable()();
 
   TextColumn get new_display_order => textEnum<NewDisplayOrder>().named("new_display_order")();
 

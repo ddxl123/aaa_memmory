@@ -1,5 +1,4 @@
 import 'package:aaa_memory/page/edit/MemoryGroupGizmoEditPage/MemoryGroupGizmoEditPageAbController.dart';
-import 'package:aaa_memory/page/edit/MemoryModelGizomoEditPage/MemoryModelGizmoEditPageAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:drift_main/share_common/share_enum.dart';
@@ -58,39 +57,47 @@ class StatusButton extends StatelessWidget {
     switch (memoryGroupAndOtherAb().downloadStatus) {
       case DownloadStatus.other_loading:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("获取中"),
           color: Colors.white,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null
               ? customOnPressed!
               : () {
-                  SmartDialog.showLoading(msg: "正在获取中...");
+                  SmartDialog.showToast("正在获取中...");
                 },
         );
       case DownloadStatus.other_load_fail:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("获取失败", style: TextStyle(color: Colors.red)),
           color: Colors.white,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null
               ? customOnPressed!
               : () {
-                  SmartDialog.showLoading(msg: "正在重新获取...");
+                  SmartDialog.showToast("正在重新获取...");
                   listPageC.refreshController.requestRefresh();
                 },
         );
       case DownloadStatus.zero:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("添加碎片"),
           color: Colors.amber,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null
               ? customOnPressed!
               : () {
-                  SmartDialog.showLoading(msg: "请在知识碎片页面中添加");
+                  SmartDialog.showToast("请在知识碎片页面中添加");
                 },
         );
       case DownloadStatus.never_downloaded:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("未下载"),
           color: Colors.grey,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null
               ? customOnPressed!
               : () async {
@@ -108,8 +115,10 @@ class StatusButton extends StatelessWidget {
         );
       case DownloadStatus.different_download:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("未下载完整"),
           color: Colors.grey,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null
               ? customOnPressed!
               : () async {
@@ -137,32 +146,42 @@ class StatusButton extends StatelessWidget {
     switch (memoryGroupAndOtherAb().memoryGroup.study_status) {
       case StudyStatus.not_startup:
         return CustomRoundCornerButton(
-          text: Text("未启动任务"),
+          isMinVisualDensity: editPageC == null ? true : false,
+          text: Text("启动任务"),
           color: Colors.green,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       case StudyStatus.studying_for_this_cycle:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("继续本周期"),
           color: Colors.green,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       case StudyStatus.not_study_for_this_cycle:
         return CustomRoundCornerButton(
-          text: Text("本周期未开始"),
+          isMinVisualDensity: editPageC == null ? true : false,
+          text: Text("开始本周期"),
           color: Colors.green,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       case StudyStatus.completed_for_this_cycle:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("本周期已完成"),
           color: Colors.green,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       case StudyStatus.incomplete_for_last_cycle:
         return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
           text: Text("上周期未完成"),
           color: Colors.green,
+          isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       default:
@@ -182,31 +201,73 @@ class MemoryGroupAndOther {
   /// 当前记忆组碎片总数量
   ///
   /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int fragmentCount = 0;
+  int totalFragmentCount = 0;
 
-  /// 当前记忆组剩余未学习的数量，注意是查询云端并覆盖本地后的
+  /// 已完成的总数量，注意是查询云端并覆盖本地后的
   ///
   /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int remainNeverFragmentsCount = 0;
+  int totalCompleteCount = 0;
+
+  /// 待新学的总数量，注意是查询云端并覆盖本地后的
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int totalWaitNewLearnCount = 0;
+
+  /// 待复习的总数量，注意是查询云端并覆盖本地后的
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int totalWaitReviewCount = 0;
+
+  /// 约定全部完成期限的时间点。
+  DateTime totalSetCompletionTime = DateTime.now();
+
+  /// 在学时长。
+  Duration totalLearnedDuration = Duration.zero;
+
+  /// 当前周期需要学习的数量
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int cycleFragmentCount = 0;
+
+  /// 当前周期已完成的数量，注意是查询云端并覆盖本地后的
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int cycleCompleteCount = 0;
+
+  /// 当前周期待新学的数量，注意是查询云端并覆盖本地后的
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int cycleWaitNewLearnCount = 0;
+
+  /// 当前周期待复习的数量，注意是查询云端并覆盖本地后的
+  ///
+  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  int cycleWaitReviewCount = 0;
+
+  /// 当前周期约定完成期限的时间点。
+  DateTime cycleSetCompletionTime = DateTime.now();
+
+  /// 当前周期在学时长。
+  Duration cycleLearnedDuration = Duration.zero;
 
   /// 当前记忆组的记忆算法，注意是查询云端并覆盖本地后的
   ///
   /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
-  MemoryModel? _memoryModel;
+  MemoryAlgorithm? _memoryAlgorithm;
 
-  MemoryModel? get getMemoryModel => _memoryModel;
+  MemoryAlgorithm? get getMemoryAlgorithm => _memoryAlgorithm;
 
-  set setMemoryModel(MemoryModel? newMemoryModel) {
-    _memoryModel = newMemoryModel;
-    memoryGroup.memory_model_id = _memoryModel?.id;
+  set setMemoryAlgorithm(MemoryAlgorithm? newMemoryAlgorithm) {
+    _memoryAlgorithm = newMemoryAlgorithm;
+    memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
   }
 
   MemoryGroupAndOther clone() {
     return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())
       ..downloadStatus = downloadStatus
-      ..fragmentCount = fragmentCount
-      ..remainNeverFragmentsCount = remainNeverFragmentsCount
-      ..setMemoryModel = getMemoryModel?.copyWith();
+      ..totalFragmentCount = totalFragmentCount
+      ..totalWaitNewLearnCount = totalWaitNewLearnCount
+      ..setMemoryAlgorithm = getMemoryAlgorithm?.copyWith();
   }
 }
 
@@ -244,11 +305,11 @@ class MemoryGroupListPageAbController extends AbController {
 
   Future<void> _forOthers() async {
     bool isSuccess = false;
-    final newMemoryModels = <MemoryModel>[];
-    await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryModelOverwriteLocal(
+    final newMemoryAlgorithms = <MemoryAlgorithm>[];
+    await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryAlgorithmOverwriteLocal(
       userId: user.id,
-      onSuccess: (List<MemoryModel> memoryModels) async {
-        newMemoryModels.addAll(memoryModels);
+      onSuccess: (List<MemoryAlgorithm> memoryAlgorithms) async {
+        newMemoryAlgorithms.addAll(memoryAlgorithms);
         isSuccess = true;
       },
       onError: (int? code, HttperException httperException, StackTrace st) async {
@@ -259,20 +320,23 @@ class MemoryGroupListPageAbController extends AbController {
     if (isSuccess) {
       for (var element in memoryGroupAndOthersAb()) {
         // 如果记忆模型是被删除掉，则直接赋值为 null
-        element().setMemoryModel = newMemoryModels.where((mm) => element().memoryGroup.memory_model_id == mm.id).firstOrNull;
+        element().setMemoryAlgorithm = newMemoryAlgorithms.where((mm) => element().memoryGroup.memory_algorithm_id == mm.id).firstOrNull;
         // 无需 await
-        _forTotalCount(memoryGroupAndOther: element());
-        _forRemainNeverStudyCount(memoryGroupAndOther: element());
+        _forOtherSingle(mgAndOtherAb: element);
       }
       memoryGroupAndOthersAb.refreshForce();
     }
+  }
+
+  Future<void> _forOtherSingle({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
+    await _forTotalCount(memoryGroupAndOther: mgAndOtherAb());
   }
 
   /// TODO：当本地总数量与云端总数量相同时，但是存在修改时，该怎么办？
   Future<void> _forTotalCount({required MemoryGroupAndOther memoryGroupAndOther}) async {
     // 查询本地总数量
     final localTotalCount = await driftDb.generalQueryDAO.queryFragmentInMemoryGroupCount(memoryGroupId: memoryGroupAndOther.memoryGroup.id);
-    memoryGroupAndOther.fragmentCount = localTotalCount;
+    memoryGroupAndOther.totalFragmentCount = localTotalCount;
     memoryGroupAndOthersAb.refreshForce();
 
     // 查询云端总数量
@@ -302,6 +366,8 @@ class MemoryGroupListPageAbController extends AbController {
           memoryGroupAndOthersAb.refreshForce();
           return;
         }
+
+        await _forRemainNeverStudyCount(memoryGroupAndOther: memoryGroupAndOther);
       },
       otherException: (a, b, c) async {
         logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
@@ -314,7 +380,8 @@ class MemoryGroupListPageAbController extends AbController {
       memoryGroupId: memoryGroupAndOther.memoryGroup.id,
       studyStatus: FragmentMemoryInfoStudyStatus.never,
     );
-    memoryGroupAndOther.remainNeverFragmentsCount = count;
+    memoryGroupAndOther.totalWaitNewLearnCount = count;
+    memoryGroupAndOther.downloadStatus = DownloadStatus.all_downloaded;
     memoryGroupAndOthersAb.refreshForce();
   }
 

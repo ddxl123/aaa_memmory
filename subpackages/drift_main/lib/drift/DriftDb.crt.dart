@@ -91,6 +91,27 @@ class Crt {
     );
   }
 
+  static MemoryGroupCycleInfo memoryGroupCycleInfoEntity({
+    required int creator_user_id,
+    required DateTime end_time,
+    required int memory_algorithm_id,
+    required int memory_group_id,
+    required int should_new_learn_count,
+    required int should_review_count,
+  }) {
+    return MemoryGroupCycleInfo(
+      creator_user_id: creator_user_id,
+      end_time: end_time,
+      memory_algorithm_id: memory_algorithm_id,
+      memory_group_id: memory_group_id,
+      should_new_learn_count: should_new_learn_count,
+      should_review_count: should_review_count,
+      created_at: DateTime(0),
+      id: -1,
+      updated_at: DateTime(0),
+    );
+  }
+
   static FragmentGroupTag fragmentGroupTagEntity({
     required int fragment_group_id,
     required String tag,
@@ -162,10 +183,50 @@ class Crt {
     );
   }
 
+  static MemoryAlgorithm memoryAlgorithmEntity({
+    required String? button_algorithm,
+    required String? button_algorithm_remark,
+    required String? completed_algorithm,
+    required String? completed_algorithm_remark,
+    required int creator_user_id,
+    required String explain,
+    required String? familiarity_algorithm,
+    required String? familiarity_algorithm_remark,
+    required int? father_memory_algorithm_id,
+    required String? next_time_algorithm,
+    required String? next_time_algorithm_remark,
+    required String? suggest_count_for_new_and_review,
+    required String? suggest_count_for_new_and_review_remark,
+    required String? suggest_loop_cycle,
+    required String title,
+  }) {
+    return MemoryAlgorithm(
+      button_algorithm: button_algorithm,
+      button_algorithm_remark: button_algorithm_remark,
+      completed_algorithm: completed_algorithm,
+      completed_algorithm_remark: completed_algorithm_remark,
+      creator_user_id: creator_user_id,
+      explain: explain,
+      familiarity_algorithm: familiarity_algorithm,
+      familiarity_algorithm_remark: familiarity_algorithm_remark,
+      father_memory_algorithm_id: father_memory_algorithm_id,
+      next_time_algorithm: next_time_algorithm,
+      next_time_algorithm_remark: next_time_algorithm_remark,
+      suggest_count_for_new_and_review: suggest_count_for_new_and_review,
+      suggest_count_for_new_and_review_remark:
+          suggest_count_for_new_and_review_remark,
+      suggest_loop_cycle: suggest_loop_cycle,
+      title: title,
+      created_at: DateTime(0),
+      id: -1,
+      updated_at: DateTime(0),
+    );
+  }
+
   static MemoryGroup memoryGroupEntity({
     required bool be_synced,
     required int creator_user_id,
-    required int? memory_model_id,
+    required int? memory_algorithm_id,
     required NewDisplayOrder new_display_order,
     required NewReviewDisplayOrder new_review_display_order,
     required ReviewDisplayOrder review_display_order,
@@ -179,7 +240,7 @@ class Crt {
     return MemoryGroup(
       be_synced: be_synced,
       creator_user_id: creator_user_id,
-      memory_model_id: memory_model_id,
+      memory_algorithm_id: memory_algorithm_id,
       new_display_order: new_display_order,
       new_review_display_order: new_review_display_order,
       review_display_order: review_display_order,
@@ -189,33 +250,6 @@ class Crt {
       sync_version: sync_version,
       title: title,
       will_new_learn_count: will_new_learn_count,
-      created_at: DateTime(0),
-      id: -1,
-      updated_at: DateTime(0),
-    );
-  }
-
-  static MemoryModel memoryModelEntity({
-    required String? button_algorithm,
-    required String? button_algorithm_remark,
-    required int creator_user_id,
-    required String? familiarity_algorithm,
-    required String? familiarity_algorithm_remark,
-    required int? father_memory_model_id,
-    required String? next_time_algorithm,
-    required String? next_time_algorithm_remark,
-    required String title,
-  }) {
-    return MemoryModel(
-      button_algorithm: button_algorithm,
-      button_algorithm_remark: button_algorithm_remark,
-      creator_user_id: creator_user_id,
-      familiarity_algorithm: familiarity_algorithm,
-      familiarity_algorithm_remark: familiarity_algorithm_remark,
-      father_memory_model_id: father_memory_model_id,
-      next_time_algorithm: next_time_algorithm,
-      next_time_algorithm_remark: next_time_algorithm_remark,
-      title: title,
       created_at: DateTime(0),
       id: -1,
       updated_at: DateTime(0),

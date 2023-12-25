@@ -10,7 +10,7 @@ import 'package:math_expressions/math_expressions.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
-import '../page/edit/MemoryModelGizomoEditPage/MemoryModelGizmoEditPageAbController.dart';
+import '../page/edit/MemoryAlgorithmGizmoEditPage/MemoryAlgorithmGizmoEditPageAbController.dart';
 import 'AlgorithmException.dart';
 
 part 'constant/keyword.dart';

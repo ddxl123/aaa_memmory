@@ -1303,7 +1303,8 @@ MemoryGroupPageFirstQueryVo _$MemoryGroupPageFirstQueryVoFromJson(
           MemoryGroup.fromJson(json['memory_group'] as Map<String, dynamic>),
       memory_model: json['memory_model'] == null
           ? null
-          : MemoryModel.fromJson(json['memory_model'] as Map<String, dynamic>),
+          : MemoryAlgorithm.fromJson(
+              json['memory_model'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MemoryGroupPageFirstQueryVoToJson(
@@ -1459,7 +1460,7 @@ MemoryModelManyUpdateDto _$MemoryModelManyUpdateDtoFromJson(
         Map<String, dynamic> json) =>
     MemoryModelManyUpdateDto(
       memory_models_list: (json['memory_models_list'] as List<dynamic>)
-          .map((e) => MemoryModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => MemoryAlgorithm.fromJson(e as Map<String, dynamic>))
           .toList(),
       dto_padding_1: json['dto_padding_1'] as bool?,
     );
@@ -1500,7 +1501,7 @@ Map<String, dynamic> _$MemoryModelsQueryDtoToJson(
 MemoryModelsQueryVo _$MemoryModelsQueryVoFromJson(Map<String, dynamic> json) =>
     MemoryModelsQueryVo(
       memory_models_list: (json['memory_models_list'] as List<dynamic>)
-          .map((e) => MemoryModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => MemoryAlgorithm.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
