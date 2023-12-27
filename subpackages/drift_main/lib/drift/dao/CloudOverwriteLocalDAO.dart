@@ -162,4 +162,57 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
             },
     );
   }
+
+  /// 将 [crtEntity] 实体插入云端，并存入本地
+  ///
+  /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
+  Future<void> insertCloudMemoryGroupCycleInfoAndOverwriteLocal({
+    required MemoryGroupCycleInfo crtEntity,
+    required Future<void> Function(MemoryGroupCycleInfo memoryGroupCycleInfo) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    await requestSingleRowInsert(
+      isLoginRequired: true,
+      singleRowInsertDto: SingleRowInsertDto(
+        table_name: driftDb.memoryGroupCycleInfos.actualTableName,
+        row: crtEntity,
+      ),
+      onSuccess: (String showMessage, SingleRowInsertVo vo) async {
+        // 插入到本地
+        final result = await driftDb.into(memoryGroupCycleInfos).insertReturning(MemoryGroupCycleInfo.fromJson(vo.row), mode: InsertMode.insert);
+        await onSuccess(result);
+      },
+      onError: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
+
+  /// 将修改后的 [memoryGroupCycleInfo] 进行云端更新，并覆盖本地。
+  Future<void> updateCloudMemoryGroupCycleInfoAndOverwriteLocal({
+    required MemoryGroupCycleInfo memoryGroupCycleInfo,
+    required Future<void> Function(MemoryGroupCycleInfo memoryGroupCycleInfo) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    await requestSingleRowModify(
+      isLoginRequired: true,
+      singleRowModifyDto: SingleRowModifyDto(
+        table_name: driftDb.memoryGroupCycleInfos.actualTableName,
+        row: memoryGroupCycleInfo,
+      ),
+      onSuccess: (String showMessage, SingleRowModifyVo vo) async {
+        final result = MemoryGroupCycleInfo.fromJson(vo.row);
+        // 更新到本地
+        await driftDb.update(memoryGroupCycleInfos).replace(result);
+        await onSuccess(result);
+      },
+      onError: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
 }

@@ -150,7 +150,16 @@ class StatusButton extends StatelessWidget {
           text: Text("启动任务"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
-          onPressed: editPageC == null ? customOnPressed! : () async {},
+          onPressed: editPageC == null
+              ? customOnPressed!
+              : () async {
+                  final result = await editPageC?.startup();
+                  if (result == true) {
+                    SmartDialog.showToast("任务已启动");
+                    await listPageC.refreshController.requestRefresh();
+                    SmartDialog.dismiss(status: SmartStatus.dialog);
+                  }
+                },
         );
       case StudyStatus.studying_for_this_cycle:
         return CustomRoundCornerButton(
@@ -166,7 +175,11 @@ class StatusButton extends StatelessWidget {
           text: Text("开始本周期"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
-          onPressed: editPageC == null ? customOnPressed! : () async {},
+          onPressed: editPageC == null
+              ? customOnPressed!
+              : () async {
+                  await editPageC?.startCurrentCycle();
+                },
         );
       case StudyStatus.completed_for_this_cycle:
         return CustomRoundCornerButton(
@@ -250,6 +263,22 @@ class MemoryGroupAndOther {
   /// 当前周期在学时长。
   Duration cycleLearnedDuration = Duration.zero;
 
+  (int, int, int, int) get cycleProportion {
+    final one = cycleCompleteCount;
+    final two = cycleWaitNewLearnCount;
+    final three = cycleWaitReviewCount;
+    final four = cycleFragmentCount - one - two - three;
+    return (one, two, three, four);
+  }
+
+  (int, int, int, int) get totalProportion {
+    final one = totalCompleteCount;
+    final two = totalWaitNewLearnCount;
+    final three = totalWaitReviewCount;
+    final four = totalFragmentCount - one - two - three;
+    return (one, two, three, four);
+  }
+
   /// 当前记忆组的记忆算法，注意是查询云端并覆盖本地后的
   ///
   /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
@@ -261,6 +290,8 @@ class MemoryGroupAndOther {
     _memoryAlgorithm = newMemoryAlgorithm;
     memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
   }
+
+  int reviewIntervalCount = 0;
 
   MemoryGroupAndOther clone() {
     return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())

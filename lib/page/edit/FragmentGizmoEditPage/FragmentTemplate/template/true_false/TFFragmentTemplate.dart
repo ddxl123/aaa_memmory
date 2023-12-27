@@ -41,7 +41,7 @@ class TFFragmentTemplate extends FragmentTemplate {
     final sp = super.toJson();
     return {
       "type": fragmentTemplateType.name,
-      "true_false": trueFalse.getContentJsonString(),
+      "true_false": trueFalse.getContentJsonStringOrNull(),
       "answer": answer,
       sp.keys.first: sp.values.first,
     };

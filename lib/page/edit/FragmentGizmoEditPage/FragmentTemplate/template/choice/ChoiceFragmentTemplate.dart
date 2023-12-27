@@ -304,8 +304,8 @@ class ChoiceFragmentTemplate extends FragmentTemplate {
     final sp = super.toJson();
     return {
       "type": fragmentTemplateType.name,
-      "question": question.getContentJsonString(),
-      "choices": choices.map((e) => e.getContentJsonString()).toList(),
+      "question": question.getContentJsonStringOrNull(),
+      "choices": choices.map((e) => e.getContentJsonStringOrNull()).toList(),
       "choice_type": choiceType.name,
       "choice_prefix_type": choicePrefixType.name,
       "can_disorderly": canDisorderly,

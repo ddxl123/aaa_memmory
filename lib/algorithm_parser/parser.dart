@@ -39,6 +39,10 @@ part 'state/FamiliarityState.dart';
 
 part 'state/NextShowTimeState.dart';
 
+part 'state/CompleteConditionState.dart';
+
+part 'state/SuggestCountForNewAndReviewState.dart';
+
 part 'enums.dart';
 
 part 'explain.dart';

@@ -74,7 +74,7 @@ class MemoryAlgorithmListPage extends StatelessWidget {
                           child: TextButton(
                             child: Text(c.memoryAlgorithmsAb()[index].title.toString()),
                             onPressed: () {
-                              pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithm: c.memoryAlgorithmsAb()[index]);
+                              pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithmAb: c.memoryAlgorithmsAb()[index].ab);
                             },
                           ),
                         ),

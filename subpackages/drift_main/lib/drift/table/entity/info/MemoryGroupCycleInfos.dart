@@ -12,7 +12,7 @@ class MemoryGroupCycleInfos extends CloudTableBase  {
   @ReferenceTo([Users])
   IntColumn get creator_user_id => integer().named("creator_user_id")();
 
-  DateTimeColumn get end_time => dateTime().named("end_time")();
+  TextColumn get loop_cycle => text().named("loop_cycle")();
 
   @ReferenceTo([MemoryAlgorithms])
   IntColumn get memory_algorithm_id => integer().named("memory_algorithm_id")();
@@ -20,9 +20,13 @@ class MemoryGroupCycleInfos extends CloudTableBase  {
   @ReferenceTo([MemoryGroups])
   IntColumn get memory_group_id => integer().named("memory_group_id")();
 
+  DateTimeColumn get should_end_time => dateTime().named("should_end_time")();
+
   IntColumn get should_new_learn_count => integer().named("should_new_learn_count")();
 
   IntColumn get should_review_count => integer().named("should_review_count")();
+
+  IntColumn get which_small_cycle => integer().named("which_small_cycle")();
 
   DateTimeColumn get created_at => dateTime().named("created_at")();
 

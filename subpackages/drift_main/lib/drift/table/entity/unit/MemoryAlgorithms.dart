@@ -20,7 +20,7 @@ class MemoryAlgorithms extends CloudTableBase  {
   @ReferenceTo([Users])
   IntColumn get creator_user_id => integer().named("creator_user_id")();
 
-  TextColumn get explain => text().named("explain")();
+  TextColumn get explain_content => text().named("explain_content").nullable()();
 
   TextColumn get familiarity_algorithm => text().named("familiarity_algorithm").nullable()();
 
@@ -33,11 +33,13 @@ class MemoryAlgorithms extends CloudTableBase  {
 
   TextColumn get next_time_algorithm_remark => text().named("next_time_algorithm_remark").nullable()();
 
-  TextColumn get suggest_count_for_new_and_review => text().named("suggest_count_for_new_and_review").nullable()();
+  TextColumn get suggest_count_for_new_and_review_algorithm => text().named("suggest_count_for_new_and_review_algorithm").nullable()();
 
-  TextColumn get suggest_count_for_new_and_review_remark => text().named("suggest_count_for_new_and_review_remark").nullable()();
+  TextColumn get suggest_count_for_new_and_review_algorithm_remark => text().named("suggest_count_for_new_and_review_algorithm_remark").nullable()();
 
   TextColumn get suggest_loop_cycle => text().named("suggest_loop_cycle").nullable()();
+
+  TextColumn get suggest_loop_cycle_remark => text().named("suggest_loop_cycle_remark").nullable()();
 
   TextColumn get title => text().named("title")();
 

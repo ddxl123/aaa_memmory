@@ -1,3 +1,4 @@
+import 'package:aaa_memory/theme/theme.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,30 +13,38 @@ class AlgorithmEditPage extends StatefulWidget {
   const AlgorithmEditPage({
     super.key,
     required this.name,
-    required this.memoryAlgorithm,
+    required this.memoryAlgorithmAb,
   });
+
   final String name;
-  final MemoryAlgorithm memoryAlgorithm;
+  final Ab<MemoryAlgorithm> memoryAlgorithmAb;
 
   @override
   State<AlgorithmEditPage> createState() => _AlgorithmEditPageState();
 }
 
 class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
+  late final AlgorithmEditPageAbController algorithmEditPageAbController;
+
+  @override
+  void initState() {
+    super.initState();
+    algorithmEditPageAbController = AlgorithmEditPageAbController(name: widget.name);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
-      tag: Aber.single,
       builder: (c, abw) {
         return AbBuilder<AlgorithmEditPageAbController>(
-          putController: AlgorithmEditPageAbController(name: widget.name),
+          putController: algorithmEditPageAbController,
           builder: (fc, fAbw) {
             return Scaffold(
               appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios),
+                leading: backButton(
+                  context: context,
                   onPressed: () {
-                    c.abBack();
+                    algorithmEditPageAbController.abBack();
                   },
                 ),
                 title: Text(
@@ -43,14 +52,6 @@ class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 titleSpacing: 0,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.save),
-                    onPressed: () {
-                      fc.save();
-                    },
-                  ),
-                ],
               ),
               body: AbBuilder<AlgorithmEditPageAbController>(
                 builder: (c, abw) {

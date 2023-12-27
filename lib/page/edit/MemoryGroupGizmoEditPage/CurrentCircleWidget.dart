@@ -23,7 +23,21 @@ class CurrentCircleWidget extends StatelessWidget {
             children: [
               _titleWidget(),
               SizedBox(height: 10),
-              _memoryModelWidget(),
+              Divider(color: Colors.black12, height: 30),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Text("记忆算法", style: TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  _memoryAlgorithmWidget(),
+                  SizedBox(height: 10),
+                  _memoryLoopCycleWidget(),
+                ],
+              ),
               // _selectFragmentWidget(),
               Divider(color: Colors.black12, height: 30),
               Column(
@@ -93,14 +107,14 @@ class CurrentCircleWidget extends StatelessWidget {
     );
   }
 
-  Widget _memoryModelWidget() {
+  Widget _memoryAlgorithmWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           child: Row(
             children: [
-              const Text('记忆算法：'),
+              const Text('使用算法：'),
               TextButton(
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
                 child: AbBuilder<MemoryGroupGizmoEditPageAbController>(
@@ -112,6 +126,24 @@ class CurrentCircleWidget extends StatelessWidget {
                   await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
                 },
               ),
+              // TODO:
+              // Text("模拟(验证算法的正确性)"),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _memoryLoopCycleWidget() {
+    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
+      builder: (c, abw) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          child: Row(
+            children: [
+              const Text('循环周期：'),
+              Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "未设置", style: TextStyle(color: Colors.grey)),
               // TODO:
               // Text("模拟(验证算法的正确性)"),
             ],
@@ -324,20 +356,18 @@ class ReviewIntervalWidget extends StatefulWidget {
 }
 
 class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
-  int reviewTotalCount = 0;
-
   final MemoryGroupGizmoEditPageAbController c = Aber.find<MemoryGroupGizmoEditPageAbController>();
 
   @override
   void initState() {
     super.initState();
-    queryReviewTotalCount();
+    queryCountForReviewInterval();
   }
 
-  Future<void> queryReviewTotalCount() async {
+  Future<void> queryCountForReviewInterval() async {
     final mgAndOther = c.cloneMemoryGroupAndOtherAb();
     if (mgAndOther.memoryGroup.start_time == null) {
-      reviewTotalCount = 0;
+      mgAndOther.reviewIntervalCount = 0;
       setState(() {});
       return;
     }
@@ -351,7 +381,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
     );
     sel.addColumns([count]);
     final result = await sel.get();
-    reviewTotalCount = result.first.read(count)!;
+    mgAndOther.reviewIntervalCount = result.first.read(count)!;
     setState(() {});
   }
 
@@ -383,7 +413,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
                               currentTime: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.review_interval,
                               onConfirm: (v) {
                                 c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.review_interval = v);
-                                queryReviewTotalCount();
+                                queryCountForReviewInterval();
                               },
                             );
                           },
@@ -392,7 +422,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
                         text: " 前需要复习的 ",
                       ),
                       TextSpan(
-                        text: "$reviewTotalCount",
+                        text: "${c.cloneMemoryGroupAndOtherAb().reviewIntervalCount}",
                       ),
                       TextSpan(text: " 个碎片")
                     ],

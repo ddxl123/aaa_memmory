@@ -29,7 +29,7 @@ class SimpleFragmentTemplate extends FragmentTemplate {
     final sp = super.toJson();
     return {
       "type": fragmentTemplateType.name,
-      "simple": simple.getContentJsonString(),
+      "simple": simple.getContentJsonStringOrNull(),
       sp.keys.first: sp.values.first,
     };
   }

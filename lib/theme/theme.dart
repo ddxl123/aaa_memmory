@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// 整体的背景灰色.
 const backgroundColor = Color.fromARGB(255, 245, 245, 245);
@@ -43,5 +44,27 @@ ThemeData themeLight(BuildContext context) {
       thumbColor: MaterialStatePropertyAll(Colors.blue),
       trackColor: MaterialStatePropertyAll(Colors.black12),
     ),
+  );
+}
+
+Widget backButton({
+  required BuildContext context,
+  void Function()? onPressed,
+}) {
+  return IconButton(
+    onPressed: onPressed ??
+        () {
+          Navigator.pop(context);
+        },
+    icon: Icon(Icons.chevron_left),
+  );
+}
+
+Widget xButton({
+  required void Function() onPressed,
+}) {
+  return IconButton(
+    onPressed: onPressed,
+    icon: Icon(FontAwesomeIcons.xmark, color: Colors.red),
   );
 }

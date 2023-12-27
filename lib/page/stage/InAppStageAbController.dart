@@ -78,7 +78,7 @@ class InAppStageAbController extends AbController {
                 TextButton(
                   child: Text("点击此处查看算法"),
                   onPressed: () {
-                    pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithm: memoryAlgorithmAb());
+                    pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithmAb: memoryAlgorithmAb);
                   },
                 ),
               ],

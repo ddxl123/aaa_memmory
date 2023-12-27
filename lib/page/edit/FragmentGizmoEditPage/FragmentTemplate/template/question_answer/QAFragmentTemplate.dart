@@ -34,8 +34,8 @@ class QAFragmentTemplate extends FragmentTemplate {
     return {
       "type": fragmentTemplateType.name,
       "interchangeable": interchangeable,
-      "question": question.getContentJsonString(),
-      "answer": answer.getContentJsonString(),
+      "question": question.getContentJsonStringOrNull(),
+      "answer": answer.getContentJsonStringOrNull(),
       sp.keys.first: sp.values.first,
     };
   }

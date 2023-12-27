@@ -33,6 +33,8 @@ class AlgorithmWrapper {
   /// 将 Map 格式转换成 jsonString 格式，可以以文本的方式保存到数据库。
   String toJsonString() => jsonEncode(toJson());
 
+  String? toJsonStringOrNull() => isEmpty ? null : toJsonString();
+
   AlgorithmWrapper copy() => AlgorithmWrapper.fromJson(this.toJson());
 
   static AlgorithmWrapper emptyAlgorithmWrapper = AlgorithmWrapper(
@@ -42,6 +44,8 @@ class AlgorithmWrapper {
       elser: Elser.emptyElser,
     ),
   );
+
+  bool get isEmpty => emptyAlgorithmWrapper.toJsonString() == toJsonString();
 
   void clearCustomVariable() {
     customVariables.clear();

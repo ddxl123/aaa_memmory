@@ -80,7 +80,7 @@ class BlankFragmentTemplate extends FragmentTemplate {
     final sp = super.toJson();
     return {
       "type": fragmentTemplateType.name,
-      "blank": blank.getContentJsonString(),
+      "blank": blank.getContentJsonStringOrNull(),
       "choices": choices.map((e) => e.toJson()).toList(),
       "choice_prefix_type": choicePrefixType.displayName,
       "can_disorder": canDisorder,

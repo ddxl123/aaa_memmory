@@ -142,7 +142,10 @@ int timeDifference({required DateTime target, required DateTime start}) {
 /// x秒 转换成 x天x时x分x秒。
 ///
 /// 例如，601秒 转化成 1时0分1秒。
-String time2TextTime({required int longSeconds, bool canNegative = false}) {
+String time2TextTime({
+  required int longSeconds,
+  bool canNegative = false,
+}) {
   // 如果参数小于0，抛出异常
   if (longSeconds < 0) {
     if (canNegative) {

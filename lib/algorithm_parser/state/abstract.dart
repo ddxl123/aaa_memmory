@@ -59,4 +59,52 @@ abstract class ClassificationState {
     if (externalResultHandler == null) throw KnownAlgorithmException('当为 SimulationType.external 类型时，externalResultHandler 不能为 null！');
     return await externalResultHandler!(atom);
   }
+
+  static T filter<T>({
+    required String stateName,
+    required T Function() buttonData,
+    required T Function() familiarity,
+    required T Function() nextShowTime,
+    required T Function() completeCondition,
+    required T Function() suggestCountForNewAndReviewState,
+  }) {
+    switch (stateName) {
+      case ButtonDataState.name:
+        return buttonData();
+      case FamiliarityState.name:
+        return familiarity();
+      case NextShowTimeState.name:
+        return nextShowTime();
+      case CompleteConditionState.name:
+        return completeCondition();
+      case SuggestCountForNewAndReviewState.name:
+        return suggestCountForNewAndReviewState();
+      default:
+        throw "未处理 $stateName";
+    }
+  }
+
+  static Future<T> filterFuture<T>({
+    required String stateName,
+    required Future<T> Function() buttonData,
+    required Future<T> Function() familiarity,
+    required Future<T> Function() nextShowTime,
+    required Future<T> Function() completeCondition,
+    required Future<T> Function() suggestCountForNewAndReviewState,
+  }) async {
+    switch (stateName) {
+      case ButtonDataState.name:
+        return await buttonData();
+      case FamiliarityState.name:
+        return await familiarity();
+      case NextShowTimeState.name:
+        return await nextShowTime();
+      case CompleteConditionState.name:
+        return await completeCondition();
+      case SuggestCountForNewAndReviewState.name:
+        return await suggestCountForNewAndReviewState();
+      default:
+        throw "未处理 $stateName";
+    }
+  }
 }

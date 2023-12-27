@@ -1109,6 +1109,35 @@ Map<String, dynamic> _$KnowledgeBaseFragmentGroupQueryVoToJson(
       'fragment_group_wrapper_list': instance.fragment_group_wrapper_list,
     };
 
+MemoryGroupCycleInfoQueryLastOneDto
+    _$MemoryGroupCycleInfoQueryLastOneDtoFromJson(Map<String, dynamic> json) =>
+        MemoryGroupCycleInfoQueryLastOneDto(
+          memory_group_id: json['memory_group_id'] as int,
+          dto_padding_1: json['dto_padding_1'] as bool?,
+        );
+
+Map<String, dynamic> _$MemoryGroupCycleInfoQueryLastOneDtoToJson(
+        MemoryGroupCycleInfoQueryLastOneDto instance) =>
+    <String, dynamic>{
+      'memory_group_id': instance.memory_group_id,
+      'dto_padding_1': instance.dto_padding_1,
+    };
+
+MemoryGroupCycleInfoQueryLastOneVo _$MemoryGroupCycleInfoQueryLastOneVoFromJson(
+        Map<String, dynamic> json) =>
+    MemoryGroupCycleInfoQueryLastOneVo(
+      memory_group_cycle_info: json['memory_group_cycle_info'] == null
+          ? null
+          : MemoryGroupCycleInfo.fromJson(
+              json['memory_group_cycle_info'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$MemoryGroupCycleInfoQueryLastOneVoToJson(
+        MemoryGroupCycleInfoQueryLastOneVo instance) =>
+    <String, dynamic>{
+      'memory_group_cycle_info': instance.memory_group_cycle_info,
+    };
+
 MemoryGroupFragmentIdsQueryDto _$MemoryGroupFragmentIdsQueryDtoFromJson(
         Map<String, dynamic> json) =>
     MemoryGroupFragmentIdsQueryDto(

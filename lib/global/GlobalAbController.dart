@@ -9,7 +9,6 @@ import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 import '../single_dialog/register_or_login/showAskLoginDialog.dart';
-import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
 enum Status {
   normal,

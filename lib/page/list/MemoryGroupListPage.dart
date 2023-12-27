@@ -141,7 +141,7 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待新学", style: TextStyle(color: Colors.deepOrange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.deepOrange)),
-                                        Text("9999", style: TextStyle(color: Colors.deepOrange)),
+                                        Text("${mgAndOtherAb(abw).cycleWaitNewLearnCount}", style: TextStyle(color: Colors.deepOrange)),
                                       ],
                                     ),
                                   ),
@@ -154,56 +154,14 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待复习", style: TextStyle(color: Colors.orange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.orange)),
-                                        Text("9999", style: TextStyle(color: Colors.orange)),
+                                        Text("${mgAndOtherAb(abw).cycleWaitReviewCount}", style: TextStyle(color: Colors.orange)),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Container(
-                                        decoration: BoxDecoration(color: Colors.grey.withOpacity(0.3)),
-                                        height: 8,
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              flex: 1,
-                                              child: Container(
-                                                decoration: BoxDecoration(color: Colors.green),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                decoration: BoxDecoration(color: Colors.orange),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                decoration: BoxDecoration(color: Colors.amberAccent),
-                                              ),
-                                            ),
-                                            Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                  // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(" 123354/44899", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
+                              _proportion(index),
                               SizedBox(height: 10),
                               Row(
                                 // crossAxisAlignment: CrossAxisAlignment.end,
@@ -264,6 +222,59 @@ class MemoryGroupListPage extends StatelessWidget {
               );
             },
           ),
+        );
+      },
+    );
+  }
+
+  Widget _proportion(int index) {
+    return AbBuilder<MemoryGroupListPageAbController>(
+      tag: Aber.single,
+      builder: (c, abw) {
+        final mgAndOtherAb = c.memoryGroupAndOthersAb(abw)[index];
+        final p = mgAndOtherAb(abw).cycleProportion;
+        return Row(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.grey.withOpacity(0.3)),
+                  height: 8,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        flex: p.$1,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.green),
+                        ),
+                      ),
+                      Flexible(
+                        flex: p.$2,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.orange),
+                        ),
+                      ),
+                      Flexible(
+                        flex: p.$3,
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.amberAccent),
+                        ),
+                      ),
+                      Flexible(
+                        flex: p.$4,
+                        child: Container(
+                            // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Text(" ${mgAndOtherAb(abw).cycleCompleteCount}/${mgAndOtherAb(abw).cycleFragmentCount}", style: TextStyle(color: Colors.grey, fontSize: 12)),
+            SizedBox(width: 10),
+          ],
         );
       },
     );

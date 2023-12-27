@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -15,130 +17,146 @@ class AlgorithmEditPageAbController extends AbController {
   final freeBoxController = FreeBoxController();
   final currentAlgorithmWrapper = Ab<AlgorithmWrapper>.late();
 
+  /// 是否是文本编辑模式，否则是常规编辑模式
   final isCurrentRaw = false.ab;
+
+  final rawTextEditingController = TextEditingController();
+
   FreeBoxCamera rawCamera = FreeBoxCamera(expectPosition: Offset(10, 10), expectScale: 1);
   FreeBoxCamera viewCamera = FreeBoxCamera(expectPosition: Offset(10, 10), expectScale: 1);
-  final rawTextEditingController = TextEditingController();
 
   @override
   Future<bool> backListener(bool hasRoute) async {
-    final empty = AlgorithmWrapper.emptyAlgorithmWrapper.toJsonString();
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
-    final current = currentAlgorithmWrapper().toJsonString();
-    final isModified = filter(
-      from: name,
-      targets: {
-        [FamiliarityState.name]: () => !((mm.familiarity_algorithm == null && current == empty) || mm.familiarity_algorithm == current),
-        [ButtonDataState.name]: () => !((mm.button_algorithm == null && current == empty) || mm.button_algorithm == current),
-        [NextShowTimeState.name]: () => !((mm.next_time_algorithm == null && current == empty) || mm.next_time_algorithm == current),
-      },
-      orElse: null,
-    );
-    if (!isModified) {
+    if (hasRoute) {
       return false;
     }
-    bool isBack = false;
-    await showCustomDialog(
-      builder: (_) => OkAndCancelDialogWidget(
-        title: '内容存在修改，是否要丢弃？',
-        okText: '丢弃',
-        cancelText: '继续编辑',
-        text: null,
-        onOk: () async {
-          SmartDialog.dismiss();
-          isBack = true;
-        },
-        onCancel: () {
-          SmartDialog.dismiss();
-        },
-      ),
+
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    final currentOrNull = currentAlgorithmWrapper().toJsonStringOrNull();
+    final isModified = ClassificationState.filter(
+      stateName: name,
+      familiarity: () => currentOrNull != mm().familiarity_algorithm,
+      buttonData: () => currentOrNull != mm().button_algorithm,
+      nextShowTime: () => currentOrNull != mm().next_time_algorithm,
+      completeCondition: () => currentOrNull != mm().completed_algorithm,
+      suggestCountForNewAndReviewState: () => currentOrNull != mm().suggest_count_for_new_and_review_algorithm,
     );
-    return !isBack;
+    if (isModified) {
+      apply();
+      memoryModelGizmoEditPageAbController.memoryAlgorithmAb.refreshForce();
+      SmartDialog.showToast("已修改，请注意保存！");
+    }
+    return false;
   }
 
   @override
   void onInit() {
     super.onInit();
-    currentAlgorithmWrapper.lateAssign(AlgorithmWrapper.fromJsonString(content()));
+    initCurrentAlgorithmWrapper();
   }
 
-  String content() {
+  void initCurrentAlgorithmWrapper() {
     final ea = AlgorithmWrapper.emptyAlgorithmWrapper.toJsonString();
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
-    return filter(
-      from: name,
-      targets: {
-        [FamiliarityState.name]: () => mm.familiarity_algorithm ?? ea,
-        [ButtonDataState.name]: () => mm.button_algorithm ?? ea,
-        [NextShowTimeState.name]: () => mm.next_time_algorithm ?? ea,
-      },
-      orElse: null,
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    currentAlgorithmWrapper.lateAssign(
+      AlgorithmWrapper.fromJsonString(
+        ClassificationState.filter(
+          stateName: name,
+          buttonData: () => mm().button_algorithm ?? ea,
+          familiarity: () => mm().familiarity_algorithm ?? ea,
+          nextShowTime: () => mm().next_time_algorithm ?? ea,
+          completeCondition: () => mm().completed_algorithm ?? ea,
+          suggestCountForNewAndReviewState: () => mm().suggest_count_for_new_and_review_algorithm ?? ea,
+        ),
+      ),
     );
   }
 
-  Future<void> save() async {
+  void apply() {
     rawToView();
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithm;
-    filter(
-      from: name,
-      targets: {
-        [FamiliarityState.name]: () => mm..familiarity_algorithm = currentAlgorithmWrapper().toJsonString(),
-        [ButtonDataState.name]: () => mm..button_algorithm = currentAlgorithmWrapper().toJsonString(),
-        [NextShowTimeState.name]: () => mm..next_time_algorithm = currentAlgorithmWrapper().toJsonString(),
-      },
-      orElse: null,
+    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    ClassificationState.filter(
+      stateName: name,
+      buttonData: () => mm()..button_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
+      familiarity: () => mm()..familiarity_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
+      nextShowTime: () => mm()..next_time_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
+      completeCondition: () => mm()..completed_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
+      suggestCountForNewAndReviewState: () => mm()..suggest_count_for_new_and_review_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
     );
-    await memoryModelGizmoEditPageAbController.updateSave();
   }
 
   Future<void> analysis() async {
     changeRawOrView(false);
     rawToView();
     currentAlgorithmWrapper().cancelAllException();
-    await filterFuture(
-      from: name,
-      targets: {
-        [FamiliarityState.name]: () async => await AlgorithmParser.parse(
-              stateFunc: () => FamiliarityState(
-                algorithmWrapper: currentAlgorithmWrapper(),
-                simulationType: SimulationType.syntaxCheck,
-                externalResultHandler: null,
-              ),
-              onSuccess: (FamiliarityState state) async {
-                SmartDialog.showToast("语法分析正确");
-              },
-              onError: (AlgorithmException ec) async {
-                SmartDialog.showToast("语法分析异常：${ec.error}");
-              },
-            ),
-        [ButtonDataState.name]: () async => await AlgorithmParser.parse(
-              stateFunc: () => ButtonDataState(
-                algorithmWrapper: currentAlgorithmWrapper(),
-                simulationType: SimulationType.syntaxCheck,
-                externalResultHandler: null,
-              ),
-              onSuccess: (ButtonDataState state) async {
-                SmartDialog.showToast("语法分析正确");
-              },
-              onError: (AlgorithmException ec) async {
-                SmartDialog.showToast("语法分析异常：${ec.error}");
-              },
-            ),
-        [NextShowTimeState.name]: () async => await AlgorithmParser.parse(
-              stateFunc: () => NextShowTimeState(
-                algorithmWrapper: currentAlgorithmWrapper(),
-                simulationType: SimulationType.syntaxCheck,
-                externalResultHandler: null,
-              ),
-              onSuccess: (NextShowTimeState state) async {
-                SmartDialog.showToast("语法分析正确");
-              },
-              onError: (AlgorithmException ec) async {
-                SmartDialog.showToast("语法分析异常：${ec.error}");
-              },
-            ),
-      },
-      orElse: null,
+
+    await ClassificationState.filterFuture(
+      stateName: name,
+      buttonData: () async => await AlgorithmParser.parse(
+        stateFunc: () => ButtonDataState(
+          algorithmWrapper: currentAlgorithmWrapper(),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        onSuccess: (ButtonDataState state) async {
+          SmartDialog.showToast("语法分析正确");
+        },
+        onError: (AlgorithmException ec) async {
+          SmartDialog.showToast("语法分析异常：${ec.error}");
+        },
+      ),
+      familiarity: () async => await AlgorithmParser.parse(
+        stateFunc: () => FamiliarityState(
+          algorithmWrapper: currentAlgorithmWrapper(),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        onSuccess: (FamiliarityState state) async {
+          SmartDialog.showToast("语法分析正确");
+        },
+        onError: (AlgorithmException ec) async {
+          SmartDialog.showToast("语法分析异常：${ec.error}");
+        },
+      ),
+      nextShowTime: () async => await AlgorithmParser.parse(
+        stateFunc: () => NextShowTimeState(
+          algorithmWrapper: currentAlgorithmWrapper(),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        onSuccess: (NextShowTimeState state) async {
+          SmartDialog.showToast("语法分析正确");
+        },
+        onError: (AlgorithmException ec) async {
+          SmartDialog.showToast("语法分析异常：${ec.error}");
+        },
+      ),
+      completeCondition: () async => await AlgorithmParser.parse(
+        stateFunc: () => CompleteConditionState(
+          algorithmWrapper: currentAlgorithmWrapper(),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        onSuccess: (CompleteConditionState state) async {
+          SmartDialog.showToast("语法分析正确");
+        },
+        onError: (AlgorithmException ec) async {
+          SmartDialog.showToast("语法分析异常：${ec.error}");
+        },
+      ),
+      suggestCountForNewAndReviewState:  () async => await AlgorithmParser.parse(
+        stateFunc: () => SuggestCountForNewAndReviewState(
+          algorithmWrapper: currentAlgorithmWrapper(),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        onSuccess: (SuggestCountForNewAndReviewState state) async {
+          SmartDialog.showToast("语法分析正确");
+        },
+        onError: (AlgorithmException ec) async {
+          SmartDialog.showToast("语法分析异常：${ec.error}");
+        },
+      ),
     );
   }
 

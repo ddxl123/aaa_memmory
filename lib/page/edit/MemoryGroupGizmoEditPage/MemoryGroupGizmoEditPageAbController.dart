@@ -1,3 +1,5 @@
+import 'package:aaa_memory/algorithm_parser/parser.dart';
+import 'package:aaa_memory/global/GlobalAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:drift_main/share_common/share_enum.dart';
@@ -84,15 +86,34 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     }
   }
 
-  /// 只进行存储。
-  Future<bool> onlySave() async {
+  /// 验证
+  ///
+  /// 返回 true，则验证通过。
+  bool verify() {
     if (cloneMemoryGroupAndOtherAb().memoryGroup.title.trim() == "") {
       SmartDialog.showToast("名称不能为空");
       return false;
     }
-    if (!await checkIsExistModify()) {
-      SmartDialog.showToast("无修改");
-      return true;
+    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm == null) {
+      SmartDialog.showToast("必须选择一个记忆算法！");
+      return false;
+    }
+    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle == null) {
+      SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
+    // TODO: 进行语法检查
+    return true;
+  }
+
+  /// 只进行存储。
+  Future<bool> onlySave({bool isVerify = true}) async {
+    if (isVerify) {
+      final result = verify();
+      if (!result) {
+        return false;
+      }
     }
     await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneMemoryGroupAndOtherAb().memoryGroup);
     cloneMemoryGroupAndOtherAb.refreshForce();
@@ -100,27 +121,172 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     return true;
   }
 
-  Future<void> clickStart() async {
-    if (cloneMemoryGroupAndOtherAb().memoryGroup.review_interval.difference(DateTime.now()).inSeconds < 600) {
-      SmartDialog.showToast("复习区间至少10分钟(600秒)以上哦~");
-      return;
+  /// 启动任务
+  ///
+  /// 启动任务时，会清除该记忆组的全部 记忆周期信息。
+  ///
+  /// 返回是否启动成功。
+  Future<bool> startup() async {
+    final result = verify();
+    if (!result) {
+      return false;
     }
-    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm == null) {
-      SmartDialog.showToast("必须选择一个记忆算法！");
-      return;
-    }
-    if (cloneMemoryGroupAndOtherAb().totalFragmentCount == 0) {
-      SmartDialog.showToast("碎片数量不能为 0");
-      return;
-    }
-
     cloneMemoryGroupAndOtherAb().memoryGroup.start_time = DateTime.now();
-    final isSavedSuccess = await onlySave();
+    cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.not_study_for_this_cycle;
+    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneMemoryGroupAndOtherAb().memoryGroup);
+    return true;
+  }
+
+  /// 开始当前周期
+  Future<void> startCurrentCycle() async {
+    final isSavedSuccess = await onlySave(isVerify: true);
     if (!isSavedSuccess) {
       return;
     }
-    Navigator.pop(context);
-    await pushToInAppStage(context: context, memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
+
+    final result = await request(
+      path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_LAST_ONE,
+      dtoData: MemoryGroupCycleInfoQueryLastOneDto(
+        memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
+        dto_padding_1: null,
+      ),
+      parseResponseVoData: MemoryGroupCycleInfoQueryLastOneVo.fromJson,
+    );
+    await result.handleCode(
+      code200101: (String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) async {
+        final nowCycle = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!.split(" ").map((e) => int.parse(e)).toList();
+        if (nowCycle.isEmpty) {
+          throw "循环周期不能为 null！";
+        }
+        // 变成 4 8 12 23 0 3 8 16 22 3...让其始终在 0~23 之间
+        final timePoint = <int>[...nowCycle];
+        for (int i = 1; i < timePoint.length; i++) {
+          timePoint[i] = timePoint[i - 1] + timePoint[i];
+          if (timePoint[i] >= 24) {
+            timePoint[i] = timePoint[i] % 24;
+          }
+        }
+        final nowPoint = DateTime.now().hour;
+        // 当前时间点在 timePoint 的哪个 index 前。
+        final nowInnerIndexs = <int>[];
+        for (int i = 1; i < timePoint.length; i++) {
+          final left = timePoint[i - 1];
+          final current = timePoint[i];
+          // 在 4~8 期间
+          if (left <= nowPoint && current >= nowPoint) {
+            nowInnerIndexs.add(i);
+          }
+          // 在 23~3 期间
+          else if (nowPoint >= left && left >= current) {
+            nowInnerIndexs.add(i);
+          }
+        }
+
+        // 说明在两边闭环期间，或者 timePoint 只有一个
+        if (nowInnerIndexs.isEmpty) {
+          nowInnerIndexs.add(0);
+        }
+
+        int? targetPointIndex;
+        // 如果只有一个，则直接赋予这一个
+        if (nowInnerIndexs.length == 1) {
+          targetPointIndex = nowInnerIndexs.single;
+        }
+        // 如果有多个
+        else {
+          // 如果循环周期被修改过，则让用户选择要从哪个小周期开始
+          if (vo.memory_group_cycle_info?.loop_cycle != cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle) {
+            await showCustomDialog(
+              builder: (ctx) {
+                int? selectIndex;
+                return OkAndCancelDialogWidget(
+                  text: "由于循环周期发生了更改，因此需要你选择一个小周期作为初始周期，请对下面绿色图标进行选择：",
+                  columnChildren: [
+                    SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: timePoint.map(
+                          (e) {
+                            return Column(
+                              children: [
+                                if (timePoint.indexOf(e) != 0) Text("+${nowCycle[timePoint.indexOf(e)]}"),
+                                if (nowInnerIndexs.contains(timePoint.indexOf(e)))
+                                  Row(
+                                    children: [
+                                      Text("————"),
+                                      GestureDetector(
+                                        child: Icon(Icons.circle_outlined, color: Colors.green),
+                                        onTap: () {
+                                          selectIndex = timePoint.indexOf(e);
+                                        },
+                                      ),
+                                      Text("————"),
+                                      Text(e.toString()),
+                                      Text("————"),
+                                    ],
+                                  ),
+                                if (!nowInnerIndexs.contains(timePoint.indexOf(e)))
+                                  Row(
+                                    children: [Text("————"), Text(e.toString()), Text("————")],
+                                  ),
+                              ],
+                            );
+                          },
+                        ).toList(),
+                      ),
+                    ),
+                  ],
+                  okText: "确定",
+                  cancelText: "取消",
+                  onOk: () {
+                    targetPointIndex = selectIndex;
+                    SmartDialog.dismiss(status: SmartStatus.dialog);
+                  },
+                );
+              },
+            );
+          }
+        }
+        if (targetPointIndex == null) {
+          SmartDialog.showToast("已取消选择");
+          return;
+        }
+
+        final nowDateTime = DateTime.now();
+        final shouldEndTime = DateTime(nowDateTime.year, nowDateTime.month, nowDateTime.day);
+        final nowHour = nowDateTime.hour;
+        if (nowHour < timePoint[targetPointIndex!]) {
+          shouldEndTime.add(Duration(hours: timePoint[targetPointIndex!]));
+        } else {
+          shouldEndTime.add(Duration(days: 1, hours: timePoint[targetPointIndex!]));
+        }
+
+        await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupCycleInfoAndOverwriteLocal(
+          crtEntity: Crt.memoryGroupCycleInfoEntity(
+            creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+            memory_algorithm_id: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.id,
+            memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
+            should_end_time: shouldEndTime,
+            which_small_cycle: targetPointIndex == 0 ? timePoint.length : targetPointIndex!,
+            loop_cycle: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!,
+            should_new_learn_count: cloneMemoryGroupAndOtherAb().memoryGroup.will_new_learn_count,
+            should_review_count: cloneMemoryGroupAndOtherAb().reviewIntervalCount,
+          ),
+          onSuccess: (MemoryGroupCycleInfo memoryGroupCycleInfo) async {
+            Navigator.pop(context);
+            listPageC.refreshController.requestRefresh();
+            await pushToInAppStage(context: context, memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
+          },
+          onError: (int? code, HttperException httperException, StackTrace st) async {
+            logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
+          },
+        );
+      },
+      otherException: (a, b, c) async {
+        logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
+      },
+    );
   }
 
   /// 模拟记忆模型的准确性。

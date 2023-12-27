@@ -118,7 +118,7 @@ class ExtendChunk {
       "chunk_name": chunkName,
       "extend_chunk_display_2_type": extendChunkDisplay2Type?.name,
       "extend_chunk_display_qa_type": extendChunkDisplayQAType?.name,
-      "content": singleQuillController.getContentJsonString(),
+      "content": singleQuillController.getContentJsonStringOrNull(),
     };
   }
 
