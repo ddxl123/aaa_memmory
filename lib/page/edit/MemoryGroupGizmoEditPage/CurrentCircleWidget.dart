@@ -1,3 +1,4 @@
+import 'package:aaa_memory/tool/other.dart';
 import 'package:drift/drift.dart' as d;
 import 'package:drift/extensions/json1.dart';
 import 'package:drift_main/drift/DriftDb.dart';
@@ -45,7 +46,7 @@ class CurrentCircleWidget extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(width: 10),
-                      Text("学习数量", style: TextStyle(color: Colors.grey)),
+                      Text("本周期学习数量 (已减去上次所学)", style: TextStyle(color: Colors.grey)),
                     ],
                   ),
                   _newLearnCountWidget(),
@@ -117,13 +118,11 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('使用算法：'),
               TextButton(
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
-                child: AbBuilder<MemoryGroupGizmoEditPageAbController>(
-                  builder: (gzC, gzAbw) {
-                    return Text(gzC.cloneMemoryGroupAndOtherAb(gzAbw).getMemoryAlgorithm?.title ?? '点击选择');
-                  },
-                ),
+                child: Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.title ?? '点击选择'),
                 onPressed: () async {
                   await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
+                  abw.refresh();
+                  c.cloneMemoryGroupAndOtherAb.refreshForce();
                 },
               ),
               // TODO:
@@ -143,67 +142,18 @@ class CurrentCircleWidget extends StatelessWidget {
           child: Row(
             children: [
               const Text('循环周期：'),
-              Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "未设置", style: TextStyle(color: Colors.grey)),
+              Expanded(
+                child: Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "未设置", style: TextStyle(color: Colors.grey)),
+              ),
+              SizedBox(width: 10),
+              CustomTooltip(
+                texts: [
+                  CustomTooltipText(text: "1. 跟随算法中的循环周期设置"),
+                  CustomTooltipText(text: "2. 每天${c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "[未设置]"}:00算作一个新周期"),
+                ],
+              ),
               // TODO:
               // Text("模拟(验证算法的正确性)"),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _selectFragmentWidget() {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          child: Row(
-            children: [
-              const Text('碎片数量：'),
-              TextButton(
-                style: ButtonStyle(visualDensity: kMinVisualDensity),
-                child: Text('共 ${c.cloneMemoryGroupAndOtherAb(abw).totalFragmentCount} 个', style: const TextStyle(fontSize: 16)),
-                onPressed: () {
-                  // Navigator.of(c.context).push(
-                  //   DefaultSheetRoute(
-                  //     bodySliver0: () {
-                  //       return SliverToBoxAdapter(
-                  //         child: AbBuilder<MemoryGroupGizmoEditPageAbController>(
-                  //           builder: (sController, sAbw) {
-                  //             return Material(
-                  //               child: Container(
-                  //                 padding: const EdgeInsets.all(10),
-                  //                 child: SingleChildScrollView(
-                  //                   physics: const NeverScrollableScrollPhysics(),
-                  //                   child: Column(
-                  //                     mainAxisSize: MainAxisSize.max,
-                  //                     children: [
-                  //                       ...(sController.selectedFragmentCountAb(sAbw).isEmpty
-                  //                           ? [Container()]
-                  //                           : sController.selectedFragmentCountAb(sAbw).map(
-                  //                                 (e) => Row(
-                  //                                   children: [
-                  //                                     SizedBox(
-                  //                                       height: 200,
-                  //                                       child: Text(e(abw).content.toString()),
-                  //                                     )
-                  //                                   ],
-                  //                                 ),
-                  //                               )),
-                  //                     ],
-                  //                   ),
-                  //                 ),
-                  //               ),
-                  //             );
-                  //           },
-                  //         ),
-                  //       );
-                  //     },
-                  //   ),
-                  // );
-                },
-              ),
             ],
           ),
         );

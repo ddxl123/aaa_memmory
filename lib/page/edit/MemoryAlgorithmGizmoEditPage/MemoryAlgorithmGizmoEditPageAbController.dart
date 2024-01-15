@@ -94,24 +94,4 @@ class MemoryAlgorithmGizmoEditPageAbController extends AbController {
     pf.unfocus();
     Future.delayed(const Duration(milliseconds: 100), () => pf.requestFocus());
   }
-
-  /// 返回 false 表示文本格式不正确。
-  ///
-  /// 返回 null，表示 [text] 为 null。
-  bool? verifyLoopCycle(String? text) {
-    if (text == null) {
-      return null;
-    }
-    final list = text.split(" ")..removeWhere((element) => element.trim().isEmpty);
-    if (list.isEmpty) {
-      return null;
-    }
-    for (var value in list) {
-      final result = double.tryParse(value);
-      if (result == null) {
-        return false;
-      }
-    }
-    return true;
-  }
 }

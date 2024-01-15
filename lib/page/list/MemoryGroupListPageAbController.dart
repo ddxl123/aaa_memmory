@@ -167,7 +167,11 @@ class StatusButton extends StatelessWidget {
           text: Text("继续本周期"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
-          onPressed: editPageC == null ? customOnPressed! : () async {},
+          onPressed: editPageC == null
+              ? customOnPressed!
+              : () async {
+                  await editPageC?.startCurrentCycle();
+                },
         );
       case StudyStatus.not_study_for_this_cycle:
         return CustomRoundCornerButton(
@@ -193,6 +197,15 @@ class StatusButton extends StatelessWidget {
         return CustomRoundCornerButton(
           isMinVisualDensity: editPageC == null ? true : false,
           text: Text("上周期未完成"),
+          color: Colors.green,
+          isElevated: editPageC == null ? false : true,
+          onPressed: editPageC == null ? customOnPressed! : () async {},
+        );
+
+      case StudyStatus.completed_for_group:
+        return CustomRoundCornerButton(
+          isMinVisualDensity: editPageC == null ? true : false,
+          text: Text("本组已完成"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
           onPressed: editPageC == null ? customOnPressed! : () async {},

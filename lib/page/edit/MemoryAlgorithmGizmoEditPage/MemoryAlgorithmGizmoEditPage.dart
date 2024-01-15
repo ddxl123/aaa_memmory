@@ -1,3 +1,4 @@
+import 'package:aaa_memory/algorithm_parser/parser/LoopCycleParser.dart';
 import 'package:aaa_memory/push_page/push_page.dart';
 import 'package:aaa_memory/single_page/SingleQuillEditor1Page.dart';
 import 'package:aaa_memory/theme/theme.dart';
@@ -314,6 +315,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
   Widget _suggestLoopCycle() {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       builder: (c, abw) {
+        final loopCycleVerifyResult = LoopCycleParser.verifyLoopCycle(c.memoryAlgorithmAb(abw).suggest_loop_cycle);
         return Padding(
           padding: const EdgeInsets.all(10),
           child: GestureDetector(
@@ -325,7 +327,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                     Row(
                       children: [
                         Text("循环周期"),
-                        if (c.verifyLoopCycle(c.memoryAlgorithmAb(abw).suggest_loop_cycle) == null)
+                        if (loopCycleVerifyResult == null)
                           Text(
                             " (未设置)",
                             style: TextStyle(color: Colors.red),
@@ -334,8 +336,8 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                         Icon(Icons.chevron_right, color: Colors.grey),
                       ],
                     ),
-                    if (c.verifyLoopCycle(c.memoryAlgorithmAb(abw).suggest_loop_cycle) != null) const SizedBox(height: 10),
-                    if (c.verifyLoopCycle(c.memoryAlgorithmAb(abw).suggest_loop_cycle) != null)
+                    if (loopCycleVerifyResult != null) const SizedBox(height: 10),
+                    if (loopCycleVerifyResult != null)
                       Row(
                         children: [
                           Text(c.memoryAlgorithmAb(abw).suggest_loop_cycle!),
@@ -364,10 +366,11 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                     cancelText: "取消",
                     okText: "确定",
                     onOk: (tc) {
-                      final result = c.verifyLoopCycle(tc.text);
-                      if (result != false) {
+                      final text= tc.text.trim();
+                      final newResult = LoopCycleParser.verifyLoopCycle(text);
+                      if (newResult != false) {
                         c.memoryAlgorithmAb.refreshInevitable(
-                          (obj) => obj..suggest_loop_cycle = tc.text,
+                          (obj) => obj..suggest_loop_cycle = text,
                         );
                         SmartDialog.dismiss(status: SmartStatus.dialog);
                       } else {

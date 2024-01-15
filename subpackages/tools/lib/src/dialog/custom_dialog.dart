@@ -10,7 +10,8 @@ import 'package:tools/src/dialog/TextField1DialogWidget.dart';
 ///  - [TextField1DialogWidget]
 ///  ...
 Future<void> showCustomDialog({
-  required Widget Function(BuildContext context) builder,
+  Widget Function(BuildContext context)? builder,
+  Widget Function(BuildContext context, void Function(void Function()))? stfBuilder,
   bool clickMaskDismiss = true,
   bool backDismiss = true,
 }) async {
@@ -19,6 +20,6 @@ Future<void> showCustomDialog({
     backDismiss: backDismiss,
     useSystem: true,
     maskColor: Colors.black.withOpacity(0.2),
-    builder: (_) => builder(_),
+    builder: (_) => stfBuilder == null ? builder!(_) : StatefulBuilder(builder: (ctx, r) => stfBuilder.call(ctx, r)),
   );
 }

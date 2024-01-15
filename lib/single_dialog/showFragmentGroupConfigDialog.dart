@@ -1,10 +1,10 @@
 import 'package:aaa_memory/global/GlobalAbController.dart';
 import 'package:aaa_memory/push_page/push_page.dart';
+import 'package:aaa_memory/tool/other.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:tools/tools.dart';
 import 'package:intl/intl.dart';
@@ -263,27 +263,33 @@ class _PrivatePublishDialogWidgetState extends State<_PrivatePublishDialogWidget
                 },
               ),
             ),
-            JustTheTooltip(
-              controller: publishJustTheController,
-              backgroundColor: Colors.grey.shade800,
-              content: Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("共享：会在首页中被推荐，也可被搜索到", style: TextStyle(color: Colors.white)),
-                    Text("不共享：不会在首页中被推荐，也无法被搜索到", style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-              ),
-              child: GestureDetector(
-                child: Icon(Icons.error, color: Colors.blue, size: 18),
-                onTap: () {
-                  publishJustTheController.showTooltip();
-                },
-              ),
+            const CustomTooltip(
+              texts: [
+                CustomTooltipText(text: "共享：会在首页中被推荐，也可被搜索到"),
+                CustomTooltipText(text: "不共享：不会在首页中被推荐，也无法被搜索到"),
+              ],
             ),
+            // JustTheTooltip(
+            //   controller: publishJustTheController,
+            //   backgroundColor: Colors.grey.shade800,
+            //   content: Padding(
+            //     padding: EdgeInsets.all(10),
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       mainAxisSize: MainAxisSize.min,
+            //       children: [
+            //         Text("共享：会在首页中被推荐，也可被搜索到", style: TextStyle(color: Colors.white)),
+            //         Text("不共享：不会在首页中被推荐，也无法被搜索到", style: TextStyle(color: Colors.white)),
+            //       ],
+            //     ),
+            //   ),
+            //   child: GestureDetector(
+            //     child: Icon(Icons.error, color: Colors.blue, size: 18),
+            //     onTap: () {
+            //       publishJustTheController.showTooltip();
+            //     },
+            //   ),
+            // ),
           ],
         ),
         Row(

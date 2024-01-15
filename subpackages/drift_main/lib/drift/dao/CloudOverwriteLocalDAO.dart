@@ -215,4 +215,31 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
             },
     );
   }
+
+  /// 将 [crtEntity] 实体插入云端，并存入本地
+  ///
+  /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
+  Future<void> insertCloudMemoryGroupAndOverwriteLocal({
+    required MemoryGroup crtEntity,
+    required Future<void> Function(MemoryGroup memoryGroup) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    await requestSingleRowInsert(
+      isLoginRequired: true,
+      singleRowInsertDto: SingleRowInsertDto(
+        table_name: driftDb.memoryGroups.actualTableName,
+        row: crtEntity,
+      ),
+      onSuccess: (String showMessage, SingleRowInsertVo vo) async {
+        // 插入到本地
+        final result = await driftDb.into(memoryGroups).insertReturning(MemoryGroup.fromJson(vo.row), mode: InsertMode.insert);
+        await onSuccess(result);
+      },
+      onError: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
 }

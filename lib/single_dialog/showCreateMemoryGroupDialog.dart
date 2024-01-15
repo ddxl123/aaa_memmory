@@ -26,29 +26,22 @@ Future<void> showCreateMemoryGroupDialog() async {
             SmartDialog.showToast('名称不能为空！');
             return;
           }
-          await requestSingleRowInsert(
-            isLoginRequired: true,
-            singleRowInsertDto: SingleRowInsertDto(
-              table_name: driftDb.memoryGroups.actualTableName,
-              row: Crt.memoryGroupEntity(
-                start_time: null,
-                memory_algorithm_id: null,
-                title: tec.text.trim(),
-                will_new_learn_count: 0,
-                review_interval: DateTime.now(),
-                new_review_display_order: NewReviewDisplayOrder.mix,
-                new_display_order: NewDisplayOrder.random,
-                review_display_order: ReviewDisplayOrder.expire_first,
-                creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-                sync_version: 0,
-                be_synced: false,
-                study_status: StudyStatus.not_startup,
-              ),
+          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupAndOverwriteLocal(
+            crtEntity: Crt.memoryGroupEntity(
+              start_time: null,
+              memory_algorithm_id: null,
+              title: tec.text.trim(),
+              will_new_learn_count: 0,
+              review_interval: DateTime.now(),
+              new_review_display_order: NewReviewDisplayOrder.mix,
+              new_display_order: NewDisplayOrder.random,
+              review_display_order: ReviewDisplayOrder.expire_first,
+              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+              sync_version: 0,
+              be_synced: false,
+              study_status: StudyStatus.not_startup,
             ),
-            onSuccess: (String showMessage, SingleRowInsertVo vo) async {
-              // 插入到本地
-              await driftDb.insertDAO.insertMemoryGroup(memoryGroup: MemoryGroup.fromJson(vo.row));
-
+            onSuccess: (result) async {
               Aber.findOrNullLast<MemoryGroupListPageAbController>()?.refreshPage();
               SmartDialog.dismiss(status: SmartStatus.dialog);
               SmartDialog.showToast('创建成功！');

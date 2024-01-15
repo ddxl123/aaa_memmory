@@ -89,6 +89,8 @@ enum StudyStatus {
 
   incomplete_for_last_cycle,
 
+  completed_for_group,
+
 }
         
 enum Gender {

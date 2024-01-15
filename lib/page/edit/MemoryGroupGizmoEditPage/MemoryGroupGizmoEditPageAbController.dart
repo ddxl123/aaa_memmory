@@ -1,4 +1,4 @@
-import 'package:aaa_memory/algorithm_parser/parser.dart';
+import 'package:aaa_memory/algorithm_parser/parser/LoopCycleParser.dart';
 import 'package:aaa_memory/global/GlobalAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
@@ -6,6 +6,7 @@ import 'package:drift_main/share_common/share_enum.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:intl/intl.dart';
 
 import '../../../push_page/push_page.dart';
 import '../../list/MemoryGroupListPageAbController.dart';
@@ -103,7 +104,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       return false;
     }
     // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
-    // TODO: 进行语法检查
+    // TODO：进行语法检查
     return true;
   }
 
@@ -131,16 +132,18 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     if (!result) {
       return false;
     }
+    // TODO：检查启动时，是否已存在记忆信息，如果存在，则需要提醒用户清除，或者重写创建一个记忆组。
     cloneMemoryGroupAndOtherAb().memoryGroup.start_time = DateTime.now();
     cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.not_study_for_this_cycle;
     await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneMemoryGroupAndOtherAb().memoryGroup);
+    cloneMemoryGroupAndOtherAb.refreshForce();
     return true;
   }
 
-  /// 开始当前周期
+  /// 开始本周期
   Future<void> startCurrentCycle() async {
-    final isSavedSuccess = await onlySave(isVerify: true);
-    if (!isSavedSuccess) {
+    final isVerifySuccess = verify();
+    if (!isVerifySuccess) {
       return;
     }
 
@@ -154,11 +157,17 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     );
     await result.handleCode(
       code200101: (String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) async {
-        final nowCycle = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!.split(" ").map((e) => int.parse(e)).toList();
+        // 当前周期所设置的循环周期
+        final oldCycleSet = vo.memory_group_cycle_info?.loop_cycle;
+        // 新设置的循环周期
+        final newCycleSet = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!;
+
+        final nowCycle = LoopCycleParser.toList(text: newCycleSet);
         if (nowCycle.isEmpty) {
           throw "循环周期不能为 null！";
         }
         // 变成 4 8 12 23 0 3 8 16 22 3...让其始终在 0~23 之间
+        // timePoint 长度完全与nowCycle相匹配
         final timePoint = <int>[...nowCycle];
         for (int i = 1; i < timePoint.length; i++) {
           timePoint[i] = timePoint[i - 1] + timePoint[i];
@@ -195,47 +204,80 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
         // 如果有多个
         else {
           // 如果循环周期被修改过，则让用户选择要从哪个小周期开始
-          if (vo.memory_group_cycle_info?.loop_cycle != cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle) {
+          if (oldCycleSet != newCycleSet) {
+            final controller = ScrollController();
+            int? selectIndex;
             await showCustomDialog(
-              builder: (ctx) {
-                int? selectIndex;
+              stfBuilder: (ctx, r) {
                 return OkAndCancelDialogWidget(
-                  text: "由于循环周期发生了更改，因此需要你选择一个小周期作为初始周期，请对下面绿色图标进行选择：",
                   columnChildren: [
-                    SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: timePoint.map(
-                          (e) {
-                            return Column(
-                              children: [
-                                if (timePoint.indexOf(e) != 0) Text("+${nowCycle[timePoint.indexOf(e)]}"),
-                                if (nowInnerIndexs.contains(timePoint.indexOf(e)))
-                                  Row(
-                                    children: [
-                                      Text("————"),
-                                      GestureDetector(
-                                        child: Icon(Icons.circle_outlined, color: Colors.green),
-                                        onTap: () {
-                                          selectIndex = timePoint.indexOf(e);
-                                        },
-                                      ),
-                                      Text("————"),
-                                      Text(e.toString()),
-                                      Text("————"),
-                                    ],
-                                  ),
-                                if (!nowInnerIndexs.contains(timePoint.indexOf(e)))
-                                  Row(
-                                    children: [Text("————"), Text(e.toString()), Text("————")],
-                                  ),
-                              ],
-                            );
-                          },
-                        ).toList(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text("由于循环周期发生了更改，因此需要你选择一个小周期作为初始周期："),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "原循环周期：${oldCycleSet ?? "无"}",
+                            style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(children: [Expanded(child: Text("现循环周期：${newCycleSet}", style: TextStyle(color: Colors.green)))]),
+                    SizedBox(height: 10),
+                    Row(children: [Expanded(child: Text("请点击橙色圆圈对区间进行选择", style: TextStyle(color: Colors.grey)))]),
+                    Container(
+                      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).primaryColor)),
+                      child: Scrollbar(
+                        controller: controller,
+                        thumbVisibility: true,
+                        child: SingleChildScrollView(
+                          controller: controller,
+                          padding: EdgeInsets.all(10),
+                          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              for (int i = 0; i < timePoint.length; i++)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (i != 0) Text("+${nowCycle[i]}", style: TextStyle(color: Colors.green)),
+                                    Row(
+                                      children: [
+                                        Text("———", style: TextStyle(color: Colors.grey)),
+                                        Text(timePoint[i].toString() + ":00", style: TextStyle(color: Theme.of(context).primaryColor)),
+                                        Text("———", style: TextStyle(color: Colors.grey)),
+                                      ],
+                                    ),
+                                    if (i == 0) Text("", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                    if (i != 0) Text("$i", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                  ],
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "当前时间：${DateFormat("y/M/d H:mm").format(DateTime.now())}",
+                            style: TextStyle(color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text("已选择第 ${selectIndex ?? "[未选择]"} 个小周期"),
                   ],
                   okText: "确定",
                   cancelText: "取消",
@@ -246,6 +288,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                 );
               },
             );
+            controller.dispose();
           }
         }
         if (targetPointIndex == null) {
@@ -274,8 +317,13 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
             should_review_count: cloneMemoryGroupAndOtherAb().reviewIntervalCount,
           ),
           onSuccess: (MemoryGroupCycleInfo memoryGroupCycleInfo) async {
+            // TODO: 在这之前得有个加载界面
+            cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
+            await onlySave(isVerify: false);
+
             Navigator.pop(context);
             listPageC.refreshController.requestRefresh();
+
             await pushToInAppStage(context: context, memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
           },
           onError: (int? code, HttperException httperException, StackTrace st) async {
@@ -320,6 +368,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     );
 
     SmartDialog.dismiss(status: SmartStatus.loading);
+    SmartDialog.dismiss(status: SmartStatus.dialog);
     SmartDialog.dismiss(status: SmartStatus.dialog);
 
     cloneMemoryGroupAndOtherAb.refreshForce();
