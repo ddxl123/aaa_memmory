@@ -17,6 +17,16 @@ class NextShowTimeState extends ClassificationState {
 
   static const name = "下次展示时间点算法";
 
+  @override
+  String get stateName => name;
+
+  @override
+  StateExplain stateExplain() => const StateExplain(
+        typeExplain: "当学习了一个碎片后，会记录一系列数据，该算法反映了在本次学习后，其碎片下一次展示的时间点秒数。",
+        useExplain: r'一个时间秒数，该秒数是距离记忆组启动时算起。',
+        eventTimeExplain: '点击底部按钮后会触发这个算法，以计算当前展示的碎片的下一次展示时间点。',
+      );
+
   late int result;
 
   @override

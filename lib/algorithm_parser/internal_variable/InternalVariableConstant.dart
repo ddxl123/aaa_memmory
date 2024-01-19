@@ -155,7 +155,7 @@ class InternalVariableConstantHandler {
     },
   );
 
-  /// ==================================== 下面是从碎片记忆信息中获取 ===========================================
+  /// ==================================== 下面是从碎片记忆信息中获取，获取的是整个，而不是单个 ===========================================
 
   /// [FragmentMemoryInfos.actual_show_time]
   static InternalVariableConstant i1ActualShowTimeConst = InternalVariableConstant<List<int>>(

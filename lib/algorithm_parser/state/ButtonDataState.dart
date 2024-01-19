@@ -48,6 +48,19 @@ class ButtonDataState extends ClassificationState {
   });
 
   static const name = "按钮数值分配算法";
+
+  @override
+  String get stateName => name;
+
+  @override
+  StateExplain stateExplain() => const StateExplain(
+        typeExplain: "学习碎片时，页面下面按钮的算法数值。",
+        useExplain: r'例如 "5,10,20;陌生,熟悉,忘记"。'
+            r'";"前表示算法数值，即"5,10,20"3个按钮，'
+            r'";"后表示按钮分别对应着"陌生,熟悉,忘记"文字描述。',
+        eventTimeExplain: '碎片展示时会触发这个算法，以显示底部按钮。',
+      );
+
   final List<ButtonDataValue2NextShowTime> resultButtonValues = [];
 
   @override
@@ -72,7 +85,7 @@ class ButtonDataState extends ClassificationState {
   }
 
   @override
-  String toStringResult() => '${resultButtonValues.map((e) => e.toString()).join(',')}';
+  String toStringResult() => resultButtonValues.map((e) => e.toString()).join(',');
 
   @override
   Future<AtomResultOrNull> syntaxCheckInternalVariablesResultHandler(InternalVariableAtom atom) async {

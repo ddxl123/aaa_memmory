@@ -25,14 +25,33 @@ class SuggestCountForNewAndReviewState extends ClassificationState {
     required super.externalResultHandler,
   });
 
-  static const name = "周期新学和复习数量算法";
+  static const name = "本周期新学数量和复习数量算法";
+
+  @override
+  String get stateName => name;
+
+  @override
+  StateExplain stateExplain() => const StateExplain(
+        typeExplain: "本周期需要新学和复习的碎片数量的算法。",
+        useExplain: r'例如"100,200"，'
+            r'逗号左侧为需要新学的数量，'
+            r'逗号右侧为需要复习的数量。'
+            r'若为"-1,?"，则表示新学数量使用默认配置。'
+            r'若为"?,-1"，则表示复习数量使用默认配置。'
+            r'若为"-1,-1"，则表示新学数量和复习数量都使用默认配置。',
+        eventTimeExplain: '点击底部按钮后会触发这个算法，以计算当前展示的碎片的下一次展示时间点。',
+      );
 
   late NewAndReviewCountWrapper result;
 
   @override
   SuggestCountForNewAndReviewState useParse({required String useContent}) {
     final list = useContent.split(",");
-    result = NewAndReviewCountWrapper(newLearnCount: int.parse(list.first), reviewCount: int.parse(list.last));
+
+    result = NewAndReviewCountWrapper(
+      newLearnCount: AlgorithmParser.calculate(list.first).toInt(),
+      reviewCount: AlgorithmParser.calculate(list.last).toInt(),
+    );
     return this;
   }
 

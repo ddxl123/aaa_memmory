@@ -188,10 +188,12 @@ class StatusButton extends StatelessWidget {
       case StudyStatus.completed_for_this_cycle:
         return CustomRoundCornerButton(
           isMinVisualDensity: editPageC == null ? true : false,
-          text: Text("本周期已完成"),
+          text: Text("本周期已完成·加量学习"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
-          onPressed: editPageC == null ? customOnPressed! : () async {},
+          onPressed: editPageC == null ? customOnPressed! : () async {
+
+          },
         );
       case StudyStatus.incomplete_for_last_cycle:
         return CustomRoundCornerButton(

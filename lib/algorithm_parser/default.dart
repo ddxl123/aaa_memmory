@@ -1,59 +1,46 @@
-
 import 'parser.dart';
 
 /// 注意接收的是 if-else 原生语句。
 class DefaultAlgorithmOfRaw {
   DefaultAlgorithmOfRaw({
     required this.title,
-    required this.buttonDataContent,
-    required this.familiarityContent,
-    required this.nextShowTimeContent,
+    required this.list,
   });
 
   final String title;
-  final String buttonDataContent;
-  final String familiarityContent;
-  final String nextShowTimeContent;
+  final List<ClassificationState> list;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is DefaultAlgorithmOfRaw &&
-        other.title == title &&
-        other.buttonDataContent == buttonDataContent &&
-        other.familiarityContent == familiarityContent &&
-        other.nextShowTimeContent == nextShowTimeContent;
-  }
+  /// 是否展开 [list]。
+  bool isExpand = false;
 
-  @override
-  int get hashCode {
-    return Object.hash(title, buttonDataContent, familiarityContent, nextShowTimeContent);
-  }
+  static final defaultList = <DefaultAlgorithmOfRaw>[
+    ebbinghaus(),
+  ];
 
-  static final defaultList = <DefaultAlgorithmOfRaw>[];
-
-  static List<DefaultAlgorithmOfRaw> getDefaults() {
-    final default1 = DefaultAlgorithmOfRaw.default1();
-    if (!defaultList.contains(default1)) {
-      defaultList.add(default1);
-    }
-    return defaultList;
-  }
-
-  static DefaultAlgorithmOfRaw default1() {
+  static DefaultAlgorithmOfRaw ebbinghaus() {
     return DefaultAlgorithmOfRaw(
       title: "艾宾浩斯复习周期",
-      buttonDataContent: """
+      list: [
+        ButtonDataState(
+          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
       if(true){
         1;下一个
       }
-      """,
-      familiarityContent: """
+      """),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        FamiliarityState(
+          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
       if(true){
         1
       }
-      """,
-      nextShowTimeContent: """
+      """),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        NextShowTimeState(
+          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
       sts = ${InternalVariableConstantHandler.k3StudiedTimesConst.name}
       cct = ${InternalVariableConstantHandler.k7CurrentClickTimeConst.name}
       if(sts == 0){
@@ -75,7 +62,29 @@ class DefaultAlgorithmOfRaw {
       }else{
         cct + 60 * 60 * 24 * 30
       }
-      """,
+      """),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        CompleteConditionState(
+          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      if(${InternalVariableConstantHandler.i4ClickFamiliarityConst.name + "_1last"}>0.9){
+        true
+      }
+      """),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+        SuggestCountForNewAndReviewState(
+          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      if(true){
+        -1,-1
+      }
+      """),
+          simulationType: SimulationType.syntaxCheck,
+          externalResultHandler: null,
+        ),
+      ],
     );
   }
 }

@@ -8,7 +8,7 @@ class HttpPath {
   HttpPath._();
 
   /// 基础 path
-  static const String BASE_PATH_LOCAL = 'http://192.168.0.105:2814';
+  static const String BASE_PATH_LOCAL = 'http://192.168.253.232:2814';
   
   static const String POST__REGISTER_OR_LOGIN_CHECK_LOGIN = 'POST_/register_or_login/check_login';
 

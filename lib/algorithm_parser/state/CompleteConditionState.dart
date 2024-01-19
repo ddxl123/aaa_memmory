@@ -1,13 +1,5 @@
 part of algorithm_parser;
 
-/// 下一次展示时间的算法状态
-///
-/// [result] 距离记忆组启动的时间差(秒)。
-///
-/// String 类型时的 use 写法：
-/// use: 123
-///
-/// 单位：秒
 class CompleteConditionState extends ClassificationState {
   CompleteConditionState({
     required super.algorithmWrapper,
@@ -16,6 +8,17 @@ class CompleteConditionState extends ClassificationState {
   });
 
   static const name = "完成条件算法";
+
+  @override
+  String get stateName => name;
+
+  @override
+  StateExplain stateExplain() => const StateExplain(
+        typeExplain: "某个碎片完成条件的算法，完成意味着在当前记忆组学习时不会再出现该碎片。",
+        useExplain: r'true" 表示完成，'
+            r'"false" 表示未完成。',
+        eventTimeExplain: '点击底部按钮后会触发这个算法，以计算当前展示的碎片的完成状态。',
+      );
 
   late bool result;
 

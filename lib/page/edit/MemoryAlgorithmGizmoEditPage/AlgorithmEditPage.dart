@@ -1,3 +1,4 @@
+import 'package:aaa_memory/page/edit/MemoryAlgorithmGizmoEditPage/AlgorithmDefaultSelectSheet.dart';
 import 'package:aaa_memory/theme/theme.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -159,63 +160,7 @@ class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
                             child: TextButton(
                               child: Text("预置"),
                               onPressed: () {
-                                showMaterialModalBottomSheet(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-                                  context: c.context,
-                                  builder: (BuildContext context) {
-                                    return Card(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              Text("请选择一个算法预设", style: TextStyle(fontWeight: FontWeight.bold)),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: MediaQuery.of(context).size.height / 2,
-                                            child: ListView(
-                                              children: DefaultAlgorithmOfRaw.getDefaults()
-                                                  .map(
-                                                    (e) => Row(
-                                                      children: [
-                                                        Text(e.title + "："),
-                                                        Expanded(
-                                                          child: TextButton(
-                                                            child: Text("熟悉度变化算法"),
-                                                            onPressed: () {
-                                                              bnC.defaultToPaste(e.familiarityContent);
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: TextButton(
-                                                            child: Text("下一次展示时间点算法"),
-                                                            onPressed: () {
-                                                              bnC.defaultToPaste(e.nextShowTimeContent);
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          child: TextButton(
-                                                            child: Text("按钮数据算法"),
-                                                            onPressed: () {
-                                                              bnC.defaultToPaste(e.buttonDataContent);
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
+                                showAlgorithmDefaultSelectSheet(context: context);
                               },
                             ),
                           ),

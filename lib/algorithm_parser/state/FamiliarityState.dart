@@ -1,7 +1,5 @@
 part of algorithm_parser;
 
-/// String 类型时的 use 写法：
-/// use: 123
 class FamiliarityState extends ClassificationState {
   FamiliarityState({
     required super.algorithmWrapper,
@@ -10,6 +8,16 @@ class FamiliarityState extends ClassificationState {
   });
 
   static const name = "熟悉度变化算法";
+
+  @override
+  String get stateName => name;
+
+  @override
+  StateExplain stateExplain() => const StateExplain(
+        typeExplain: "当学习了一个碎片后，会记录一系列数据，该算法反映了在本次学习后的熟悉度。",
+        useExplain: r'范围通常在 0~1.0，当然也可以大于1.0，甚至可以是 100~1000，因为它只是个算法变量，可根据算法本身去定义其数值意义和范围。',
+        eventTimeExplain: '点击底部按钮后会触发这个算法，以计算当前展示的碎片的熟悉度。',
+      );
 
   late double result;
 

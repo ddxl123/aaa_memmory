@@ -14,6 +14,24 @@ class IfExpr {
   final IfExpr childIfExpr;
 }
 
+/// 状态类型说明
+class StateExplain {
+  const StateExplain({
+    required this.typeExplain,
+    required this.useExplain,
+    required this.eventTimeExplain,
+  });
+
+  /// 类型说明
+  final String typeExplain;
+
+  /// 返回值说明
+  final String useExplain;
+
+  /// 什么时候触发
+  final String eventTimeExplain;
+}
+
 abstract class ClassificationState {
   ClassificationState({
     required this.algorithmWrapper,
@@ -26,15 +44,22 @@ abstract class ClassificationState {
 
   /// 若 [simulationType] 为 [SimulationType.external]，则 [externalResultHandler] 不能为 null。
   ///
+  /// 若 [simulationType] 为 [SimulationType.syntaxCheck]，则 [externalResultHandler] 为 null。
+  ///
   /// 可以使用 [InternalVariableStorage.filterStorage] 进行筛选。
   final ResultHandler? externalResultHandler;
 
   InternalVariableStorage internalVariableStorage = InternalVariableStorage();
 
+  String get stateName;
+
   Type get getStateType => runtimeType;
 
   /// 返回 String 类型的 result。
   String toStringResult();
+
+  /// 该类型的说明
+  StateExplain stateExplain();
 
   /// 当前状态类的 use 的解析方式。
   ClassificationState useParse({required String useContent});

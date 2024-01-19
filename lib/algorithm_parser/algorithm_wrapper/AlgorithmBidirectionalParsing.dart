@@ -1,6 +1,7 @@
 part of '../parser.dart';
 
 class AlgorithmBidirectionalParsing {
+  /// 将 [wrapper] 对象解析成 if-else-use 文本。
   static String parseFromAlgorithmWrapper(AlgorithmWrapper wrapper) {
     String result = "";
 
@@ -103,7 +104,7 @@ class AlgorithmBidirectionalParsing {
     return result;
   }
 
-  // 解析嵌套的 if-else 字符串
+  /// 将 if-else-use 文本解析成 [AlgorithmWrapper] 对象。
   static AlgorithmWrapper parseFromString(String content) {
     final match = RegExp(r'\bif\b').firstMatch(content);
     final customVariablesContent = match == null ? null : content.substring(0, match.start);

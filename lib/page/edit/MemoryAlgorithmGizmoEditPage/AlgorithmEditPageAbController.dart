@@ -144,7 +144,7 @@ class AlgorithmEditPageAbController extends AbController {
           SmartDialog.showToast("语法分析异常：${ec.error}");
         },
       ),
-      suggestCountForNewAndReviewState:  () async => await AlgorithmParser.parse(
+      suggestCountForNewAndReviewState: () async => await AlgorithmParser.parse(
         stateFunc: () => SuggestCountForNewAndReviewState(
           algorithmWrapper: currentAlgorithmWrapper(),
           simulationType: SimulationType.syntaxCheck,
@@ -208,6 +208,7 @@ class AlgorithmEditPageAbController extends AbController {
     );
   }
 
+  /// 将预设的进行粘贴
   void defaultToPaste(String rawContent) {
     if (isCurrentRaw()) {
       rawTextEditingController.text = rawContent;
