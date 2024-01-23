@@ -16,6 +16,13 @@ class Elser {
 
   KnownAlgorithmException? useAlgorithmException;
 
+  List<KnownAlgorithmException> get getExceptions {
+    return [
+      if (useAlgorithmException != null) useAlgorithmException!,
+      if (ifElseUseWrapper != null) ...ifElseUseWrapper!.getExceptions,
+    ];
+  }
+
   void setUseAlgorithmException({required KnownAlgorithmException? algorithmException}) {
     if (algorithmException == useAlgorithmException) return;
     useAlgorithmException = algorithmException;

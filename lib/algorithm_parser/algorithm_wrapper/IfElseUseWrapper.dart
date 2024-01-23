@@ -23,6 +23,13 @@ class IfUseElseWrapper {
 
   static IfUseElseWrapper emptyIfUseElseWrapperWithInit(Ifer ifer) => IfUseElseWrapper(ifers: [ifer], elser: Elser.emptyElser);
 
+  List<KnownAlgorithmException> get getExceptions {
+    return [
+      ...ifers.expand((element) => element.getExceptions),
+      ...elser.getExceptions,
+    ];
+  }
+
   void cancelAllException() {
     ifers.forEach((element) {
       element.cancelAllException();

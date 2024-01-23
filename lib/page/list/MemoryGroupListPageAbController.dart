@@ -8,6 +8,8 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../algorithm_parser/AlgorithmException.dart';
+import '../../algorithm_parser/parser.dart';
 import '../edit/MemoryGroupGizmoEditPage/MemoryGroupGizmoEditPage.dart';
 import '../edit/edit_page_type.dart';
 
@@ -191,9 +193,7 @@ class StatusButton extends StatelessWidget {
           text: Text("本周期已完成·加量学习"),
           color: Colors.green,
           isElevated: editPageC == null ? false : true,
-          onPressed: editPageC == null ? customOnPressed! : () async {
-
-          },
+          onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       case StudyStatus.incomplete_for_last_cycle:
         return CustomRoundCornerButton(
@@ -306,6 +306,11 @@ class MemoryGroupAndOther {
     memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
   }
 
+  /// 当前记忆组的记忆算法的循环周期，注意是查询云端并覆盖本地后的
+  ///
+  /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
+  LoopCycle? loopCycle;
+
   int reviewIntervalCount = 0;
 
   MemoryGroupAndOther clone() {
@@ -367,6 +372,25 @@ class MemoryGroupListPageAbController extends AbController {
       for (var element in memoryGroupAndOthersAb()) {
         // 如果记忆模型是被删除掉，则直接赋值为 null
         element().setMemoryAlgorithm = newMemoryAlgorithms.where((mm) => element().memoryGroup.memory_algorithm_id == mm.id).firstOrNull;
+        element.refreshForce();
+
+        await AlgorithmParser.parse(
+          stateFunc: () => SuggestLoopCycleState(
+            algorithmWrapper: AlgorithmWrapper.fromJsonString(element().getMemoryAlgorithm?.suggest_loop_cycle_algorithm),
+            // TODO: 改成 SimulationType.external
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          ),
+          onSuccess: (SuggestLoopCycleState state) async {
+            element().loopCycle = state.result;
+            element.refreshForce();
+          },
+          onError: (AlgorithmException ec) async {
+            element().loopCycle = null;
+            element.refreshForce();
+          },
+        );
+
         // 无需 await
         _forOtherSingle(mgAndOtherAb: element);
       }

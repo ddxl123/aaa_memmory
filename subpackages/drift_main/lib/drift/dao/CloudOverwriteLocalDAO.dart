@@ -167,19 +167,19 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
   ///
   /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
   Future<void> insertCloudMemoryGroupCycleInfoAndOverwriteLocal({
-    required MemoryGroupCycleInfo crtEntity,
-    required Future<void> Function(MemoryGroupCycleInfo memoryGroupCycleInfo) onSuccess,
+    required MemoryGroupSmartCycleInfo crtEntity,
+    required Future<void> Function(MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
   }) async {
     await requestSingleRowInsert(
       isLoginRequired: true,
       singleRowInsertDto: SingleRowInsertDto(
-        table_name: driftDb.memoryGroupCycleInfos.actualTableName,
+        table_name: driftDb.memoryGroupSmartCycleInfos.actualTableName,
         row: crtEntity,
       ),
       onSuccess: (String showMessage, SingleRowInsertVo vo) async {
         // 插入到本地
-        final result = await driftDb.into(memoryGroupCycleInfos).insertReturning(MemoryGroupCycleInfo.fromJson(vo.row), mode: InsertMode.insert);
+        final result = await driftDb.into(memoryGroupSmartCycleInfos).insertReturning(MemoryGroupSmartCycleInfo.fromJson(vo.row), mode: InsertMode.insert);
         await onSuccess(result);
       },
       onError: onError == null
@@ -192,20 +192,20 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
 
   /// 将修改后的 [memoryGroupCycleInfo] 进行云端更新，并覆盖本地。
   Future<void> updateCloudMemoryGroupCycleInfoAndOverwriteLocal({
-    required MemoryGroupCycleInfo memoryGroupCycleInfo,
-    required Future<void> Function(MemoryGroupCycleInfo memoryGroupCycleInfo) onSuccess,
+    required MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo,
+    required Future<void> Function(MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
   }) async {
     await requestSingleRowModify(
       isLoginRequired: true,
       singleRowModifyDto: SingleRowModifyDto(
-        table_name: driftDb.memoryGroupCycleInfos.actualTableName,
-        row: memoryGroupCycleInfo,
+        table_name: driftDb.memoryGroupSmartCycleInfos.actualTableName,
+        row: memoryGroupSmartCycleInfo,
       ),
       onSuccess: (String showMessage, SingleRowModifyVo vo) async {
-        final result = MemoryGroupCycleInfo.fromJson(vo.row);
+        final result = MemoryGroupSmartCycleInfo.fromJson(vo.row);
         // 更新到本地
-        await driftDb.update(memoryGroupCycleInfos).replace(result);
+        await driftDb.update(memoryGroupSmartCycleInfos).replace(result);
         await onSuccess(result);
       },
       onError: onError == null

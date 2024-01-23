@@ -71,7 +71,7 @@ class InAppStageAbController extends AbController {
         appBar: AppBar(),
         body: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(e.error)]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text(e.error.toString())]),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -91,25 +91,23 @@ class Crt {
     );
   }
 
-  static MemoryGroupCycleInfo memoryGroupCycleInfoEntity({
+  static MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfoEntity({
     required int creator_user_id,
     required String loop_cycle,
     required int memory_algorithm_id,
     required int memory_group_id,
-    required DateTime should_end_time,
-    required int should_new_learn_count,
-    required int should_review_count,
-    required int which_small_cycle,
+    required int small_cycle_order,
+    required int small_cycle_should_new_learn_count,
+    required int small_cycle_should_review_count,
   }) {
-    return MemoryGroupCycleInfo(
+    return MemoryGroupSmartCycleInfo(
       creator_user_id: creator_user_id,
       loop_cycle: loop_cycle,
       memory_algorithm_id: memory_algorithm_id,
       memory_group_id: memory_group_id,
-      should_end_time: should_end_time,
-      should_new_learn_count: should_new_learn_count,
-      should_review_count: should_review_count,
-      which_small_cycle: which_small_cycle,
+      small_cycle_order: small_cycle_order,
+      small_cycle_should_new_learn_count: small_cycle_should_new_learn_count,
+      small_cycle_should_review_count: small_cycle_should_review_count,
       created_at: DateTime(0),
       id: -1,
       updated_at: DateTime(0),
@@ -201,7 +199,7 @@ class Crt {
     required String? next_time_algorithm_remark,
     required String? suggest_count_for_new_and_review_algorithm,
     required String? suggest_count_for_new_and_review_algorithm_remark,
-    required String? suggest_loop_cycle,
+    required String? suggest_loop_cycle_algorithm,
     required String? suggest_loop_cycle_remark,
     required String title,
   }) {
@@ -221,7 +219,7 @@ class Crt {
           suggest_count_for_new_and_review_algorithm,
       suggest_count_for_new_and_review_algorithm_remark:
           suggest_count_for_new_and_review_algorithm_remark,
-      suggest_loop_cycle: suggest_loop_cycle,
+      suggest_loop_cycle_algorithm: suggest_loop_cycle_algorithm,
       suggest_loop_cycle_remark: suggest_loop_cycle_remark,
       title: title,
       created_at: DateTime(0),

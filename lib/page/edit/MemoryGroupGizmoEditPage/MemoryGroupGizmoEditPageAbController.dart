@@ -1,4 +1,4 @@
-import 'package:aaa_memory/algorithm_parser/parser/LoopCycleParser.dart';
+import 'package:aaa_memory/algorithm_parser/parser.dart';
 import 'package:aaa_memory/global/GlobalAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
@@ -99,7 +99,8 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return false;
     }
-    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle == null) {
+
+    if (cloneMemoryGroupAndOtherAb().loopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
       return false;
     }
@@ -157,56 +158,27 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     );
     await result.handleCode(
       code200101: (String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) async {
+        LoopCycle;
         // 当前周期所设置的循环周期
-        final oldCycleSet = vo.memory_group_cycle_info?.loop_cycle;
+        final oldCycleSetting = vo.memory_group_cycle_info?.loop_cycle;
         // 新设置的循环周期
-        final newCycleSet = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!;
+        final newCycleSetting = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle_algorithm!;
 
-        final nowCycle = LoopCycleParser.toList(text: newCycleSet);
-        if (nowCycle.isEmpty) {
-          throw "循环周期不能为 null！";
-        }
-        // 变成 4 8 12 23 0 3 8 16 22 3...让其始终在 0~23 之间
-        // timePoint 长度完全与nowCycle相匹配
-        final timePoint = <int>[...nowCycle];
-        for (int i = 1; i < timePoint.length; i++) {
-          timePoint[i] = timePoint[i - 1] + timePoint[i];
-          if (timePoint[i] >= 24) {
-            timePoint[i] = timePoint[i] % 24;
-          }
-        }
-        final nowPoint = DateTime.now().hour;
-        // 当前时间点在 timePoint 的哪个 index 前。
-        final nowInnerIndexs = <int>[];
-        for (int i = 1; i < timePoint.length; i++) {
-          final left = timePoint[i - 1];
-          final current = timePoint[i];
-          // 在 4~8 期间
-          if (left <= nowPoint && current >= nowPoint) {
-            nowInnerIndexs.add(i);
-          }
-          // 在 23~3 期间
-          else if (nowPoint >= left && left >= current) {
-            nowInnerIndexs.add(i);
-          }
-        }
+        final LoopCycle? oldCycle = oldCycleSetting == null ? null : LoopCycle.fromText(text: oldCycleSetting);
+        final LoopCycle newCycle = LoopCycle.fromText(text: newCycleSetting);
+        final List<SmallCycle> targets = newCycle.nowBeforeWhich();
 
-        // 说明在两边闭环期间，或者 timePoint 只有一个
-        if (nowInnerIndexs.isEmpty) {
-          nowInnerIndexs.add(0);
-        }
-
-        int? targetPointIndex;
+        SmallCycle? target;
         // 如果只有一个，则直接赋予这一个
-        if (nowInnerIndexs.length == 1) {
-          targetPointIndex = nowInnerIndexs.single;
+        if (targets.length == 1) {
+          target = targets.single;
         }
         // 如果有多个
         else {
           // 如果循环周期被修改过，则让用户选择要从哪个小周期开始
-          if (oldCycleSet != newCycleSet) {
+          if (!newCycle.equal(target: oldCycle)) {
             final controller = ScrollController();
-            int? selectIndex;
+            SmallCycle? selected;
             await showCustomDialog(
               stfBuilder: (ctx, r) {
                 return OkAndCancelDialogWidget(
@@ -223,13 +195,13 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                       children: [
                         Expanded(
                           child: Text(
-                            "原循环周期：${oldCycleSet ?? "无"}",
+                            "原循环周期：${oldCycleSetting ?? "无"}",
                             style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                           ),
                         ),
                       ],
                     ),
-                    Row(children: [Expanded(child: Text("现循环周期：${newCycleSet}", style: TextStyle(color: Colors.green)))]),
+                    Row(children: [Expanded(child: Text("现循环周期：${newCycleSetting}", style: TextStyle(color: Colors.green)))]),
                     SizedBox(height: 10),
                     Row(children: [Expanded(child: Text("请点击橙色圆圈对区间进行选择", style: TextStyle(color: Colors.grey)))]),
                     Container(
@@ -245,22 +217,25 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              for (int i = 0; i < timePoint.length; i++)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (i != 0) Text("+${nowCycle[i]}", style: TextStyle(color: Colors.green)),
-                                    Row(
-                                      children: [
-                                        Text("———", style: TextStyle(color: Colors.grey)),
-                                        Text(timePoint[i].toString() + ":00", style: TextStyle(color: Theme.of(context).primaryColor)),
-                                        Text("———", style: TextStyle(color: Colors.grey)),
-                                      ],
-                                    ),
-                                    if (i == 0) Text("", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                                    if (i != 0) Text("$i", style: TextStyle(color: Colors.grey, fontSize: 12)),
-                                  ],
-                                ),
+                              ...newCycle.completeSmallCycles.map(
+                                (e) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (e.rawDelta != null) Text("+${e.rawDelta}", style: TextStyle(color: Colors.green)),
+                                      Row(
+                                        children: [
+                                          Text("———", style: TextStyle(color: Colors.grey)),
+                                          Text(e.cumulative24Sys.toString(), style: TextStyle(color: Theme.of(context).primaryColor)),
+                                          Text("———", style: TextStyle(color: Colors.grey)),
+                                        ],
+                                      ),
+                                      if (e.rawDelta == null) Text("", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                      if (e.rawDelta != null) Text(e.order.toString(), style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                    ],
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -277,12 +252,12 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                       ],
                     ),
                     SizedBox(height: 10),
-                    Text("已选择第 ${selectIndex ?? "[未选择]"} 个小周期"),
+                    Text("已选择第 ${selected?.order ?? "[未选择]"} 个小周期"),
                   ],
                   okText: "确定",
                   cancelText: "取消",
                   onOk: () {
-                    targetPointIndex = selectIndex;
+                    target = selected;
                     SmartDialog.dismiss(status: SmartStatus.dialog);
                   },
                 );
@@ -291,32 +266,22 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
             controller.dispose();
           }
         }
-        if (targetPointIndex == null) {
+        if (target == null) {
           SmartDialog.showToast("已取消选择");
           return;
         }
 
-        final nowDateTime = DateTime.now();
-        final shouldEndTime = DateTime(nowDateTime.year, nowDateTime.month, nowDateTime.day);
-        final nowHour = nowDateTime.hour;
-        if (nowHour < timePoint[targetPointIndex!]) {
-          shouldEndTime.add(Duration(hours: timePoint[targetPointIndex!]));
-        } else {
-          shouldEndTime.add(Duration(days: 1, hours: timePoint[targetPointIndex!]));
-        }
-
         await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupCycleInfoAndOverwriteLocal(
-          crtEntity: Crt.memoryGroupCycleInfoEntity(
+          crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
             creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
             memory_algorithm_id: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.id,
             memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
-            should_end_time: shouldEndTime,
-            which_small_cycle: targetPointIndex == 0 ? timePoint.length : targetPointIndex!,
-            loop_cycle: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle!,
-            should_new_learn_count: cloneMemoryGroupAndOtherAb().memoryGroup.will_new_learn_count,
-            should_review_count: cloneMemoryGroupAndOtherAb().reviewIntervalCount,
+            loop_cycle: cloneMemoryGroupAndOtherAb().loopCycle!.toText(),
+            small_cycle_order: target!.order,
+            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().memoryGroup.will_new_learn_count,
+            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().reviewIntervalCount,
           ),
-          onSuccess: (MemoryGroupCycleInfo memoryGroupCycleInfo) async {
+          onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
             // TODO: 在这之前得有个加载界面
             cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
             await onlySave(isVerify: false);

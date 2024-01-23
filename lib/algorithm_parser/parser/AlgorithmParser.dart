@@ -1,8 +1,6 @@
 part of algorithm_parser;
 
 class AlgorithmParser<CS extends ClassificationState> with Explain {
-  AlgorithmParser._();
-
   late final CS _state;
 
   static const nullTag = '_tag_null_tag_';
@@ -23,7 +21,7 @@ class AlgorithmParser<CS extends ClassificationState> with Explain {
     required Future<R> Function(CS state) onSuccess,
     required Future<R> Function(AlgorithmException ec) onError,
   }) async {
-    return await AlgorithmParser<CS>._()._parse<R>(stateFunc: stateFunc, onSuccess: onSuccess, onError: onError);
+    return await AlgorithmParser<CS>()._parse<R>(stateFunc: stateFunc, onSuccess: onSuccess, onError: onError);
   }
 
   Future<R> _parse<R>({

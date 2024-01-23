@@ -18,9 +18,21 @@ class AlgorithmWrapper {
         ifUseElseWrapper: IfUseElseWrapper.fromJson(json["if_else_use_wrapper"]),
       );
 
+  KnownAlgorithmException? otherKnownAlgorithmException;
+
+  List<KnownAlgorithmException> get getExceptions {
+    return [
+      if (otherKnownAlgorithmException != null) otherKnownAlgorithmException!,
+      ...customVariables.expand((element) => element.getExceptions),
+      ...ifUseElseWrapper.getExceptions,
+    ];
+  }
+
+  bool get hasException => getExceptions.isNotEmpty;
+
   Map<String, dynamic> toJson() => <String, dynamic>{
-        "custom_variables": this.customVariables.map((e) => e.toJson()).toList(),
-        "if_else_use_wrapper": this.ifUseElseWrapper.toJson(),
+        "custom_variables": customVariables.map((e) => e.toJson()).toList(),
+        "if_else_use_wrapper": ifUseElseWrapper.toJson(),
       };
 
   static AlgorithmWrapper fromJsonString(String? content) {
@@ -35,15 +47,15 @@ class AlgorithmWrapper {
 
   String? toJsonStringOrNull() => isEmpty ? null : toJsonString();
 
-  AlgorithmWrapper copy() => AlgorithmWrapper.fromJson(this.toJson());
+  AlgorithmWrapper copy() => AlgorithmWrapper.fromJson(toJson());
 
-  static AlgorithmWrapper emptyAlgorithmWrapper = AlgorithmWrapper(
-    customVariables: [],
-    ifUseElseWrapper: IfUseElseWrapper(
-      ifers: [Ifer.emptyIfer],
-      elser: Elser.emptyElser,
-    ),
-  );
+  static AlgorithmWrapper get emptyAlgorithmWrapper => AlgorithmWrapper(
+        customVariables: [],
+        ifUseElseWrapper: IfUseElseWrapper(
+          ifers: [Ifer.emptyIfer],
+          elser: Elser.emptyElser,
+        ),
+      );
 
   bool get isEmpty => emptyAlgorithmWrapper.toJsonString() == toJsonString();
 
@@ -59,9 +71,9 @@ class AlgorithmWrapper {
   }
 
   void cancelAllException() {
-    customVariables.forEach((element) {
+    for (var element in customVariables) {
       element.cancelAllException();
-    });
+    }
     ifUseElseWrapper.cancelAllException();
   }
 

@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -43,7 +40,7 @@ Future<void> showCreateMemoryAlgorithmDialog() async {
               explain_content: null,
               suggest_count_for_new_and_review_algorithm: null,
               suggest_count_for_new_and_review_algorithm_remark: null,
-              suggest_loop_cycle: null,
+              suggest_loop_cycle_algorithm: null,
               suggest_loop_cycle_remark: null,
             ),
             onSuccess: (MemoryAlgorithm memoryAlgorithm) async {

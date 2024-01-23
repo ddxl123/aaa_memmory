@@ -7,7 +7,7 @@ part of httper;
 class MemoryGroupCycleInfoQueryLastOneVo extends BaseObject{
 
     /// 如果为 null，则没有信息。
-    MemoryGroupCycleInfo? memory_group_cycle_info;
+    MemoryGroupSmartCycleInfo? memory_group_cycle_info;
 
 
 MemoryGroupCycleInfoQueryLastOneVo({

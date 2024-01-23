@@ -1,5 +1,4 @@
-import 'package:aaa_memory/algorithm_parser/parser/LoopCycleParser.dart';
-import 'package:aaa_memory/push_page/push_page.dart';
+import 'package:aaa_memory/page/edit/MemoryAlgorithmGizmoEditPage/AlgorithmDefaultSelectSheet.dart';
 import 'package:aaa_memory/single_page/SingleQuillEditor1Page.dart';
 import 'package:aaa_memory/theme/theme.dart';
 import 'package:flutter_quill/markdown_quill.dart';
@@ -32,7 +31,6 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
             ),
             title: _appBarTitleWidget(),
             actions: [
-              _appBarRightAnalyzeWidget(),
               _appBarRightButtonWidget(),
             ],
           ),
@@ -82,9 +80,27 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(child: _suggestLoopCycle()),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: SuggestLoopCycleState.name)),
               SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: SuggestCountForNewAndReviewState.name)),
               const SliverToBoxAdapter(child: SizedBox(height: 50)),
+            ],
+          ),
+          bottomSheet: Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  child: Text("预置"),
+                  onPressed: () {
+                    showAlgorithmDefaultSelectSheet(context: context, isWhole: true);
+                  },
+                ),
+              ),
+              Expanded(
+                child: TextButton(
+                  child: Text("分析"),
+                  onPressed: () {},
+                ),
+              ),
             ],
           ),
           // floatingActionButton: AbwBuilder(
@@ -114,17 +130,6 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       builder: (c, abw) {
         return Text(c.memoryAlgorithmAb(abw).title);
-      },
-    );
-  }
-
-  Widget _appBarRightAnalyzeWidget() {
-    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return TextButton(
-          child: const Text('分析'),
-          onPressed: () {},
-        );
       },
     );
   }
@@ -263,6 +268,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                                   familiarity: () => memoryAlgorithmAb(abw).familiarity_algorithm,
                                   nextShowTime: () => memoryAlgorithmAb(abw).next_time_algorithm,
                                   completeCondition: () => memoryAlgorithmAb(abw).completed_algorithm,
+                                  suggestLoopCycle: () => memoryAlgorithmAb(abw).suggest_loop_cycle_algorithm,
                                   suggestCountForNewAndReviewState: () => memoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm,
                                 ) ==
                                 null
@@ -283,6 +289,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                                   familiarity: () => memoryAlgorithmAb(abw).familiarity_algorithm_remark,
                                   nextShowTime: () => memoryAlgorithmAb(abw).next_time_algorithm_remark,
                                   completeCondition: () => memoryAlgorithmAb(abw).completed_algorithm_remark,
+                                  suggestLoopCycle: () => memoryAlgorithmAb(abw).suggest_loop_cycle_algorithm,
                                   suggestCountForNewAndReviewState: () => memoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm_remark,
                                 ) ??
                                 "无说明",
@@ -304,81 +311,6 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                     memoryAlgorithmAb: memoryAlgorithmAb,
                   ),
                 ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _suggestLoopCycle() {
-    return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
-      builder: (c, abw) {
-        final loopCycleVerifyResult = LoopCycleParser.verifyLoopCycle(c.memoryAlgorithmAb(abw).suggest_loop_cycle);
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: GestureDetector(
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text("循环周期"),
-                        if (loopCycleVerifyResult == null)
-                          Text(
-                            " (未设置)",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        Spacer(),
-                        Icon(Icons.chevron_right, color: Colors.grey),
-                      ],
-                    ),
-                    if (loopCycleVerifyResult != null) const SizedBox(height: 10),
-                    if (loopCycleVerifyResult != null)
-                      Row(
-                        children: [
-                          Text(c.memoryAlgorithmAb(abw).suggest_loop_cycle!),
-                        ],
-                      ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            memoryAlgorithmAb(abw).suggest_loop_cycle_remark ?? "无说明",
-                            style: const TextStyle(color: Colors.grey, fontSize: 14, overflow: TextOverflow.ellipsis),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            onTap: () async {
-              showCustomDialog(
-                builder: (ctx) {
-                  return TextField1DialogWidget(
-                    textEditingController: TextEditingController(text: c.memoryAlgorithmAb().suggest_loop_cycle == null ? "" : c.memoryAlgorithmAb(abw).suggest_loop_cycle!),
-                    cancelText: "取消",
-                    okText: "确定",
-                    onOk: (tc) {
-                      final text= tc.text.trim();
-                      final newResult = LoopCycleParser.verifyLoopCycle(text);
-                      if (newResult != false) {
-                        c.memoryAlgorithmAb.refreshInevitable(
-                          (obj) => obj..suggest_loop_cycle = text,
-                        );
-                        SmartDialog.dismiss(status: SmartStatus.dialog);
-                      } else {
-                        SmartDialog.showToast("格式不正确！");
-                      }
-                    },
-                  );
-                },
               );
             },
           ),

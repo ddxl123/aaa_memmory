@@ -47,7 +47,7 @@ part 'table/entity/info/FragmentGroupInfos.dart';
 
 part 'table/entity/info/FragmentMemoryInfos.dart';
 
-part 'table/entity/info/MemoryGroupCycleInfos.dart';
+part 'table/entity/info/MemoryGroupSmartCycleInfos.dart';
 
 part 'table/entity/other/FragmentGroupTags.dart';
 
@@ -87,7 +87,7 @@ const List<Type> tableClasses = [
 
   FragmentMemoryInfos,
 
-  MemoryGroupCycleInfos,
+  MemoryGroupSmartCycleInfos,
 
   FragmentGroupTags,
 

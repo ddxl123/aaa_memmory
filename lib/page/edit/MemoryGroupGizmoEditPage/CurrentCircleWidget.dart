@@ -143,13 +143,13 @@ class CurrentCircleWidget extends StatelessWidget {
             children: [
               const Text('循环周期：'),
               Expanded(
-                child: Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "未设置", style: TextStyle(color: Colors.grey)),
+                child: Text(c.cloneMemoryGroupAndOtherAb(abw).loopCycle?.toText() ?? "未设置", style: TextStyle(color: Colors.grey)),
               ),
               SizedBox(width: 10),
               CustomTooltip(
                 texts: [
                   CustomTooltipText(text: "1. 跟随算法中的循环周期设置"),
-                  CustomTooltipText(text: "2. 每天${c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.suggest_loop_cycle ?? "[未设置]"}:00算作一个新周期"),
+                  CustomTooltipText(text: "2. 每天${c.cloneMemoryGroupAndOtherAb(abw).loopCycle?.toText() ?? "[未设置]"}:00算作一个新周期"),
                 ],
               ),
               // TODO:

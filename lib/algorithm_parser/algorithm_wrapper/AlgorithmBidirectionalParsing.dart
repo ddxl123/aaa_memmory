@@ -1,23 +1,48 @@
 part of '../parser.dart';
 
+abstract class _BidiParseResult {
+  _BidiParseResult({this.error, this.stackTrace});
+
+  Object? error;
+  StackTrace? stackTrace;
+
+  bool get hasError => error != null;
+}
+
+class BidiParseContentResult extends _BidiParseResult {
+  BidiParseContentResult({required this.content, super.error, super.stackTrace});
+
+  final String? content;
+}
+
+class BidiParseWrapperResult extends _BidiParseResult {
+  BidiParseWrapperResult({required this.algorithmWrapper, super.error, super.stackTrace});
+
+  final AlgorithmWrapper? algorithmWrapper;
+}
+
 class AlgorithmBidirectionalParsing {
   /// 将 [wrapper] 对象解析成 if-else-use 文本。
-  static String parseFromAlgorithmWrapper(AlgorithmWrapper wrapper) {
-    String result = "";
+  static BidiParseContentResult parseFromAlgorithmWrapper(AlgorithmWrapper wrapper) {
+    try {
+      String result = "";
 
-    // 解析自定义变量
-    for (CustomVariabler v in wrapper.customVariables) {
-      result += "${v.name} = ${v.content}\n";
+      // 解析自定义变量
+      for (CustomVariabler v in wrapper.customVariables) {
+        result += "${v.name} = ${v.content}\n";
+      }
+      result += "\n";
+
+      // son-father
+      final sonFatherMap = <IfUseElseWrapper, IfUseElseWrapper?>{};
+      _handeFatherMap(fatherMap: sonFatherMap, father: null, son: wrapper.ifUseElseWrapper);
+
+      result += _parseIfUseElseWrapper(sonFatherMap, wrapper.ifUseElseWrapper);
+
+      return BidiParseContentResult(content: result);
+    } catch (e, st) {
+      return BidiParseContentResult(content: null, error: e, stackTrace: st);
     }
-    result += "\n";
-
-    // son-father
-    final sonFatherMap = <IfUseElseWrapper, IfUseElseWrapper?>{};
-    _handeFatherMap(fatherMap: sonFatherMap, father: null, son: wrapper.ifUseElseWrapper);
-
-    result += _parseIfUseElseWrapper(sonFatherMap, wrapper.ifUseElseWrapper);
-
-    return result;
   }
 
   static void _handeFatherMap({
@@ -26,11 +51,11 @@ class AlgorithmBidirectionalParsing {
     required IfUseElseWrapper son,
   }) {
     fatherMap.addAll({son: father});
-    son.ifers.forEach((element) {
+    for (var element in son.ifers) {
       if (element.ifElseUseWrapper != null) {
         _handeFatherMap(fatherMap: fatherMap, father: son, son: element.ifElseUseWrapper!);
       }
-    });
+    }
     if (son.elser.ifElseUseWrapper != null) {
       _handeFatherMap(fatherMap: fatherMap, father: son, son: son.elser.ifElseUseWrapper!);
     }
@@ -105,14 +130,30 @@ class AlgorithmBidirectionalParsing {
   }
 
   /// 将 if-else-use 文本解析成 [AlgorithmWrapper] 对象。
-  static AlgorithmWrapper parseFromString(String content) {
-    final match = RegExp(r'\bif\b').firstMatch(content);
-    final customVariablesContent = match == null ? null : content.substring(0, match.start);
-    final ifUseElseWrapperContent = match == null ? null : content.substring(match.start, content.length);
+  ///
+  /// 调用时记得用 [AlgorithmWrapper.hasException] 检查是否存在异常。
+  static BidiParseWrapperResult? parseFromString(String? content) {
+    if (content == null) {
+      return null;
+    }
+    try {
+      final match = RegExp(r'\bif\b').firstMatch(content);
+      final customVariablesContent = match == null ? null : content.substring(0, match.start);
+      final ifUseElseWrapperContent = match == null ? null : content.substring(match.start, content.length);
 
-    final customVariables = _customVariablerLoop(customVariablesContent ?? "");
-    final ifUseElseWrapper = _ifUseElseWrapperLoop(ifUseElseWrapperContent ?? "");
-    return AlgorithmWrapper(customVariables: customVariables, ifUseElseWrapper: ifUseElseWrapper ?? IfUseElseWrapper.emptyIfUseElseWrapper);
+      final customVariables = _customVariablerLoop(customVariablesContent ?? "");
+      final ifUseElseWrapper = _ifUseElseWrapperLoop(ifUseElseWrapperContent ?? "");
+      return BidiParseWrapperResult(
+        algorithmWrapper: AlgorithmWrapper(
+          customVariables: customVariables,
+          ifUseElseWrapper: ifUseElseWrapper ?? IfUseElseWrapper.emptyIfUseElseWrapper,
+        ),
+      );
+    } catch (e, st) {
+      return BidiParseWrapperResult(algorithmWrapper: null)
+        ..error = e
+        ..stackTrace = st;
+    }
   }
 
   static List<CustomVariabler> _customVariablerLoop(String content) {
@@ -143,7 +184,6 @@ class AlgorithmBidirectionalParsing {
       }
       remainStr = _bodyHandle(remainStr + " ", ifUseElseWrapper);
     }
-
     return ifUseElseWrapper.ifers.isEmpty ? null : ifUseElseWrapper;
   }
 

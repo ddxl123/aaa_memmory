@@ -19,6 +19,13 @@ class Ifer {
   KnownAlgorithmException? conditionAlgorithmException;
   KnownAlgorithmException? useAlgorithmException;
 
+  List<KnownAlgorithmException> get getExceptions {
+    return [
+      if (conditionAlgorithmException != null) conditionAlgorithmException!,
+      if (useAlgorithmException != null) useAlgorithmException!,
+    ];
+  }
+
   void setConditionAlgorithmException({required KnownAlgorithmException? algorithmException}) {
     if (algorithmException == conditionAlgorithmException) return;
     conditionAlgorithmException = algorithmException;

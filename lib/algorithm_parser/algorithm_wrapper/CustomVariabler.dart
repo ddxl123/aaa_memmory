@@ -16,6 +16,13 @@ class CustomVariabler {
   KnownAlgorithmException? nameAlgorithmException;
   KnownAlgorithmException? contentAlgorithmException;
 
+  List<KnownAlgorithmException> get getExceptions {
+    return [
+      if (nameAlgorithmException != null) nameAlgorithmException!,
+      if (contentAlgorithmException != null) contentAlgorithmException!,
+    ];
+  }
+
   void setNameAlgorithmException({required KnownAlgorithmException? algorithmException}) {
     if (algorithmException == nameAlgorithmException) return;
     nameAlgorithmException = algorithmException;

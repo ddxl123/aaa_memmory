@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract class AlgorithmException {
   AlgorithmException(this.error, [this.stackTrace]);
 
-  final String error;
+  final Object error;
 
   final StackTrace? stackTrace;
 }
@@ -53,7 +53,7 @@ List<Widget> algorithmExceptionTextWidgetList({required AlgorithmException? algo
         ? []
         : [
             SizedBox(width: 10),
-            Text(algorithmException.error, style: TextStyle(color: Colors.red)),
+            Text(algorithmException.error.toString(), style: TextStyle(color: Colors.red)),
           ]
   ];
 }

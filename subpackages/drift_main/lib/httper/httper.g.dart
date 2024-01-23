@@ -1128,7 +1128,7 @@ MemoryGroupCycleInfoQueryLastOneVo _$MemoryGroupCycleInfoQueryLastOneVoFromJson(
     MemoryGroupCycleInfoQueryLastOneVo(
       memory_group_cycle_info: json['memory_group_cycle_info'] == null
           ? null
-          : MemoryGroupCycleInfo.fromJson(
+          : MemoryGroupSmartCycleInfo.fromJson(
               json['memory_group_cycle_info'] as Map<String, dynamic>),
     );
 

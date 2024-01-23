@@ -5,10 +5,16 @@ class DefaultAlgorithmOfRaw {
   DefaultAlgorithmOfRaw({
     required this.title,
     required this.list,
+    required this.officialDefault,
   });
 
   final String title;
+
+  /// 如果元素为 null，则表示该算法为空算法。
   final List<ClassificationState> list;
+
+  /// 是否官方默认
+  final bool officialDefault;
 
   /// 是否展开 [list]。
   bool isExpand = false;
@@ -19,28 +25,35 @@ class DefaultAlgorithmOfRaw {
 
   static DefaultAlgorithmOfRaw ebbinghaus() {
     return DefaultAlgorithmOfRaw(
+      officialDefault: false,
       title: "艾宾浩斯复习周期",
-      list: [
-        ButtonDataState(
-          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      list: ClassificationState.all(
+        buttonData: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
       if(true){
         1;下一个
       }
-      """),
-          simulationType: SimulationType.syntaxCheck,
-          externalResultHandler: null,
-        ),
-        FamiliarityState(
-          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      """);
+          return ButtonDataState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+        familiarity: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
       if(true){
         1
       }
-      """),
-          simulationType: SimulationType.syntaxCheck,
-          externalResultHandler: null,
-        ),
-        NextShowTimeState(
-          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      """);
+          return FamiliarityState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+        nextShowTime: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
       sts = ${InternalVariableConstantHandler.k3StudiedTimesConst.name}
       cct = ${InternalVariableConstantHandler.k7CurrentClickTimeConst.name}
       if(sts == 0){
@@ -62,29 +75,50 @@ class DefaultAlgorithmOfRaw {
       }else{
         cct + 60 * 60 * 24 * 30
       }
-      """),
-          simulationType: SimulationType.syntaxCheck,
-          externalResultHandler: null,
-        ),
-        CompleteConditionState(
-          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      """);
+          return NextShowTimeState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+        completeCondition: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
       if(${InternalVariableConstantHandler.i4ClickFamiliarityConst.name + "_1last"}>0.9){
         true
       }
-      """),
-          simulationType: SimulationType.syntaxCheck,
-          externalResultHandler: null,
-        ),
-        SuggestCountForNewAndReviewState(
-          algorithmWrapper: AlgorithmBidirectionalParsing.parseFromString("""
+      """);
+          return CompleteConditionState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+        suggestLoopCycle: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
+      if(true){
+        4
+      }
+      """);
+          return SuggestLoopCycleState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+        suggestCountForNewAndReviewState: () {
+          final result = AlgorithmBidirectionalParsing.parseFromString("""
       if(true){
         -1,-1
       }
-      """),
-          simulationType: SimulationType.syntaxCheck,
-          externalResultHandler: null,
-        ),
-      ],
+      """);
+          return SuggestCountForNewAndReviewState(
+            algorithmWrapper: result?.hasError != false ? AlgorithmWrapper.emptyAlgorithmWrapper : result!.algorithmWrapper!,
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          );
+        },
+      ),
     );
   }
 }

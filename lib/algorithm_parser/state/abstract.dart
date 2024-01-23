@@ -85,12 +85,49 @@ abstract class ClassificationState {
     return await externalResultHandler!(atom);
   }
 
+  static List<T> all<T>({
+    required T Function() buttonData,
+    required T Function() familiarity,
+    required T Function() nextShowTime,
+    required T Function() completeCondition,
+    required T Function() suggestLoopCycle,
+    required T Function() suggestCountForNewAndReviewState,
+  }) {
+    return [
+      buttonData(),
+      familiarity(),
+      nextShowTime(),
+      completeCondition(),
+      suggestLoopCycle(),
+      suggestCountForNewAndReviewState(),
+    ];
+  }
+
+  static Future<List<T>> allFuture<T>({
+    required Future<T> Function() buttonData,
+    required Future<T> Function() familiarity,
+    required Future<T> Function() nextShowTime,
+    required Future<T> Function() completeCondition,
+    required Future<T> Function() suggestLoopCycle,
+    required Future<T> Function() suggestCountForNewAndReviewState,
+  }) async {
+    return [
+      await buttonData(),
+      await familiarity(),
+      await nextShowTime(),
+      await completeCondition(),
+      await suggestLoopCycle(),
+      await suggestCountForNewAndReviewState(),
+    ];
+  }
+
   static T filter<T>({
     required String stateName,
     required T Function() buttonData,
     required T Function() familiarity,
     required T Function() nextShowTime,
     required T Function() completeCondition,
+    required T Function() suggestLoopCycle,
     required T Function() suggestCountForNewAndReviewState,
   }) {
     switch (stateName) {
@@ -102,6 +139,8 @@ abstract class ClassificationState {
         return nextShowTime();
       case CompleteConditionState.name:
         return completeCondition();
+      case SuggestLoopCycleState.name:
+        return suggestLoopCycle();
       case SuggestCountForNewAndReviewState.name:
         return suggestCountForNewAndReviewState();
       default:
@@ -115,6 +154,7 @@ abstract class ClassificationState {
     required Future<T> Function() familiarity,
     required Future<T> Function() nextShowTime,
     required Future<T> Function() completeCondition,
+    required Future<T> Function() suggestLoopCycle,
     required Future<T> Function() suggestCountForNewAndReviewState,
   }) async {
     switch (stateName) {
@@ -126,6 +166,8 @@ abstract class ClassificationState {
         return await nextShowTime();
       case CompleteConditionState.name:
         return await completeCondition();
+      case SuggestLoopCycleState.name:
+        return await suggestLoopCycle();
       case SuggestCountForNewAndReviewState.name:
         return await suggestCountForNewAndReviewState();
       default:

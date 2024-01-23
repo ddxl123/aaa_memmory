@@ -43,6 +43,8 @@ part 'state/CompleteConditionState.dart';
 
 part 'state/SuggestCountForNewAndReviewState.dart';
 
+part 'state/SuggestLoopCycleState.dart';
+
 part 'enums.dart';
 
 part 'explain.dart';

@@ -37,7 +37,7 @@ class MemoryAlgorithms extends CloudTableBase  {
 
   TextColumn get suggest_count_for_new_and_review_algorithm_remark => text().named("suggest_count_for_new_and_review_algorithm_remark").nullable()();
 
-  TextColumn get suggest_loop_cycle => text().named("suggest_loop_cycle").nullable()();
+  TextColumn get suggest_loop_cycle_algorithm => text().named("suggest_loop_cycle_algorithm").nullable()();
 
   TextColumn get suggest_loop_cycle_remark => text().named("suggest_loop_cycle_remark").nullable()();
 
