@@ -11,11 +11,11 @@ import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 class AlgorithmEditPage extends StatefulWidget {
   const AlgorithmEditPage({
     super.key,
-    required this.name,
+    required this.stateName,
     required this.memoryAlgorithmAb,
   });
 
-  final String name;
+  final String stateName;
   final Ab<MemoryAlgorithm> memoryAlgorithmAb;
 
   @override
@@ -28,7 +28,7 @@ class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
   @override
   void initState() {
     super.initState();
-    algorithmEditPageAbController = AlgorithmEditPageAbController(name: widget.name);
+    algorithmEditPageAbController = AlgorithmEditPageAbController(stateName: widget.stateName);
   }
 
   @override
@@ -47,7 +47,7 @@ class _AlgorithmEditPageState extends State<AlgorithmEditPage> {
                   },
                 ),
                 title: Text(
-                  widget.name,
+                  widget.stateName,
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 titleSpacing: 0,

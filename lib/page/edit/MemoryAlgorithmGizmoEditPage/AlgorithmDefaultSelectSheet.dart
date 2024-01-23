@@ -1,6 +1,7 @@
 import 'package:aaa_memory/algorithm_parser/parser.dart';
 import 'package:aaa_memory/global/GlobalAbController.dart';
 import 'package:aaa_memory/page/edit/MemoryAlgorithmGizmoEditPage/AlgorithmEditPageAbController.dart';
+import 'package:aaa_memory/page/edit/MemoryAlgorithmGizmoEditPage/MemoryAlgorithmGizmoEditPageAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class AlgorithmDefault extends StatefulWidget {
 class _AlgorithmDefaultState extends State<AlgorithmDefault> {
   final user = Aber.find<GlobalAbController>().loggedInUser()!;
   final algorithmEditPageAbController = Aber.findOrNull<AlgorithmEditPageAbController>();
+  final memoryAlgorithmGizmoEditPageAbController = Aber.findOrNull<MemoryAlgorithmGizmoEditPageAbController>();
 
   final selfs = <DefaultAlgorithmOfRaw>[];
 
@@ -53,7 +55,8 @@ class _AlgorithmDefaultState extends State<AlgorithmDefault> {
           memoryAlgorithms.map(
             (e) {
               return DefaultAlgorithmOfRaw(
-                title: e.title,
+                defaultTitle: null,
+                memoryAlgorithm: e,
                 list: ClassificationState.all(
                   buttonData: () {
                     final buttonAlgorithmResult = AlgorithmBidirectionalParsing.parseFromString(e.button_algorithm);
@@ -148,12 +151,45 @@ class _AlgorithmDefaultState extends State<AlgorithmDefault> {
                             child: Row(
                               children: [
                                 e.isExpand ? Transform.rotate(angle: pi / 2, child: Icon(Icons.chevron_right)) : Icon(Icons.chevron_right),
-                                Expanded(child: Text(e.title)),
+                                Expanded(child: Text(e.getTitle)),
                                 if (widget.isWhole)
                                   TextButton(
                                     style: ButtonStyle(visualDensity: kMinVisualDensity),
                                     child: Text("选择"),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showCustomDialog(
+                                        builder: (ctx) {
+                                          return OkAndCancelDialogWidget(
+                                            title: "确认要覆盖掉当前页面的全部算法？",
+                                            okText: "覆盖",
+                                            cancelText: "返回",
+                                            onOk: () {
+                                              for (var element in e.list) {
+                                                ClassificationState.filter(
+                                                  stateName: element.stateName,
+                                                  buttonData: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().button_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  familiarity: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().familiarity_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  nextShowTime: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().next_time_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  completeCondition: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().completed_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  suggestLoopCycle: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().suggest_loop_cycle_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  suggestCountForNewAndReviewState: () => memoryAlgorithmGizmoEditPageAbController
+                                                      ?.cloneMemoryAlgorithmAb()
+                                                      .suggest_count_for_new_and_review_algorithm = element.algorithmWrapper.toJsonStringOrNull(),
+                                                );
+                                              }
+                                              memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb.refreshForce();
+                                              SmartDialog.dismiss(status: SmartStatus.dialog);
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
                                   ),
                               ],
                             ),
@@ -234,12 +270,53 @@ class _AlgorithmDefaultState extends State<AlgorithmDefault> {
                             child: Row(
                               children: [
                                 e.isExpand ? Transform.rotate(angle: pi / 2, child: Icon(Icons.chevron_right)) : Icon(Icons.chevron_right),
-                                Expanded(child: Row(children: [Text(e.title), Text(" (当前 · 未修改前)", style: TextStyle(color: Colors.grey))])),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Text(e.getTitle),
+                                      if (memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().id == e.memoryAlgorithm!.id)
+                                        Text(" (当前 · 未修改前)", style: TextStyle(color: Colors.grey)),
+                                    ],
+                                  ),
+                                ),
                                 if (widget.isWhole)
                                   TextButton(
                                     style: ButtonStyle(visualDensity: kMinVisualDensity),
                                     child: Text("选择"),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showCustomDialog(
+                                        builder: (ctx) {
+                                          return OkAndCancelDialogWidget(
+                                            title: "确认要覆盖掉当前页面的全部算法？",
+                                            okText: "覆盖",
+                                            cancelText: "返回",
+                                            onOk: () {
+                                              for (var element in e.list) {
+                                                ClassificationState.filter(
+                                                  stateName: element.stateName,
+                                                  buttonData: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().button_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  familiarity: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().familiarity_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  nextShowTime: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().next_time_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  completeCondition: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().completed_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  suggestLoopCycle: () => memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb().suggest_loop_cycle_algorithm =
+                                                      element.algorithmWrapper.toJsonStringOrNull(),
+                                                  suggestCountForNewAndReviewState: () => memoryAlgorithmGizmoEditPageAbController
+                                                      ?.cloneMemoryAlgorithmAb()
+                                                      .suggest_count_for_new_and_review_algorithm = element.algorithmWrapper.toJsonStringOrNull(),
+                                                );
+                                              }
+                                              memoryAlgorithmGizmoEditPageAbController?.cloneMemoryAlgorithmAb.refreshForce();
+                                              SmartDialog.dismiss(status: SmartStatus.dialog);
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
                                   ),
                               ],
                             ),

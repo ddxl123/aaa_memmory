@@ -1,14 +1,22 @@
+import 'package:drift_main/drift/DriftDb.dart';
+
 import 'parser.dart';
 
 /// 注意接收的是 if-else 原生语句。
 class DefaultAlgorithmOfRaw {
   DefaultAlgorithmOfRaw({
-    required this.title,
+    required this.defaultTitle,
+    required this.memoryAlgorithm,
     required this.list,
     required this.officialDefault,
   });
 
-  final String title;
+  /// 当为默认时，即没有 [memoryAlgorithm] 时
+  final String? defaultTitle;
+
+  final MemoryAlgorithm? memoryAlgorithm;
+
+  String get getTitle => memoryAlgorithm?.title ?? defaultTitle!;
 
   /// 如果元素为 null，则表示该算法为空算法。
   final List<ClassificationState> list;
@@ -26,7 +34,8 @@ class DefaultAlgorithmOfRaw {
   static DefaultAlgorithmOfRaw ebbinghaus() {
     return DefaultAlgorithmOfRaw(
       officialDefault: false,
-      title: "艾宾浩斯复习周期",
+      defaultTitle: "艾宾浩斯复习周期",
+      memoryAlgorithm: null,
       list: ClassificationState.all(
         buttonData: () {
           final result = AlgorithmBidirectionalParsing.parseFromString("""

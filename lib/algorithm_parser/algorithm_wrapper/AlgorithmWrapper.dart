@@ -35,10 +35,7 @@ class AlgorithmWrapper {
         "if_else_use_wrapper": ifUseElseWrapper.toJson(),
       };
 
-  static AlgorithmWrapper fromJsonString(String? content) {
-    if (content == null) {
-      throw "算法内容为 null！";
-    }
+  static AlgorithmWrapper fromJsonString(String content) {
     return AlgorithmWrapper.fromJson(jsonDecode(content));
   }
 

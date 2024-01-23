@@ -306,12 +306,64 @@ class MemoryGroupAndOther {
     memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
   }
 
-  /// 当前记忆组的记忆算法的循环周期，注意是查询云端并覆盖本地后的
-  ///
-  /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
-  LoopCycle? loopCycle;
+  /// 增量数量
+  NewAndReviewCount incrementalNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
 
-  int reviewIntervalCount = 0;
+  /// 算法结果数量
+  ///
+  /// 为 -1 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
+  NewAndReviewCount algorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+
+  /// 算法结果循环周期
+  ///
+  /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
+  LoopCycle? algorithmLoopCycle;
+
+  Future<void> parseOther() async {
+    await parseLoopCycleAlgorithm();
+    await parseSmallCycleCountForNewAndReviewAlgorithm();
+  }
+
+  /// 解析循环周期算法
+  Future<void> parseLoopCycleAlgorithm() async {
+    await AlgorithmParser.parse(
+      stateFunc: () => SuggestLoopCycleState(
+        algorithmWrapper: getMemoryAlgorithm?.suggest_loop_cycle_algorithm == null
+            ? AlgorithmWrapper.emptyAlgorithmWrapper
+            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_loop_cycle_algorithm!),
+        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
+        simulationType: SimulationType.syntaxCheck,
+        externalResultHandler: null,
+      ),
+      onSuccess: (SuggestLoopCycleState state) async {
+        algorithmLoopCycle = state.result;
+      },
+      onError: (AlgorithmException ec) async {
+        /// TODO：如何给错误提示
+        algorithmLoopCycle = null;
+      },
+    );
+  }
+
+  /// 解析当前小周期新学和复习数量算法
+  Future<void> parseSmallCycleCountForNewAndReviewAlgorithm() async {
+    await AlgorithmParser.parse(
+      stateFunc: () => SuggestCountForNewAndReviewState(
+        algorithmWrapper: getMemoryAlgorithm?.suggest_count_for_new_and_review_algorithm == null
+            ? AlgorithmWrapper.emptyAlgorithmWrapper
+            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_count_for_new_and_review_algorithm!),
+        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
+        simulationType: SimulationType.syntaxCheck,
+        externalResultHandler: null,
+      ),
+      onSuccess: (SuggestCountForNewAndReviewState state) async {
+        algorithmNewAndReviewCount = state.result;
+      },
+      onError: (AlgorithmException ec) async {
+        algorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+      },
+    );
+  }
 
   MemoryGroupAndOther clone() {
     return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())
@@ -374,22 +426,8 @@ class MemoryGroupListPageAbController extends AbController {
         element().setMemoryAlgorithm = newMemoryAlgorithms.where((mm) => element().memoryGroup.memory_algorithm_id == mm.id).firstOrNull;
         element.refreshForce();
 
-        await AlgorithmParser.parse(
-          stateFunc: () => SuggestLoopCycleState(
-            algorithmWrapper: AlgorithmWrapper.fromJsonString(element().getMemoryAlgorithm?.suggest_loop_cycle_algorithm),
-            // TODO: 改成 SimulationType.external
-            simulationType: SimulationType.syntaxCheck,
-            externalResultHandler: null,
-          ),
-          onSuccess: (SuggestLoopCycleState state) async {
-            element().loopCycle = state.result;
-            element.refreshForce();
-          },
-          onError: (AlgorithmException ec) async {
-            element().loopCycle = null;
-            element.refreshForce();
-          },
-        );
+        await element().parseOther();
+        element.refreshForce();
 
         // 无需 await
         _forOtherSingle(mgAndOtherAb: element);

@@ -19,13 +19,13 @@ import '../page/stage/fragment_template_pages/SingleFragmentTemplatePage.dart';
 
 Future<void> pushToMemoryAlgorithmGizmoEditPage({
   required BuildContext context,
-  required Ab<MemoryAlgorithm> memoryAlgorithmAb,
+  required Ab<MemoryAlgorithm> cloneMemoryAlgorithmAb,
 }) async {
   await Navigator.push(
     context,
     MaterialPageRoute(
       builder: (ctx) => MemoryAlgorithmGizmoEditPage(
-        memoryAlgorithmAb: memoryAlgorithmAb,
+        cloneMemoryAlgorithmAb: cloneMemoryAlgorithmAb,
       ),
     ),
   );

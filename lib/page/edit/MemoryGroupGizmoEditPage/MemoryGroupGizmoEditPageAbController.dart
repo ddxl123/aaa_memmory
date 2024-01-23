@@ -25,16 +25,19 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
   final titleTextEditingController = TextEditingController();
 
-  final reviewIntervalTextEditingController = TextEditingController();
-
   /// 是否全部展开
   final isExpandAll = false.ab;
+
+  @override
+  void onInit() {
+    super.onInit();
+    titleTextEditingController.text = cloneMemoryGroupAndOtherAb().memoryGroup.title;
+  }
 
   @override
   void onDispose() {
     super.onDispose();
     titleTextEditingController.dispose();
-    reviewIntervalTextEditingController.dispose();
   }
 
   @override
@@ -67,16 +70,6 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   @override
   Widget loadingWidget() => const Material(child: Center(child: Text('加载中...')));
 
-  @override
-  void onInit() {
-    super.onInit();
-    titleTextEditingController.text = cloneMemoryGroupAndOtherAb().memoryGroup.title;
-    reviewIntervalTextEditingController.text = timeDifference(
-      target: cloneMemoryGroupAndOtherAb().memoryGroup.review_interval,
-      start: DateTime.now(),
-    ).toString();
-  }
-
   /// 返回 true 则存在修改
   Future<bool> checkIsExistModify() async {
     final mg = await driftDb.generalQueryDAO.queryOrNullMemoryGroup(memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
@@ -100,7 +93,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       return false;
     }
 
-    if (cloneMemoryGroupAndOtherAb().loopCycle == null) {
+    if (cloneMemoryGroupAndOtherAb().algorithmLoopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
       return false;
     }
@@ -158,7 +151,6 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     );
     await result.handleCode(
       code200101: (String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) async {
-        LoopCycle;
         // 当前周期所设置的循环周期
         final oldCycleSetting = vo.memory_group_cycle_info?.loop_cycle;
         // 新设置的循环周期
@@ -276,10 +268,12 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
             creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
             memory_algorithm_id: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.id,
             memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
-            loop_cycle: cloneMemoryGroupAndOtherAb().loopCycle!.toText(),
+            loop_cycle: cloneMemoryGroupAndOtherAb().algorithmLoopCycle!.toText(),
             small_cycle_order: target!.order,
-            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().memoryGroup.will_new_learn_count,
-            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().reviewIntervalCount,
+            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().algorithmNewAndReviewCount.newLearnCount,
+            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().algorithmNewAndReviewCount.reviewCount,
+            small_cycle_incremental_new_learn_count: cloneMemoryGroupAndOtherAb().incrementalNewAndReviewCount.newLearnCount,
+            small_cycle_incremental_review_count: cloneMemoryGroupAndOtherAb().incrementalNewAndReviewCount.reviewCount,
           ),
           onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
             // TODO: 在这之前得有个加载界面

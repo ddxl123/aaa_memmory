@@ -23,8 +23,6 @@ class MemoryGroups extends CloudTableBase  {
 
   TextColumn get review_display_order => textEnum<ReviewDisplayOrder>().named("review_display_order")();
 
-  DateTimeColumn get review_interval => dateTime().named("review_interval")();
-
   DateTimeColumn get start_time => dateTime().named("start_time").nullable()();
 
   TextColumn get study_status => textEnum<StudyStatus>().named("study_status")();
@@ -32,9 +30,6 @@ class MemoryGroups extends CloudTableBase  {
   IntColumn get sync_version => integer().named("sync_version")();
 
   TextColumn get title => text().named("title")();
-
-  @ReferenceTo([FragmentMemoryInfos])
-  IntColumn get will_new_learn_count => integer().named("will_new_learn_count")();
 
   DateTimeColumn get created_at => dateTime().named("created_at")();
 

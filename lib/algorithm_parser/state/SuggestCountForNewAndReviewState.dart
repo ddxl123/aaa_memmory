@@ -1,7 +1,7 @@
 part of algorithm_parser;
 
-class NewAndReviewCountWrapper {
-  NewAndReviewCountWrapper({
+class NewAndReviewCount {
+  NewAndReviewCount({
     required this.newLearnCount,
     required this.reviewCount,
   });
@@ -42,13 +42,13 @@ class SuggestCountForNewAndReviewState extends ClassificationState {
         eventTimeExplain: '点击底部按钮后会触发这个算法，以计算当前展示的碎片的下一次展示时间点。',
       );
 
-  late NewAndReviewCountWrapper result;
+  late NewAndReviewCount result;
 
   @override
   SuggestCountForNewAndReviewState useParse({required String useContent}) {
     final list = useContent.split(",");
 
-    result = NewAndReviewCountWrapper(
+    result = NewAndReviewCount(
       newLearnCount: AlgorithmParser.calculate(list.first).toInt(),
       reviewCount: AlgorithmParser.calculate(list.last).toInt(),
     );

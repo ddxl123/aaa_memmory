@@ -20,6 +20,10 @@ class MemoryGroupSmartCycleInfos extends CloudTableBase  {
   @ReferenceTo([MemoryGroups])
   IntColumn get memory_group_id => integer().named("memory_group_id")();
 
+  IntColumn get small_cycle_incremental_new_learn_count => integer().named("small_cycle_incremental_new_learn_count")();
+
+  IntColumn get small_cycle_incremental_review_count => integer().named("small_cycle_incremental_review_count")();
+
   IntColumn get small_cycle_order => integer().named("small_cycle_order")();
 
   IntColumn get small_cycle_should_new_learn_count => integer().named("small_cycle_should_new_learn_count")();

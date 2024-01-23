@@ -9,9 +9,9 @@ import '../../../algorithm_parser/parser.dart';
 import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 
 class AlgorithmEditPageAbController extends AbController {
-  AlgorithmEditPageAbController({required this.name});
+  AlgorithmEditPageAbController({required this.stateName});
 
-  final String name;
+  final String stateName;
   final memoryModelGizmoEditPageAbController = Aber.findLast<MemoryAlgorithmGizmoEditPageAbController>();
 
   final freeBoxController = FreeBoxController();
@@ -31,10 +31,10 @@ class AlgorithmEditPageAbController extends AbController {
       return false;
     }
 
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    final mm = memoryModelGizmoEditPageAbController.cloneMemoryAlgorithmAb;
     final currentOrNull = currentAlgorithmWrapper().toJsonStringOrNull();
     final isModified = ClassificationState.filter(
-      stateName: name,
+      stateName: stateName,
       familiarity: () => currentOrNull != mm().familiarity_algorithm,
       buttonData: () => currentOrNull != mm().button_algorithm,
       nextShowTime: () => currentOrNull != mm().next_time_algorithm,
@@ -44,7 +44,7 @@ class AlgorithmEditPageAbController extends AbController {
     );
     if (isModified) {
       apply();
-      memoryModelGizmoEditPageAbController.memoryAlgorithmAb.refreshForce();
+      memoryModelGizmoEditPageAbController.cloneMemoryAlgorithmAb.refreshForce();
       SmartDialog.showToast("已修改，请注意保存！");
     }
     return false;
@@ -58,11 +58,11 @@ class AlgorithmEditPageAbController extends AbController {
 
   void initCurrentAlgorithmWrapper() {
     final ea = AlgorithmWrapper.emptyAlgorithmWrapper.toJsonString();
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    final mm = memoryModelGizmoEditPageAbController.cloneMemoryAlgorithmAb;
     currentAlgorithmWrapper.lateAssign(
       AlgorithmWrapper.fromJsonString(
         ClassificationState.filter(
-          stateName: name,
+          stateName: stateName,
           buttonData: () => mm().button_algorithm ?? ea,
           familiarity: () => mm().familiarity_algorithm ?? ea,
           nextShowTime: () => mm().next_time_algorithm ?? ea,
@@ -76,9 +76,9 @@ class AlgorithmEditPageAbController extends AbController {
 
   void apply() {
     rawToView();
-    final mm = memoryModelGizmoEditPageAbController.memoryAlgorithmAb;
+    final mm = memoryModelGizmoEditPageAbController.cloneMemoryAlgorithmAb;
     ClassificationState.filter(
-      stateName: name,
+      stateName: stateName,
       buttonData: () => mm()..button_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
       familiarity: () => mm()..familiarity_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
       nextShowTime: () => mm()..next_time_algorithm = currentAlgorithmWrapper().toJsonStringOrNull(),
@@ -94,7 +94,7 @@ class AlgorithmEditPageAbController extends AbController {
     currentAlgorithmWrapper().cancelAllException();
 
     await ClassificationState.filterFuture(
-      stateName: name,
+      stateName: stateName,
       buttonData: () async => await AlgorithmParser.parse(
         stateFunc: () => ButtonDataState(
           algorithmWrapper: currentAlgorithmWrapper(),

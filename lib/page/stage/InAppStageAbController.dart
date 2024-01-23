@@ -78,7 +78,7 @@ class InAppStageAbController extends AbController {
                 TextButton(
                   child: Text("点击此处查看算法"),
                   onPressed: () {
-                    pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithmAb: memoryAlgorithmAb);
+                    pushToMemoryAlgorithmGizmoEditPage(context: context, cloneMemoryAlgorithmAb: memoryAlgorithmAb().copyWith().ab);
                   },
                 ),
               ],
@@ -122,7 +122,7 @@ class InAppStageAbController extends AbController {
     if (currentPerformerAb() == null) return;
 
     // 必须按照顺序进行获取，否则要么没有对应的值，要么可能会使用上一次的值。
-    currentShowTimeAb.refreshEasy((oldValue) => timeDifference(target: DateTime.now(), start: memoryGroupAb().start_time!));
+    currentShowTimeAb.refreshEasy((oldValue) => timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!));
     await _parseStartFamiliarity();
 
     final pbd = await _parseStartButtonDatas();
@@ -150,11 +150,8 @@ class InAppStageAbController extends AbController {
     }
 
     final info = currentPerformerAb()!.fragmentMemoryInfo;
-    if (info.study_status == FragmentMemoryInfoStudyStatus.never) {
-      memoryGroupAb.refreshInevitable((obj) => obj..will_new_learn_count -= 1);
-    }
     info
-      ..click_time = info.click_time.arrayAdd<int>(timeDifference(target: DateTime.now(), start: memoryGroupAb().start_time!))
+      ..click_time = info.click_time.arrayAdd<int>(timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!))
       ..click_value = info.click_value.arrayAdd<double>(clickValue)
       ..actual_show_time = info.actual_show_time.arrayAdd<int>(currentShowTimeAb()!)
       ..next_plan_show_time = info.next_plan_show_time.arrayAdd<int>(targetButtonDataValue2NextShowTime.nextShowTime!)
@@ -183,7 +180,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseStartFamiliarity() async {
     await AlgorithmParser.parse<FamiliarityState, void>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -278,7 +275,7 @@ class InAppStageAbController extends AbController {
   Future<double?> _parseClickFamiliarity(ButtonDataValue2NextShowTime buttonDataValue2NextShowTime) async {
     return await AlgorithmParser.parse<FamiliarityState, double?>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -373,7 +370,7 @@ class InAppStageAbController extends AbController {
   Future<ButtonDataState> _parseStartButtonDatas() async {
     return await AlgorithmParser.parse<ButtonDataState, ButtonDataState>(
       stateFunc: () => ButtonDataState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().button_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().button_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -468,7 +465,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseSingleButtonNextShowTime({required ButtonDataValue2NextShowTime buttonDataValue2NextShowTime}) async {
     await AlgorithmParser.parse<NextShowTimeState, void>(
       stateFunc: () => NextShowTimeState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().next_time_algorithm),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().next_time_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -514,7 +511,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k7CurrentClickTimeConst: IvFilter(
-              ivf: () async => timeDifference(target: DateTime.now(), start: memoryGroupAb().start_time!),
+              ivf: () async => timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!),
               isReGet: false,
             ),
             i1ActualShowTimeConst: IvFilter(

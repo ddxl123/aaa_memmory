@@ -31,7 +31,7 @@ class ButtonDataValue2NextShowTime {
   String? parseTimeToFixView(DateTime startTime) {
     int? t = nextShowTime;
     if (t == null) throw '时间值为空！';
-    t = t - timeDifference(target: DateTime.now(), start: startTime);
+    t = t - timeDifference(right: DateTime.now(), left: startTime);
     final result = time2TextTime(longSeconds: t);
     return result == null ? null : '$result后';
   }

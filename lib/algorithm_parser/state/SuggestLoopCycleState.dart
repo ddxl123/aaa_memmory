@@ -37,6 +37,17 @@ class SmallCycle {
 
   /// 相对 [rawStart]，跨了多少天
   int get cross24hCount => cumulativeWithStart ~/ 24;
+
+  /// 将24小时制的时间点浮点数转换成时分字符
+  ///
+  /// 例如：1.5 => 1:30
+  String get getHmText {
+    final target = rawDelta == null ? rawStart : cumulative24Sys;
+    int totalMinutes = (target * 60).toInt();
+    int hoursPart = totalMinutes ~/ 60;
+    int minutesPart = totalMinutes % 60;
+    return '${hoursPart.toString().padLeft(2, '0')}:${minutesPart.toString().padLeft(2, '0')}';
+  }
 }
 
 class LoopCycle {
@@ -99,6 +110,8 @@ class LoopCycle {
   }
 
   String toText() => "$rawStart ${rawDeltas.join(" ")}";
+
+  String toTextWithoutStart() => rawDeltas.isEmpty ? "24" : rawDeltas.join(" ");
 
   /// 将当前时间转换成小数。
   double get getNowTimePoint => DateTime.now().hour + (DateTime.now().minute / 60);

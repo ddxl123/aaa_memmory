@@ -1,3 +1,4 @@
+import 'package:aaa_memory/algorithm_parser/parser.dart';
 import 'package:aaa_memory/tool/other.dart';
 import 'package:drift/drift.dart' as d;
 import 'package:drift/extensions/json1.dart';
@@ -6,6 +7,7 @@ import 'package:drift_main/share_common/share_enum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 
 import '../../../single_dialog/showSelectMemoryAlgorithmInMemoryGroupDialog.dart';
@@ -121,6 +123,7 @@ class CurrentCircleWidget extends StatelessWidget {
                 child: Text(c.cloneMemoryGroupAndOtherAb(abw).getMemoryAlgorithm?.title ?? '点击选择'),
                 onPressed: () async {
                   await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneMemoryGroupAndOtherAb);
+                  await c.cloneMemoryGroupAndOtherAb().parseLoopCycleAlgorithm();
                   abw.refresh();
                   c.cloneMemoryGroupAndOtherAb.refreshForce();
                 },
@@ -137,19 +140,25 @@ class CurrentCircleWidget extends StatelessWidget {
   Widget _memoryLoopCycleWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
+        final lc = c.cloneMemoryGroupAndOtherAb(abw).algorithmLoopCycle;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           child: Row(
             children: [
               const Text('循环周期：'),
               Expanded(
-                child: Text(c.cloneMemoryGroupAndOtherAb(abw).loopCycle?.toText() ?? "未设置", style: TextStyle(color: Colors.grey)),
+                child: Text(lc?.toText() ?? "未设置", style: TextStyle(color: Colors.grey)),
               ),
               SizedBox(width: 10),
               CustomTooltip(
                 texts: [
                   CustomTooltipText(text: "1. 跟随算法中的循环周期设置"),
-                  CustomTooltipText(text: "2. 每天${c.cloneMemoryGroupAndOtherAb(abw).loopCycle?.toText() ?? "[未设置]"}:00算作一个新周期"),
+                  if (lc == null) CustomTooltipText(text: "2. [未设置]"),
+                  if (lc != null)
+                    // TODO：查询描述
+                    CustomTooltipText(
+                        text: "2. 以接下来最近的 [${lc.startSmallCycle.getHmText}] 为起始时间点，"
+                            "分别以 ${c.cloneMemoryGroupAndOtherAb(abw).algorithmLoopCycle?.toTextWithoutStart() ?? "[未设置]"} 小时为累加周期。"),
                 ],
               ),
               // TODO:
@@ -172,7 +181,7 @@ class CurrentCircleWidget extends StatelessWidget {
               Expanded(
                 child: StfBuilder1<int>(
                   // 保留上一次的设置
-                  initValue: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.will_new_learn_count,
+                  initValue: 1,
                   builder: (int value, BuildContext context, ResetValue<int> resetValue) {
                     int changeValue = value;
 
@@ -198,7 +207,7 @@ class CurrentCircleWidget extends StatelessWidget {
                               resetValue(n.toInt(), true);
                             },
                             onChangeEnd: (n) {
-                              mgAndOtherAb.memoryGroup.will_new_learn_count = n.floor();
+                              // mgAndOtherAb.memoryGroup.will_new_learn_count = n.floor();
                               c.cloneMemoryGroupAndOtherAb.refreshForce();
                             },
                           ),
@@ -308,6 +317,10 @@ class ReviewIntervalWidget extends StatefulWidget {
 class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
   final MemoryGroupGizmoEditPageAbController c = Aber.find<MemoryGroupGizmoEditPageAbController>();
 
+  DateTime reviewInterval = DateTime.now();
+
+  int reviewIntervalCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -316,12 +329,10 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
 
   Future<void> queryCountForReviewInterval() async {
     final mgAndOther = c.cloneMemoryGroupAndOtherAb();
-    if (mgAndOther.memoryGroup.start_time == null) {
-      mgAndOther.reviewIntervalCount = 0;
-      setState(() {});
+    if (mgAndOther.memoryGroup.study_status == StudyStatus.not_startup) {
       return;
     }
-    final diff = mgAndOther.memoryGroup.review_interval.difference(mgAndOther.memoryGroup.start_time!);
+    final diff = reviewInterval.difference(mgAndOther.memoryGroup.start_time!);
     final count = driftDb.fragmentMemoryInfos.id.count();
     final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
     sel.where(
@@ -331,7 +342,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
     );
     sel.addColumns([count]);
     final result = await sel.get();
-    mgAndOther.reviewIntervalCount = result.first.read(count)!;
+    reviewIntervalCount = result.first.read(count)!;
     setState(() {});
   }
 
@@ -361,7 +372,7 @@ class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
                               locale: LocaleType.zh,
                               minTime: DateTime.now(),
                               currentTime: c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.review_interval,
-                              onConfirm: (v) {
+                              onChanged: (v) {
                                 c.cloneMemoryGroupAndOtherAb.refreshInevitable((obj) => obj..memoryGroup.review_interval = v);
                                 queryCountForReviewInterval();
                               },

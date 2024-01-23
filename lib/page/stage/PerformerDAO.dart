@@ -68,7 +68,7 @@ class PerformerQuery {
   /// 若没有复习碎片了，则返回 null。
   Future<Performer?> getOneReviewPerformer({required MemoryGroup mg, required InAppStageAbController inAppStageAbController}) async {
     final lastNextPlanedShowTimeExpr = driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract<int>(r'$[#-1]');
-    final reviewIntervalDiff = timeDifference(target: mg.review_interval, start: mg.start_time!);
+    final reviewIntervalDiff = timeDifference(right: mg.review_interval, left: mg.start_time!);
     // [isExpire] 查询的是否为过期类型。
     Future<FragmentMemoryInfo?> query(bool isExpire) async {
       final selInfo = driftDb.select(driftDb.fragmentMemoryInfos);
@@ -79,9 +79,9 @@ class PerformerQuery {
               tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
               lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(reviewIntervalDiff);
           if (isExpire) {
-            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(timeDifference(target: DateTime.now(), start: mg.start_time!));
+            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(timeDifference(right: DateTime.now(), left: mg.start_time!));
           } else {
-            return expr & lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(timeDifference(target: DateTime.now(), start: mg.start_time!));
+            return expr & lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(timeDifference(right: DateTime.now(), left: mg.start_time!));
           }
         },
       );
@@ -138,7 +138,7 @@ class PerformerQuery {
 
   /// [InternalVariableConstantHandler.k4CurrentShowTimeConst]
   Future<int> getCurrentShowTime({required MemoryGroup memoryGroup}) async {
-    return timeDifference(target: DateTime.now(), start: memoryGroup.start_time!);
+    return timeDifference(right: DateTime.now(), left: memoryGroup.start_time!);
   }
 
   /// [InternalVariableConstantHandler.i1ActualShowTimeConst]

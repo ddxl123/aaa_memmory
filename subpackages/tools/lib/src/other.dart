@@ -134,9 +134,9 @@ extension TccExt on String {
   String get toCamelCase => this[0].toLowerCase() + substring(1, length);
 }
 
-/// [target]减[start] 的时间差，返回单位秒。
-int timeDifference({required DateTime target, required DateTime start}) {
-  return target.difference(start).inSeconds;
+/// [right]减[left] 的时间差，返回单位秒。
+int timeDifference({required DateTime right, required DateTime left}) {
+  return right.difference(left).inSeconds;
 }
 
 /// x秒 转换成 x天x时x分x秒。

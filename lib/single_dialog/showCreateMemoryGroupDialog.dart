@@ -1,5 +1,4 @@
 import 'package:drift_main/drift/DriftDb.dart';
-import 'package:drift_main/httper/httper.dart';
 import 'package:drift_main/share_common/share_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:tools/tools.dart';
@@ -31,8 +30,6 @@ Future<void> showCreateMemoryGroupDialog() async {
               start_time: null,
               memory_algorithm_id: null,
               title: tec.text.trim(),
-              will_new_learn_count: 0,
-              review_interval: DateTime.now(),
               new_review_display_order: NewReviewDisplayOrder.mix,
               new_display_order: NewDisplayOrder.random,
               review_display_order: ReviewDisplayOrder.expire_first,

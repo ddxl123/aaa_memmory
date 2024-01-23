@@ -65,7 +65,7 @@ class _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState extends State<SelectM
                 style: const ButtonStyle(alignment: Alignment.centerLeft),
                 child: Text(e.title),
                 onPressed: () async {
-                  await pushToMemoryAlgorithmGizmoEditPage(context: context, memoryAlgorithmAb: e.ab);
+                  await pushToMemoryAlgorithmGizmoEditPage(context: context, cloneMemoryAlgorithmAb: e.copyWith().ab);
                   if (mounted) setState(() {});
                 },
               ),

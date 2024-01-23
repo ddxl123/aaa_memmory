@@ -2060,6 +2060,20 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
   late final GeneratedColumn<int> memory_group_id = GeneratedColumn<int>(
       'memory_group_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _small_cycle_incremental_new_learn_countMeta =
+      const VerificationMeta('small_cycle_incremental_new_learn_count');
+  @override
+  late final GeneratedColumn<int> small_cycle_incremental_new_learn_count =
+      GeneratedColumn<int>(
+          'small_cycle_incremental_new_learn_count', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _small_cycle_incremental_review_countMeta =
+      const VerificationMeta('small_cycle_incremental_review_count');
+  @override
+  late final GeneratedColumn<int> small_cycle_incremental_review_count =
+      GeneratedColumn<int>(
+          'small_cycle_incremental_review_count', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _small_cycle_orderMeta =
       const VerificationMeta('small_cycle_order');
   @override
@@ -2103,6 +2117,8 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
         loop_cycle,
         memory_algorithm_id,
         memory_group_id,
+        small_cycle_incremental_new_learn_count,
+        small_cycle_incremental_review_count,
         small_cycle_order,
         small_cycle_should_new_learn_count,
         small_cycle_should_review_count,
@@ -2152,6 +2168,24 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
               data['memory_group_id']!, _memory_group_idMeta));
     } else if (isInserting) {
       context.missing(_memory_group_idMeta);
+    }
+    if (data.containsKey('small_cycle_incremental_new_learn_count')) {
+      context.handle(
+          _small_cycle_incremental_new_learn_countMeta,
+          small_cycle_incremental_new_learn_count.isAcceptableOrUnknown(
+              data['small_cycle_incremental_new_learn_count']!,
+              _small_cycle_incremental_new_learn_countMeta));
+    } else if (isInserting) {
+      context.missing(_small_cycle_incremental_new_learn_countMeta);
+    }
+    if (data.containsKey('small_cycle_incremental_review_count')) {
+      context.handle(
+          _small_cycle_incremental_review_countMeta,
+          small_cycle_incremental_review_count.isAcceptableOrUnknown(
+              data['small_cycle_incremental_review_count']!,
+              _small_cycle_incremental_review_countMeta));
+    } else if (isInserting) {
+      context.missing(_small_cycle_incremental_review_countMeta);
     }
     if (data.containsKey('small_cycle_order')) {
       context.handle(
@@ -2216,6 +2250,12 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
           DriftSqlType.int, data['${effectivePrefix}memory_algorithm_id'])!,
       memory_group_id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}memory_group_id'])!,
+      small_cycle_incremental_new_learn_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}small_cycle_incremental_new_learn_count'])!,
+      small_cycle_incremental_review_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}small_cycle_incremental_review_count'])!,
       small_cycle_order: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}small_cycle_order'])!,
       small_cycle_should_new_learn_count: attachedDatabase.typeMapping.read(
@@ -2245,6 +2285,8 @@ class MemoryGroupSmartCycleInfo extends DataClass
   String loop_cycle;
   int memory_algorithm_id;
   int memory_group_id;
+  int small_cycle_incremental_new_learn_count;
+  int small_cycle_incremental_review_count;
   int small_cycle_order;
   int small_cycle_should_new_learn_count;
   int small_cycle_should_review_count;
@@ -2256,6 +2298,8 @@ class MemoryGroupSmartCycleInfo extends DataClass
       required this.loop_cycle,
       required this.memory_algorithm_id,
       required this.memory_group_id,
+      required this.small_cycle_incremental_new_learn_count,
+      required this.small_cycle_incremental_review_count,
       required this.small_cycle_order,
       required this.small_cycle_should_new_learn_count,
       required this.small_cycle_should_review_count,
@@ -2269,6 +2313,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
     map['loop_cycle'] = Variable<String>(loop_cycle);
     map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id);
     map['memory_group_id'] = Variable<int>(memory_group_id);
+    map['small_cycle_incremental_new_learn_count'] =
+        Variable<int>(small_cycle_incremental_new_learn_count);
+    map['small_cycle_incremental_review_count'] =
+        Variable<int>(small_cycle_incremental_review_count);
     map['small_cycle_order'] = Variable<int>(small_cycle_order);
     map['small_cycle_should_new_learn_count'] =
         Variable<int>(small_cycle_should_new_learn_count);
@@ -2286,6 +2334,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
       loop_cycle: Value(loop_cycle),
       memory_algorithm_id: Value(memory_algorithm_id),
       memory_group_id: Value(memory_group_id),
+      small_cycle_incremental_new_learn_count:
+          Value(small_cycle_incremental_new_learn_count),
+      small_cycle_incremental_review_count:
+          Value(small_cycle_incremental_review_count),
       small_cycle_order: Value(small_cycle_order),
       small_cycle_should_new_learn_count:
           Value(small_cycle_should_new_learn_count),
@@ -2305,6 +2357,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
       memory_algorithm_id:
           serializer.fromJson<int>(json['memory_algorithm_id']),
       memory_group_id: serializer.fromJson<int>(json['memory_group_id']),
+      small_cycle_incremental_new_learn_count: serializer
+          .fromJson<int>(json['small_cycle_incremental_new_learn_count']),
+      small_cycle_incremental_review_count: serializer
+          .fromJson<int>(json['small_cycle_incremental_review_count']),
       small_cycle_order: serializer.fromJson<int>(json['small_cycle_order']),
       small_cycle_should_new_learn_count:
           serializer.fromJson<int>(json['small_cycle_should_new_learn_count']),
@@ -2323,6 +2379,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
       'loop_cycle': serializer.toJson<String>(loop_cycle),
       'memory_algorithm_id': serializer.toJson<int>(memory_algorithm_id),
       'memory_group_id': serializer.toJson<int>(memory_group_id),
+      'small_cycle_incremental_new_learn_count':
+          serializer.toJson<int>(small_cycle_incremental_new_learn_count),
+      'small_cycle_incremental_review_count':
+          serializer.toJson<int>(small_cycle_incremental_review_count),
       'small_cycle_order': serializer.toJson<int>(small_cycle_order),
       'small_cycle_should_new_learn_count':
           serializer.toJson<int>(small_cycle_should_new_learn_count),
@@ -2339,6 +2399,8 @@ class MemoryGroupSmartCycleInfo extends DataClass
           String? loop_cycle,
           int? memory_algorithm_id,
           int? memory_group_id,
+          int? small_cycle_incremental_new_learn_count,
+          int? small_cycle_incremental_review_count,
           int? small_cycle_order,
           int? small_cycle_should_new_learn_count,
           int? small_cycle_should_review_count,
@@ -2350,6 +2412,12 @@ class MemoryGroupSmartCycleInfo extends DataClass
         loop_cycle: loop_cycle ?? this.loop_cycle,
         memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
         memory_group_id: memory_group_id ?? this.memory_group_id,
+        small_cycle_incremental_new_learn_count:
+            small_cycle_incremental_new_learn_count ??
+                this.small_cycle_incremental_new_learn_count,
+        small_cycle_incremental_review_count:
+            small_cycle_incremental_review_count ??
+                this.small_cycle_incremental_review_count,
         small_cycle_order: small_cycle_order ?? this.small_cycle_order,
         small_cycle_should_new_learn_count:
             small_cycle_should_new_learn_count ??
@@ -2367,6 +2435,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
           ..write('loop_cycle: $loop_cycle, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
+          ..write(
+              'small_cycle_incremental_new_learn_count: $small_cycle_incremental_new_learn_count, ')
+          ..write(
+              'small_cycle_incremental_review_count: $small_cycle_incremental_review_count, ')
           ..write('small_cycle_order: $small_cycle_order, ')
           ..write(
               'small_cycle_should_new_learn_count: $small_cycle_should_new_learn_count, ')
@@ -2385,6 +2457,8 @@ class MemoryGroupSmartCycleInfo extends DataClass
       loop_cycle,
       memory_algorithm_id,
       memory_group_id,
+      small_cycle_incremental_new_learn_count,
+      small_cycle_incremental_review_count,
       small_cycle_order,
       small_cycle_should_new_learn_count,
       small_cycle_should_review_count,
@@ -2399,6 +2473,10 @@ class MemoryGroupSmartCycleInfo extends DataClass
           other.loop_cycle == this.loop_cycle &&
           other.memory_algorithm_id == this.memory_algorithm_id &&
           other.memory_group_id == this.memory_group_id &&
+          other.small_cycle_incremental_new_learn_count ==
+              this.small_cycle_incremental_new_learn_count &&
+          other.small_cycle_incremental_review_count ==
+              this.small_cycle_incremental_review_count &&
           other.small_cycle_order == this.small_cycle_order &&
           other.small_cycle_should_new_learn_count ==
               this.small_cycle_should_new_learn_count &&
@@ -2415,6 +2493,8 @@ class MemoryGroupSmartCycleInfosCompanion
   Value<String> loop_cycle;
   Value<int> memory_algorithm_id;
   Value<int> memory_group_id;
+  Value<int> small_cycle_incremental_new_learn_count;
+  Value<int> small_cycle_incremental_review_count;
   Value<int> small_cycle_order;
   Value<int> small_cycle_should_new_learn_count;
   Value<int> small_cycle_should_review_count;
@@ -2426,6 +2506,8 @@ class MemoryGroupSmartCycleInfosCompanion
     this.loop_cycle = const Value.absent(),
     this.memory_algorithm_id = const Value.absent(),
     this.memory_group_id = const Value.absent(),
+    this.small_cycle_incremental_new_learn_count = const Value.absent(),
+    this.small_cycle_incremental_review_count = const Value.absent(),
     this.small_cycle_order = const Value.absent(),
     this.small_cycle_should_new_learn_count = const Value.absent(),
     this.small_cycle_should_review_count = const Value.absent(),
@@ -2438,6 +2520,8 @@ class MemoryGroupSmartCycleInfosCompanion
     required String loop_cycle,
     required int memory_algorithm_id,
     required int memory_group_id,
+    required int small_cycle_incremental_new_learn_count,
+    required int small_cycle_incremental_review_count,
     required int small_cycle_order,
     required int small_cycle_should_new_learn_count,
     required int small_cycle_should_review_count,
@@ -2448,6 +2532,10 @@ class MemoryGroupSmartCycleInfosCompanion
         loop_cycle = Value(loop_cycle),
         memory_algorithm_id = Value(memory_algorithm_id),
         memory_group_id = Value(memory_group_id),
+        small_cycle_incremental_new_learn_count =
+            Value(small_cycle_incremental_new_learn_count),
+        small_cycle_incremental_review_count =
+            Value(small_cycle_incremental_review_count),
         small_cycle_order = Value(small_cycle_order),
         small_cycle_should_new_learn_count =
             Value(small_cycle_should_new_learn_count),
@@ -2460,6 +2548,8 @@ class MemoryGroupSmartCycleInfosCompanion
     Expression<String>? loop_cycle,
     Expression<int>? memory_algorithm_id,
     Expression<int>? memory_group_id,
+    Expression<int>? small_cycle_incremental_new_learn_count,
+    Expression<int>? small_cycle_incremental_review_count,
     Expression<int>? small_cycle_order,
     Expression<int>? small_cycle_should_new_learn_count,
     Expression<int>? small_cycle_should_review_count,
@@ -2473,6 +2563,12 @@ class MemoryGroupSmartCycleInfosCompanion
       if (memory_algorithm_id != null)
         'memory_algorithm_id': memory_algorithm_id,
       if (memory_group_id != null) 'memory_group_id': memory_group_id,
+      if (small_cycle_incremental_new_learn_count != null)
+        'small_cycle_incremental_new_learn_count':
+            small_cycle_incremental_new_learn_count,
+      if (small_cycle_incremental_review_count != null)
+        'small_cycle_incremental_review_count':
+            small_cycle_incremental_review_count,
       if (small_cycle_order != null) 'small_cycle_order': small_cycle_order,
       if (small_cycle_should_new_learn_count != null)
         'small_cycle_should_new_learn_count':
@@ -2490,6 +2586,8 @@ class MemoryGroupSmartCycleInfosCompanion
       Value<String>? loop_cycle,
       Value<int>? memory_algorithm_id,
       Value<int>? memory_group_id,
+      Value<int>? small_cycle_incremental_new_learn_count,
+      Value<int>? small_cycle_incremental_review_count,
       Value<int>? small_cycle_order,
       Value<int>? small_cycle_should_new_learn_count,
       Value<int>? small_cycle_should_review_count,
@@ -2501,6 +2599,12 @@ class MemoryGroupSmartCycleInfosCompanion
       loop_cycle: loop_cycle ?? this.loop_cycle,
       memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
       memory_group_id: memory_group_id ?? this.memory_group_id,
+      small_cycle_incremental_new_learn_count:
+          small_cycle_incremental_new_learn_count ??
+              this.small_cycle_incremental_new_learn_count,
+      small_cycle_incremental_review_count:
+          small_cycle_incremental_review_count ??
+              this.small_cycle_incremental_review_count,
       small_cycle_order: small_cycle_order ?? this.small_cycle_order,
       small_cycle_should_new_learn_count: small_cycle_should_new_learn_count ??
           this.small_cycle_should_new_learn_count,
@@ -2526,6 +2630,14 @@ class MemoryGroupSmartCycleInfosCompanion
     }
     if (memory_group_id.present) {
       map['memory_group_id'] = Variable<int>(memory_group_id.value);
+    }
+    if (small_cycle_incremental_new_learn_count.present) {
+      map['small_cycle_incremental_new_learn_count'] =
+          Variable<int>(small_cycle_incremental_new_learn_count.value);
+    }
+    if (small_cycle_incremental_review_count.present) {
+      map['small_cycle_incremental_review_count'] =
+          Variable<int>(small_cycle_incremental_review_count.value);
     }
     if (small_cycle_order.present) {
       map['small_cycle_order'] = Variable<int>(small_cycle_order.value);
@@ -2557,6 +2669,10 @@ class MemoryGroupSmartCycleInfosCompanion
           ..write('loop_cycle: $loop_cycle, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
+          ..write(
+              'small_cycle_incremental_new_learn_count: $small_cycle_incremental_new_learn_count, ')
+          ..write(
+              'small_cycle_incremental_review_count: $small_cycle_incremental_review_count, ')
           ..write('small_cycle_order: $small_cycle_order, ')
           ..write(
               'small_cycle_should_new_learn_count: $small_cycle_should_new_learn_count, ')
@@ -4268,11 +4384,12 @@ class $MemoryAlgorithmsTable extends MemoryAlgorithms
   late final GeneratedColumn<String> suggest_loop_cycle_algorithm =
       GeneratedColumn<String>('suggest_loop_cycle_algorithm', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _suggest_loop_cycle_remarkMeta =
-      const VerificationMeta('suggest_loop_cycle_remark');
+  static const VerificationMeta _suggest_loop_cycle_algorithm_remarkMeta =
+      const VerificationMeta('suggest_loop_cycle_algorithm_remark');
   @override
-  late final GeneratedColumn<String> suggest_loop_cycle_remark =
-      GeneratedColumn<String>('suggest_loop_cycle_remark', aliasedName, true,
+  late final GeneratedColumn<String> suggest_loop_cycle_algorithm_remark =
+      GeneratedColumn<String>(
+          'suggest_loop_cycle_algorithm_remark', aliasedName, true,
           type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
@@ -4312,7 +4429,7 @@ class $MemoryAlgorithmsTable extends MemoryAlgorithms
         suggest_count_for_new_and_review_algorithm,
         suggest_count_for_new_and_review_algorithm_remark,
         suggest_loop_cycle_algorithm,
-        suggest_loop_cycle_remark,
+        suggest_loop_cycle_algorithm_remark,
         title,
         created_at,
         id,
@@ -4422,12 +4539,12 @@ class $MemoryAlgorithmsTable extends MemoryAlgorithms
               data['suggest_loop_cycle_algorithm']!,
               _suggest_loop_cycle_algorithmMeta));
     }
-    if (data.containsKey('suggest_loop_cycle_remark')) {
+    if (data.containsKey('suggest_loop_cycle_algorithm_remark')) {
       context.handle(
-          _suggest_loop_cycle_remarkMeta,
-          suggest_loop_cycle_remark.isAcceptableOrUnknown(
-              data['suggest_loop_cycle_remark']!,
-              _suggest_loop_cycle_remarkMeta));
+          _suggest_loop_cycle_algorithm_remarkMeta,
+          suggest_loop_cycle_algorithm_remark.isAcceptableOrUnknown(
+              data['suggest_loop_cycle_algorithm_remark']!,
+              _suggest_loop_cycle_algorithm_remarkMeta));
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -4503,9 +4620,9 @@ class $MemoryAlgorithmsTable extends MemoryAlgorithms
       suggest_loop_cycle_algorithm: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}suggest_loop_cycle_algorithm']),
-      suggest_loop_cycle_remark: attachedDatabase.typeMapping.read(
+      suggest_loop_cycle_algorithm_remark: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
-          data['${effectivePrefix}suggest_loop_cycle_remark']),
+          data['${effectivePrefix}suggest_loop_cycle_algorithm_remark']),
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       created_at: attachedDatabase.typeMapping
@@ -4538,7 +4655,7 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
   String? suggest_count_for_new_and_review_algorithm;
   String? suggest_count_for_new_and_review_algorithm_remark;
   String? suggest_loop_cycle_algorithm;
-  String? suggest_loop_cycle_remark;
+  String? suggest_loop_cycle_algorithm_remark;
   String title;
   DateTime created_at;
   int id;
@@ -4558,7 +4675,7 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
       this.suggest_count_for_new_and_review_algorithm,
       this.suggest_count_for_new_and_review_algorithm_remark,
       this.suggest_loop_cycle_algorithm,
-      this.suggest_loop_cycle_remark,
+      this.suggest_loop_cycle_algorithm_remark,
       required this.title,
       required this.created_at,
       required this.id,
@@ -4615,9 +4732,9 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
       map['suggest_loop_cycle_algorithm'] =
           Variable<String>(suggest_loop_cycle_algorithm);
     }
-    if (!nullToAbsent || suggest_loop_cycle_remark != null) {
-      map['suggest_loop_cycle_remark'] =
-          Variable<String>(suggest_loop_cycle_remark);
+    if (!nullToAbsent || suggest_loop_cycle_algorithm_remark != null) {
+      map['suggest_loop_cycle_algorithm_remark'] =
+          Variable<String>(suggest_loop_cycle_algorithm_remark);
     }
     map['title'] = Variable<String>(title);
     map['created_at'] = Variable<DateTime>(created_at);
@@ -4676,10 +4793,10 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
           suggest_loop_cycle_algorithm == null && nullToAbsent
               ? const Value.absent()
               : Value(suggest_loop_cycle_algorithm),
-      suggest_loop_cycle_remark:
-          suggest_loop_cycle_remark == null && nullToAbsent
+      suggest_loop_cycle_algorithm_remark:
+          suggest_loop_cycle_algorithm_remark == null && nullToAbsent
               ? const Value.absent()
-              : Value(suggest_loop_cycle_remark),
+              : Value(suggest_loop_cycle_algorithm_remark),
       title: Value(title),
       created_at: Value(created_at),
       id: Value(id),
@@ -4717,8 +4834,8 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
               json['suggest_count_for_new_and_review_algorithm_remark']),
       suggest_loop_cycle_algorithm:
           serializer.fromJson<String?>(json['suggest_loop_cycle_algorithm']),
-      suggest_loop_cycle_remark:
-          serializer.fromJson<String?>(json['suggest_loop_cycle_remark']),
+      suggest_loop_cycle_algorithm_remark: serializer
+          .fromJson<String?>(json['suggest_loop_cycle_algorithm_remark']),
       title: serializer.fromJson<String>(json['title']),
       created_at: serializer.fromJson<DateTime>(json['created_at']),
       id: serializer.fromJson<int>(json['id']),
@@ -4752,8 +4869,8 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
           .toJson<String?>(suggest_count_for_new_and_review_algorithm_remark),
       'suggest_loop_cycle_algorithm':
           serializer.toJson<String?>(suggest_loop_cycle_algorithm),
-      'suggest_loop_cycle_remark':
-          serializer.toJson<String?>(suggest_loop_cycle_remark),
+      'suggest_loop_cycle_algorithm_remark':
+          serializer.toJson<String?>(suggest_loop_cycle_algorithm_remark),
       'title': serializer.toJson<String>(title),
       'created_at': serializer.toJson<DateTime>(created_at),
       'id': serializer.toJson<int>(id),
@@ -4778,7 +4895,8 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
           Value<String?> suggest_count_for_new_and_review_algorithm_remark =
               const Value.absent(),
           Value<String?> suggest_loop_cycle_algorithm = const Value.absent(),
-          Value<String?> suggest_loop_cycle_remark = const Value.absent(),
+          Value<String?> suggest_loop_cycle_algorithm_remark =
+              const Value.absent(),
           String? title,
           DateTime? created_at,
           int? id,
@@ -4826,9 +4944,10 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
         suggest_loop_cycle_algorithm: suggest_loop_cycle_algorithm.present
             ? suggest_loop_cycle_algorithm.value
             : this.suggest_loop_cycle_algorithm,
-        suggest_loop_cycle_remark: suggest_loop_cycle_remark.present
-            ? suggest_loop_cycle_remark.value
-            : this.suggest_loop_cycle_remark,
+        suggest_loop_cycle_algorithm_remark:
+            suggest_loop_cycle_algorithm_remark.present
+                ? suggest_loop_cycle_algorithm_remark.value
+                : this.suggest_loop_cycle_algorithm_remark,
         title: title ?? this.title,
         created_at: created_at ?? this.created_at,
         id: id ?? this.id,
@@ -4855,7 +4974,8 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
               'suggest_count_for_new_and_review_algorithm_remark: $suggest_count_for_new_and_review_algorithm_remark, ')
           ..write(
               'suggest_loop_cycle_algorithm: $suggest_loop_cycle_algorithm, ')
-          ..write('suggest_loop_cycle_remark: $suggest_loop_cycle_remark, ')
+          ..write(
+              'suggest_loop_cycle_algorithm_remark: $suggest_loop_cycle_algorithm_remark, ')
           ..write('title: $title, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
@@ -4880,7 +5000,7 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
       suggest_count_for_new_and_review_algorithm,
       suggest_count_for_new_and_review_algorithm_remark,
       suggest_loop_cycle_algorithm,
-      suggest_loop_cycle_remark,
+      suggest_loop_cycle_algorithm_remark,
       title,
       created_at,
       id,
@@ -4907,7 +5027,8 @@ class MemoryAlgorithm extends DataClass implements Insertable<MemoryAlgorithm> {
               this.suggest_count_for_new_and_review_algorithm_remark &&
           other.suggest_loop_cycle_algorithm ==
               this.suggest_loop_cycle_algorithm &&
-          other.suggest_loop_cycle_remark == this.suggest_loop_cycle_remark &&
+          other.suggest_loop_cycle_algorithm_remark ==
+              this.suggest_loop_cycle_algorithm_remark &&
           other.title == this.title &&
           other.created_at == this.created_at &&
           other.id == this.id &&
@@ -4929,7 +5050,7 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
   Value<String?> suggest_count_for_new_and_review_algorithm;
   Value<String?> suggest_count_for_new_and_review_algorithm_remark;
   Value<String?> suggest_loop_cycle_algorithm;
-  Value<String?> suggest_loop_cycle_remark;
+  Value<String?> suggest_loop_cycle_algorithm_remark;
   Value<String> title;
   Value<DateTime> created_at;
   Value<int> id;
@@ -4950,7 +5071,7 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
     this.suggest_count_for_new_and_review_algorithm_remark =
         const Value.absent(),
     this.suggest_loop_cycle_algorithm = const Value.absent(),
-    this.suggest_loop_cycle_remark = const Value.absent(),
+    this.suggest_loop_cycle_algorithm_remark = const Value.absent(),
     this.title = const Value.absent(),
     this.created_at = const Value.absent(),
     this.id = const Value.absent(),
@@ -4972,7 +5093,7 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
     this.suggest_count_for_new_and_review_algorithm_remark =
         const Value.absent(),
     this.suggest_loop_cycle_algorithm = const Value.absent(),
-    this.suggest_loop_cycle_remark = const Value.absent(),
+    this.suggest_loop_cycle_algorithm_remark = const Value.absent(),
     required String title,
     required DateTime created_at,
     this.id = const Value.absent(),
@@ -4996,7 +5117,7 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
     Expression<String>? suggest_count_for_new_and_review_algorithm,
     Expression<String>? suggest_count_for_new_and_review_algorithm_remark,
     Expression<String>? suggest_loop_cycle_algorithm,
-    Expression<String>? suggest_loop_cycle_remark,
+    Expression<String>? suggest_loop_cycle_algorithm_remark,
     Expression<String>? title,
     Expression<DateTime>? created_at,
     Expression<int>? id,
@@ -5030,8 +5151,9 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
             suggest_count_for_new_and_review_algorithm_remark,
       if (suggest_loop_cycle_algorithm != null)
         'suggest_loop_cycle_algorithm': suggest_loop_cycle_algorithm,
-      if (suggest_loop_cycle_remark != null)
-        'suggest_loop_cycle_remark': suggest_loop_cycle_remark,
+      if (suggest_loop_cycle_algorithm_remark != null)
+        'suggest_loop_cycle_algorithm_remark':
+            suggest_loop_cycle_algorithm_remark,
       if (title != null) 'title': title,
       if (created_at != null) 'created_at': created_at,
       if (id != null) 'id': id,
@@ -5054,7 +5176,7 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
       Value<String?>? suggest_count_for_new_and_review_algorithm,
       Value<String?>? suggest_count_for_new_and_review_algorithm_remark,
       Value<String?>? suggest_loop_cycle_algorithm,
-      Value<String?>? suggest_loop_cycle_remark,
+      Value<String?>? suggest_loop_cycle_algorithm_remark,
       Value<String>? title,
       Value<DateTime>? created_at,
       Value<int>? id,
@@ -5085,8 +5207,9 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
               this.suggest_count_for_new_and_review_algorithm_remark,
       suggest_loop_cycle_algorithm:
           suggest_loop_cycle_algorithm ?? this.suggest_loop_cycle_algorithm,
-      suggest_loop_cycle_remark:
-          suggest_loop_cycle_remark ?? this.suggest_loop_cycle_remark,
+      suggest_loop_cycle_algorithm_remark:
+          suggest_loop_cycle_algorithm_remark ??
+              this.suggest_loop_cycle_algorithm_remark,
       title: title ?? this.title,
       created_at: created_at ?? this.created_at,
       id: id ?? this.id,
@@ -5149,9 +5272,9 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
       map['suggest_loop_cycle_algorithm'] =
           Variable<String>(suggest_loop_cycle_algorithm.value);
     }
-    if (suggest_loop_cycle_remark.present) {
-      map['suggest_loop_cycle_remark'] =
-          Variable<String>(suggest_loop_cycle_remark.value);
+    if (suggest_loop_cycle_algorithm_remark.present) {
+      map['suggest_loop_cycle_algorithm_remark'] =
+          Variable<String>(suggest_loop_cycle_algorithm_remark.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -5189,7 +5312,8 @@ class MemoryAlgorithmsCompanion extends UpdateCompanion<MemoryAlgorithm> {
               'suggest_count_for_new_and_review_algorithm_remark: $suggest_count_for_new_and_review_algorithm_remark, ')
           ..write(
               'suggest_loop_cycle_algorithm: $suggest_loop_cycle_algorithm, ')
-          ..write('suggest_loop_cycle_remark: $suggest_loop_cycle_remark, ')
+          ..write(
+              'suggest_loop_cycle_algorithm_remark: $suggest_loop_cycle_algorithm_remark, ')
           ..write('title: $title, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
@@ -5253,12 +5377,6 @@ class $MemoryGroupsTable extends MemoryGroups
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<ReviewDisplayOrder>(
               $MemoryGroupsTable.$converterreview_display_order);
-  static const VerificationMeta _review_intervalMeta =
-      const VerificationMeta('review_interval');
-  @override
-  late final GeneratedColumn<DateTime> review_interval =
-      GeneratedColumn<DateTime>('review_interval', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _start_timeMeta =
       const VerificationMeta('start_time');
   @override
@@ -5284,12 +5402,6 @@ class $MemoryGroupsTable extends MemoryGroups
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
       'title', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _will_new_learn_countMeta =
-      const VerificationMeta('will_new_learn_count');
-  @override
-  late final GeneratedColumn<int> will_new_learn_count = GeneratedColumn<int>(
-      'will_new_learn_count', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _created_atMeta =
       const VerificationMeta('created_at');
   @override
@@ -5315,12 +5427,10 @@ class $MemoryGroupsTable extends MemoryGroups
         new_display_order,
         new_review_display_order,
         review_display_order,
-        review_interval,
         start_time,
         study_status,
         sync_version,
         title,
-        will_new_learn_count,
         created_at,
         id,
         updated_at
@@ -5360,14 +5470,6 @@ class $MemoryGroupsTable extends MemoryGroups
         _new_review_display_orderMeta, const VerificationResult.success());
     context.handle(
         _review_display_orderMeta, const VerificationResult.success());
-    if (data.containsKey('review_interval')) {
-      context.handle(
-          _review_intervalMeta,
-          review_interval.isAcceptableOrUnknown(
-              data['review_interval']!, _review_intervalMeta));
-    } else if (isInserting) {
-      context.missing(_review_intervalMeta);
-    }
     if (data.containsKey('start_time')) {
       context.handle(
           _start_timeMeta,
@@ -5388,14 +5490,6 @@ class $MemoryGroupsTable extends MemoryGroups
           _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     } else if (isInserting) {
       context.missing(_titleMeta);
-    }
-    if (data.containsKey('will_new_learn_count')) {
-      context.handle(
-          _will_new_learn_countMeta,
-          will_new_learn_count.isAcceptableOrUnknown(
-              data['will_new_learn_count']!, _will_new_learn_countMeta));
-    } else if (isInserting) {
-      context.missing(_will_new_learn_countMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -5441,8 +5535,6 @@ class $MemoryGroupsTable extends MemoryGroups
       review_display_order: $MemoryGroupsTable.$converterreview_display_order
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}review_display_order'])!),
-      review_interval: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}review_interval'])!,
       start_time: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}start_time']),
       study_status: $MemoryGroupsTable.$converterstudy_status.fromSql(
@@ -5452,8 +5544,6 @@ class $MemoryGroupsTable extends MemoryGroups
           .read(DriftSqlType.int, data['${effectivePrefix}sync_version'])!,
       title: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      will_new_learn_count: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}will_new_learn_count'])!,
       created_at: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       id: attachedDatabase.typeMapping
@@ -5490,12 +5580,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
   NewDisplayOrder new_display_order;
   NewReviewDisplayOrder new_review_display_order;
   ReviewDisplayOrder review_display_order;
-  DateTime review_interval;
   DateTime? start_time;
   StudyStatus study_status;
   int sync_version;
   String title;
-  int will_new_learn_count;
   DateTime created_at;
   int id;
   DateTime updated_at;
@@ -5506,12 +5594,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       required this.new_display_order,
       required this.new_review_display_order,
       required this.review_display_order,
-      required this.review_interval,
       this.start_time,
       required this.study_status,
       required this.sync_version,
       required this.title,
-      required this.will_new_learn_count,
       required this.created_at,
       required this.id,
       required this.updated_at});
@@ -5538,7 +5624,6 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       map['review_display_order'] =
           Variable<String>(converter.toSql(review_display_order));
     }
-    map['review_interval'] = Variable<DateTime>(review_interval);
     if (!nullToAbsent || start_time != null) {
       map['start_time'] = Variable<DateTime>(start_time);
     }
@@ -5548,7 +5633,6 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
     }
     map['sync_version'] = Variable<int>(sync_version);
     map['title'] = Variable<String>(title);
-    map['will_new_learn_count'] = Variable<int>(will_new_learn_count);
     map['created_at'] = Variable<DateTime>(created_at);
     map['id'] = Variable<int>(id);
     map['updated_at'] = Variable<DateTime>(updated_at);
@@ -5565,14 +5649,12 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       new_display_order: Value(new_display_order),
       new_review_display_order: Value(new_review_display_order),
       review_display_order: Value(review_display_order),
-      review_interval: Value(review_interval),
       start_time: start_time == null && nullToAbsent
           ? const Value.absent()
           : Value(start_time),
       study_status: Value(study_status),
       sync_version: Value(sync_version),
       title: Value(title),
-      will_new_learn_count: Value(will_new_learn_count),
       created_at: Value(created_at),
       id: Value(id),
       updated_at: Value(updated_at),
@@ -5594,14 +5676,11 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
               serializer.fromJson<String>(json['new_review_display_order'])),
       review_display_order: $MemoryGroupsTable.$converterreview_display_order
           .fromJson(serializer.fromJson<String>(json['review_display_order'])),
-      review_interval: serializer.fromJson<DateTime>(json['review_interval']),
       start_time: serializer.fromJson<DateTime?>(json['start_time']),
       study_status: $MemoryGroupsTable.$converterstudy_status
           .fromJson(serializer.fromJson<String>(json['study_status'])),
       sync_version: serializer.fromJson<int>(json['sync_version']),
       title: serializer.fromJson<String>(json['title']),
-      will_new_learn_count:
-          serializer.fromJson<int>(json['will_new_learn_count']),
       created_at: serializer.fromJson<DateTime>(json['created_at']),
       id: serializer.fromJson<int>(json['id']),
       updated_at: serializer.fromJson<DateTime>(json['updated_at']),
@@ -5623,13 +5702,11 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       'review_display_order': serializer.toJson<String>($MemoryGroupsTable
           .$converterreview_display_order
           .toJson(review_display_order)),
-      'review_interval': serializer.toJson<DateTime>(review_interval),
       'start_time': serializer.toJson<DateTime?>(start_time),
       'study_status': serializer.toJson<String>(
           $MemoryGroupsTable.$converterstudy_status.toJson(study_status)),
       'sync_version': serializer.toJson<int>(sync_version),
       'title': serializer.toJson<String>(title),
-      'will_new_learn_count': serializer.toJson<int>(will_new_learn_count),
       'created_at': serializer.toJson<DateTime>(created_at),
       'id': serializer.toJson<int>(id),
       'updated_at': serializer.toJson<DateTime>(updated_at),
@@ -5643,12 +5720,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           NewDisplayOrder? new_display_order,
           NewReviewDisplayOrder? new_review_display_order,
           ReviewDisplayOrder? review_display_order,
-          DateTime? review_interval,
           Value<DateTime?> start_time = const Value.absent(),
           StudyStatus? study_status,
           int? sync_version,
           String? title,
-          int? will_new_learn_count,
           DateTime? created_at,
           int? id,
           DateTime? updated_at}) =>
@@ -5662,12 +5737,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
         new_review_display_order:
             new_review_display_order ?? this.new_review_display_order,
         review_display_order: review_display_order ?? this.review_display_order,
-        review_interval: review_interval ?? this.review_interval,
         start_time: start_time.present ? start_time.value : this.start_time,
         study_status: study_status ?? this.study_status,
         sync_version: sync_version ?? this.sync_version,
         title: title ?? this.title,
-        will_new_learn_count: will_new_learn_count ?? this.will_new_learn_count,
         created_at: created_at ?? this.created_at,
         id: id ?? this.id,
         updated_at: updated_at ?? this.updated_at,
@@ -5681,12 +5754,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           ..write('new_display_order: $new_display_order, ')
           ..write('new_review_display_order: $new_review_display_order, ')
           ..write('review_display_order: $review_display_order, ')
-          ..write('review_interval: $review_interval, ')
           ..write('start_time: $start_time, ')
           ..write('study_status: $study_status, ')
           ..write('sync_version: $sync_version, ')
           ..write('title: $title, ')
-          ..write('will_new_learn_count: $will_new_learn_count, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')
@@ -5702,12 +5773,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
       new_display_order,
       new_review_display_order,
       review_display_order,
-      review_interval,
       start_time,
       study_status,
       sync_version,
       title,
-      will_new_learn_count,
       created_at,
       id,
       updated_at);
@@ -5721,12 +5790,10 @@ class MemoryGroup extends DataClass implements Insertable<MemoryGroup> {
           other.new_display_order == this.new_display_order &&
           other.new_review_display_order == this.new_review_display_order &&
           other.review_display_order == this.review_display_order &&
-          other.review_interval == this.review_interval &&
           other.start_time == this.start_time &&
           other.study_status == this.study_status &&
           other.sync_version == this.sync_version &&
           other.title == this.title &&
-          other.will_new_learn_count == this.will_new_learn_count &&
           other.created_at == this.created_at &&
           other.id == this.id &&
           other.updated_at == this.updated_at);
@@ -5739,12 +5806,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
   Value<NewDisplayOrder> new_display_order;
   Value<NewReviewDisplayOrder> new_review_display_order;
   Value<ReviewDisplayOrder> review_display_order;
-  Value<DateTime> review_interval;
   Value<DateTime?> start_time;
   Value<StudyStatus> study_status;
   Value<int> sync_version;
   Value<String> title;
-  Value<int> will_new_learn_count;
   Value<DateTime> created_at;
   Value<int> id;
   Value<DateTime> updated_at;
@@ -5755,12 +5820,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     this.new_display_order = const Value.absent(),
     this.new_review_display_order = const Value.absent(),
     this.review_display_order = const Value.absent(),
-    this.review_interval = const Value.absent(),
     this.start_time = const Value.absent(),
     this.study_status = const Value.absent(),
     this.sync_version = const Value.absent(),
     this.title = const Value.absent(),
-    this.will_new_learn_count = const Value.absent(),
     this.created_at = const Value.absent(),
     this.id = const Value.absent(),
     this.updated_at = const Value.absent(),
@@ -5772,12 +5835,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     required NewDisplayOrder new_display_order,
     required NewReviewDisplayOrder new_review_display_order,
     required ReviewDisplayOrder review_display_order,
-    required DateTime review_interval,
     this.start_time = const Value.absent(),
     required StudyStatus study_status,
     required int sync_version,
     required String title,
-    required int will_new_learn_count,
     required DateTime created_at,
     this.id = const Value.absent(),
     required DateTime updated_at,
@@ -5786,11 +5847,9 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
         new_display_order = Value(new_display_order),
         new_review_display_order = Value(new_review_display_order),
         review_display_order = Value(review_display_order),
-        review_interval = Value(review_interval),
         study_status = Value(study_status),
         sync_version = Value(sync_version),
         title = Value(title),
-        will_new_learn_count = Value(will_new_learn_count),
         created_at = Value(created_at),
         updated_at = Value(updated_at);
   static Insertable<MemoryGroup> custom({
@@ -5800,12 +5859,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     Expression<String>? new_display_order,
     Expression<String>? new_review_display_order,
     Expression<String>? review_display_order,
-    Expression<DateTime>? review_interval,
     Expression<DateTime>? start_time,
     Expression<String>? study_status,
     Expression<int>? sync_version,
     Expression<String>? title,
-    Expression<int>? will_new_learn_count,
     Expression<DateTime>? created_at,
     Expression<int>? id,
     Expression<DateTime>? updated_at,
@@ -5820,13 +5877,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
         'new_review_display_order': new_review_display_order,
       if (review_display_order != null)
         'review_display_order': review_display_order,
-      if (review_interval != null) 'review_interval': review_interval,
       if (start_time != null) 'start_time': start_time,
       if (study_status != null) 'study_status': study_status,
       if (sync_version != null) 'sync_version': sync_version,
       if (title != null) 'title': title,
-      if (will_new_learn_count != null)
-        'will_new_learn_count': will_new_learn_count,
       if (created_at != null) 'created_at': created_at,
       if (id != null) 'id': id,
       if (updated_at != null) 'updated_at': updated_at,
@@ -5840,12 +5894,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
       Value<NewDisplayOrder>? new_display_order,
       Value<NewReviewDisplayOrder>? new_review_display_order,
       Value<ReviewDisplayOrder>? review_display_order,
-      Value<DateTime>? review_interval,
       Value<DateTime?>? start_time,
       Value<StudyStatus>? study_status,
       Value<int>? sync_version,
       Value<String>? title,
-      Value<int>? will_new_learn_count,
       Value<DateTime>? created_at,
       Value<int>? id,
       Value<DateTime>? updated_at}) {
@@ -5857,12 +5909,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
       new_review_display_order:
           new_review_display_order ?? this.new_review_display_order,
       review_display_order: review_display_order ?? this.review_display_order,
-      review_interval: review_interval ?? this.review_interval,
       start_time: start_time ?? this.start_time,
       study_status: study_status ?? this.study_status,
       sync_version: sync_version ?? this.sync_version,
       title: title ?? this.title,
-      will_new_learn_count: will_new_learn_count ?? this.will_new_learn_count,
       created_at: created_at ?? this.created_at,
       id: id ?? this.id,
       updated_at: updated_at ?? this.updated_at,
@@ -5899,9 +5949,6 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
       map['review_display_order'] =
           Variable<String>(converter.toSql(review_display_order.value));
     }
-    if (review_interval.present) {
-      map['review_interval'] = Variable<DateTime>(review_interval.value);
-    }
     if (start_time.present) {
       map['start_time'] = Variable<DateTime>(start_time.value);
     }
@@ -5916,9 +5963,6 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
-    }
-    if (will_new_learn_count.present) {
-      map['will_new_learn_count'] = Variable<int>(will_new_learn_count.value);
     }
     if (created_at.present) {
       map['created_at'] = Variable<DateTime>(created_at.value);
@@ -5941,12 +5985,10 @@ class MemoryGroupsCompanion extends UpdateCompanion<MemoryGroup> {
           ..write('new_display_order: $new_display_order, ')
           ..write('new_review_display_order: $new_review_display_order, ')
           ..write('review_display_order: $review_display_order, ')
-          ..write('review_interval: $review_interval, ')
           ..write('start_time: $start_time, ')
           ..write('study_status: $study_status, ')
           ..write('sync_version: $sync_version, ')
           ..write('title: $title, ')
-          ..write('will_new_learn_count: $will_new_learn_count, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')

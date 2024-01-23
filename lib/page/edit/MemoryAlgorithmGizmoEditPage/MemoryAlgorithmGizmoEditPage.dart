@@ -12,14 +12,14 @@ import 'AlgorithmEditPage.dart';
 import 'MemoryAlgorithmGizmoEditPageAbController.dart';
 
 class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
-  const MemoryAlgorithmGizmoEditPage({super.key, required this.memoryAlgorithmAb});
+  const MemoryAlgorithmGizmoEditPage({super.key, required this.cloneMemoryAlgorithmAb});
 
-  final Ab<MemoryAlgorithm> memoryAlgorithmAb;
+  final Ab<MemoryAlgorithm> cloneMemoryAlgorithmAb;
 
   @override
   Widget build(BuildContext context) {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
-      putController: MemoryAlgorithmGizmoEditPageAbController(memoryAlgorithmAb: memoryAlgorithmAb),
+      putController: MemoryAlgorithmGizmoEditPageAbController(cloneMemoryAlgorithmAb: cloneMemoryAlgorithmAb),
       builder: (c, abw) {
         return Scaffold(
           appBar: AppBar(
@@ -58,10 +58,10 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: ButtonDataState.name)),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: FamiliarityState.name)),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: NextShowTimeState.name)),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: CompleteConditionState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: ButtonDataState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: FamiliarityState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: NextShowTimeState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: CompleteConditionState.name)),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(30, 20, 30, 0),
@@ -80,8 +80,8 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: SuggestLoopCycleState.name)),
-              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, name: SuggestCountForNewAndReviewState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: SuggestLoopCycleState.name)),
+              SliverToBoxAdapter(child: _algorithmWidget(context: c.context, stateName: SuggestCountForNewAndReviewState.name)),
               const SliverToBoxAdapter(child: SizedBox(height: 50)),
             ],
           ),
@@ -129,7 +129,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
   Widget _appBarTitleWidget() {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       builder: (c, abw) {
-        return Text(c.memoryAlgorithmAb(abw).title);
+        return Text(c.cloneMemoryAlgorithmAb(abw).title);
       },
     );
   }
@@ -167,7 +167,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                 decoration: const InputDecoration(border: InputBorder.none, labelText: '名称：'),
                 autofocus: false,
                 onChanged: (v) {
-                  c.memoryAlgorithmAb(abw).title = v;
+                  c.cloneMemoryAlgorithmAb(abw).title = v;
                 },
               ),
             ),
@@ -180,7 +180,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
   Widget _explainWidget() {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       builder: (c, abw) {
-        c.memoryAlgorithmAb(abw);
+        c.cloneMemoryAlgorithmAb(abw);
         return Padding(
           padding: const EdgeInsets.all(10),
           child: GestureDetector(
@@ -213,12 +213,12 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                   builder: (ctx) {
                     return SingleQuillEditor1Page(
                       isEditable: true,
-                      initJsonString: c.memoryAlgorithmAb().explain_content,
+                      initJsonString: c.cloneMemoryAlgorithmAb().explain_content,
                       singleQuillController: c.explainContentSingleQuillController,
                       backListener: (state, hasRoute) async {
-                        if (!state.singleQuillController.equalFromJsonString(jsonString: c.memoryAlgorithmAb().explain_content)) {
-                          c.memoryAlgorithmAb().explain_content = state.singleQuillController.getContentJsonStringOrNull();
-                          c.memoryAlgorithmAb.refreshForce();
+                        if (!state.singleQuillController.equalFromJsonString(jsonString: c.cloneMemoryAlgorithmAb().explain_content)) {
+                          c.cloneMemoryAlgorithmAb().explain_content = state.singleQuillController.getContentJsonStringOrNull();
+                          c.cloneMemoryAlgorithmAb.refreshForce();
                           SmartDialog.showToast("已修改，请注意保存！");
                         }
                         return false;
@@ -247,7 +247,7 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
 
   Widget _algorithmWidget({
     required BuildContext context,
-    required String name,
+    required String stateName,
   }) {
     return AbBuilder<MemoryAlgorithmGizmoEditPageAbController>(
       builder: (c, abw) {
@@ -261,15 +261,15 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(name),
+                        Text(stateName),
                         ClassificationState.filter(
-                                  stateName: name,
-                                  buttonData: () => memoryAlgorithmAb(abw).button_algorithm,
-                                  familiarity: () => memoryAlgorithmAb(abw).familiarity_algorithm,
-                                  nextShowTime: () => memoryAlgorithmAb(abw).next_time_algorithm,
-                                  completeCondition: () => memoryAlgorithmAb(abw).completed_algorithm,
-                                  suggestLoopCycle: () => memoryAlgorithmAb(abw).suggest_loop_cycle_algorithm,
-                                  suggestCountForNewAndReviewState: () => memoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm,
+                                  stateName: stateName,
+                                  buttonData: () => cloneMemoryAlgorithmAb(abw).button_algorithm,
+                                  familiarity: () => cloneMemoryAlgorithmAb(abw).familiarity_algorithm,
+                                  nextShowTime: () => cloneMemoryAlgorithmAb(abw).next_time_algorithm,
+                                  completeCondition: () => cloneMemoryAlgorithmAb(abw).completed_algorithm,
+                                  suggestLoopCycle: () => cloneMemoryAlgorithmAb(abw).suggest_loop_cycle_algorithm,
+                                  suggestCountForNewAndReviewState: () => cloneMemoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm,
                                 ) ==
                                 null
                             ? Text(" (未设置)", style: TextStyle(fontSize: 14, color: Colors.red))
@@ -284,13 +284,13 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                         Expanded(
                           child: Text(
                             ClassificationState.filter(
-                                  stateName: name,
-                                  buttonData: () => memoryAlgorithmAb(abw).button_algorithm_remark,
-                                  familiarity: () => memoryAlgorithmAb(abw).familiarity_algorithm_remark,
-                                  nextShowTime: () => memoryAlgorithmAb(abw).next_time_algorithm_remark,
-                                  completeCondition: () => memoryAlgorithmAb(abw).completed_algorithm_remark,
-                                  suggestLoopCycle: () => memoryAlgorithmAb(abw).suggest_loop_cycle_algorithm,
-                                  suggestCountForNewAndReviewState: () => memoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm_remark,
+                                  stateName: stateName,
+                                  buttonData: () => cloneMemoryAlgorithmAb(abw).button_algorithm_remark,
+                                  familiarity: () => cloneMemoryAlgorithmAb(abw).familiarity_algorithm_remark,
+                                  nextShowTime: () => cloneMemoryAlgorithmAb(abw).next_time_algorithm_remark,
+                                  completeCondition: () => cloneMemoryAlgorithmAb(abw).completed_algorithm_remark,
+                                  suggestLoopCycle: () => cloneMemoryAlgorithmAb(abw).suggest_loop_cycle_algorithm_remark,
+                                  suggestCountForNewAndReviewState: () => cloneMemoryAlgorithmAb(abw).suggest_count_for_new_and_review_algorithm_remark,
                                 ) ??
                                 "无说明",
                             style: const TextStyle(color: Colors.grey, fontSize: 14, overflow: TextOverflow.ellipsis),
@@ -307,8 +307,8 @@ class MemoryAlgorithmGizmoEditPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (ctx) => AlgorithmEditPage(
-                    name: name,
-                    memoryAlgorithmAb: memoryAlgorithmAb,
+                    stateName: stateName,
+                    memoryAlgorithmAb: cloneMemoryAlgorithmAb,
                   ),
                 ),
               );

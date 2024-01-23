@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aaa_memory/page/edit/FragmentGizmoEditPage/FragmentTemplate/base/SingleQuillController.dart';
+import 'package:aaa_memory/page/list/MemoryAlgorithmListPageAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -9,10 +10,12 @@ import 'package:tools/tools.dart';
 
 class MemoryAlgorithmGizmoEditPageAbController extends AbController {
   MemoryAlgorithmGizmoEditPageAbController({
-    required this.memoryAlgorithmAb,
+    required this.cloneMemoryAlgorithmAb,
   });
 
-  final Ab<MemoryAlgorithm> memoryAlgorithmAb;
+  final Ab<MemoryAlgorithm> cloneMemoryAlgorithmAb;
+
+  final memoryAlgorithmListPageAbController = Aber.findOrNullLast<MemoryAlgorithmListPageAbController>();
 
   final titleEditingController = TextEditingController();
 
@@ -25,8 +28,8 @@ class MemoryAlgorithmGizmoEditPageAbController extends AbController {
   @override
   void onInit() {
     super.onInit();
-    titleEditingController.text = memoryAlgorithmAb().title;
-    explainContentSingleQuillController.resetContent(memoryAlgorithmAb().explain_content);
+    titleEditingController.text = cloneMemoryAlgorithmAb().title;
+    explainContentSingleQuillController.resetContent(cloneMemoryAlgorithmAb().explain_content);
   }
 
   @override
@@ -35,13 +38,13 @@ class MemoryAlgorithmGizmoEditPageAbController extends AbController {
       return false;
     }
 
-    final oldMa = await driftDb.generalQueryDAO.queryOrNullMemoryAlgorithm(memoryModelId: memoryAlgorithmAb().id);
+    final oldMa = await driftDb.generalQueryDAO.queryOrNullMemoryAlgorithm(memoryModelId: cloneMemoryAlgorithmAb().id);
     if (oldMa == null) {
       SmartDialog.showToast("当前记忆算法不存在！");
       return false;
     }
     bool isBack = false;
-    if (oldMa != memoryAlgorithmAb()) {
+    if (oldMa != cloneMemoryAlgorithmAb()) {
       await showCustomDialog(
         builder: (_) => OkAndCancelDialogWidget(
           title: '存在修改，是否保存？',
@@ -74,8 +77,9 @@ class MemoryAlgorithmGizmoEditPageAbController extends AbController {
     // print(memoryAlgorithmAb());
 
     await driftDb.cloudOverwriteLocalDAO.updateCloudMemoryAlgorithmAndOverwriteLocal(
-      memoryAlgorithm: memoryAlgorithmAb(),
+      memoryAlgorithm: cloneMemoryAlgorithmAb(),
       onSuccess: (MemoryAlgorithm memoryAlgorithm) async {
+        await memoryAlgorithmListPageAbController?.refreshPage();
         SmartDialog.showToast("保存成功！");
         isSaved = true;
       },

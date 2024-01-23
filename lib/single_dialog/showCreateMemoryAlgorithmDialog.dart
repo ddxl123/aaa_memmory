@@ -1,3 +1,4 @@
+import 'package:aaa_memory/page/list/MemoryAlgorithmListPageAbController.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:flutter/material.dart';
@@ -41,9 +42,10 @@ Future<void> showCreateMemoryAlgorithmDialog() async {
               suggest_count_for_new_and_review_algorithm: null,
               suggest_count_for_new_and_review_algorithm_remark: null,
               suggest_loop_cycle_algorithm: null,
-              suggest_loop_cycle_remark: null,
+              suggest_loop_cycle_algorithm_remark: null,
             ),
             onSuccess: (MemoryAlgorithm memoryAlgorithm) async {
+              await Aber.findOrNullLast<MemoryAlgorithmListPageAbController>()?.refreshPage();
               SmartDialog.dismiss(status: SmartStatus.dialog);
               SmartDialog.showToast('创建成功！');
             },

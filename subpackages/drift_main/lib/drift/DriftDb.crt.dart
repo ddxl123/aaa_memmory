@@ -96,6 +96,8 @@ class Crt {
     required String loop_cycle,
     required int memory_algorithm_id,
     required int memory_group_id,
+    required int small_cycle_incremental_new_learn_count,
+    required int small_cycle_incremental_review_count,
     required int small_cycle_order,
     required int small_cycle_should_new_learn_count,
     required int small_cycle_should_review_count,
@@ -105,6 +107,10 @@ class Crt {
       loop_cycle: loop_cycle,
       memory_algorithm_id: memory_algorithm_id,
       memory_group_id: memory_group_id,
+      small_cycle_incremental_new_learn_count:
+          small_cycle_incremental_new_learn_count,
+      small_cycle_incremental_review_count:
+          small_cycle_incremental_review_count,
       small_cycle_order: small_cycle_order,
       small_cycle_should_new_learn_count: small_cycle_should_new_learn_count,
       small_cycle_should_review_count: small_cycle_should_review_count,
@@ -200,7 +206,7 @@ class Crt {
     required String? suggest_count_for_new_and_review_algorithm,
     required String? suggest_count_for_new_and_review_algorithm_remark,
     required String? suggest_loop_cycle_algorithm,
-    required String? suggest_loop_cycle_remark,
+    required String? suggest_loop_cycle_algorithm_remark,
     required String title,
   }) {
     return MemoryAlgorithm(
@@ -220,7 +226,7 @@ class Crt {
       suggest_count_for_new_and_review_algorithm_remark:
           suggest_count_for_new_and_review_algorithm_remark,
       suggest_loop_cycle_algorithm: suggest_loop_cycle_algorithm,
-      suggest_loop_cycle_remark: suggest_loop_cycle_remark,
+      suggest_loop_cycle_algorithm_remark: suggest_loop_cycle_algorithm_remark,
       title: title,
       created_at: DateTime(0),
       id: -1,
@@ -235,12 +241,10 @@ class Crt {
     required NewDisplayOrder new_display_order,
     required NewReviewDisplayOrder new_review_display_order,
     required ReviewDisplayOrder review_display_order,
-    required DateTime review_interval,
     required DateTime? start_time,
     required StudyStatus study_status,
     required int sync_version,
     required String title,
-    required int will_new_learn_count,
   }) {
     return MemoryGroup(
       be_synced: be_synced,
@@ -249,12 +253,10 @@ class Crt {
       new_display_order: new_display_order,
       new_review_display_order: new_review_display_order,
       review_display_order: review_display_order,
-      review_interval: review_interval,
       start_time: start_time,
       study_status: study_status,
       sync_version: sync_version,
       title: title,
-      will_new_learn_count: will_new_learn_count,
       created_at: DateTime(0),
       id: -1,
       updated_at: DateTime(0),
