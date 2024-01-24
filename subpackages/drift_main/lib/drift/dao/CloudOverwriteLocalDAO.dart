@@ -71,6 +71,33 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
     );
   }
 
+  /// 将 [crtEntity] 实体插入云端，并存入本地
+  ///
+  /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
+  Future<void> insertCloudMemoryGroupAndOverwriteLocal({
+    required MemoryGroup crtEntity,
+    required Future<void> Function(MemoryGroup memoryGroup) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    await requestSingleRowInsert(
+      isLoginRequired: true,
+      singleRowInsertDto: SingleRowInsertDto(
+        table_name: driftDb.memoryGroups.actualTableName,
+        row: crtEntity,
+      ),
+      onSuccess: (String showMessage, SingleRowInsertVo vo) async {
+        // 插入到本地
+        final result = await driftDb.into(memoryGroups).insertReturning(MemoryGroup.fromJson(vo.row), mode: InsertMode.insert);
+        await onSuccess(result);
+      },
+      onError: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
+
   /// 查询云端全部记忆算法，并覆盖本地，如本地有多余，则清除
   ///
   /// [userId] - 查询哪个用户的全部记忆算法
@@ -163,10 +190,49 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
     );
   }
 
+  /// 查询云端单个记忆组的全部小周期，并覆盖本地，如本地有多余，则清除
+  ///
+  /// [memoryGroupId] - 查询哪个记忆组
+  Future<void> queryCloudSingleMemoryGroupAllSmallCycleInfoAndOverwriteLocal({
+    required int memoryGroupId,
+    required Future<void> Function(List<MemoryGroupSmartCycleInfo> memoryGroupSmartCycleInfo) onSuccess,
+    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
+  }) async {
+    final result = await request(
+      path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_SINGLE_MEMORY_GROUP_ALL_SMALL_CYCLE_INFO,
+      dtoData: QuerySingleMemoryGroupAllSmallCycleInfoDto(
+        memory_group_id: memoryGroupId,
+        dto_padding_1: null,
+      ),
+      parseResponseVoData: MemoryModelsQueryVo.fromJson,
+    );
+    await result.handleCode(
+      code200201: (String showMessage, vo) async {
+        await driftDb.transaction(
+          () async {
+            await driftDb.batch(
+              (batch) {
+                batch.deleteAll(memoryGroupSmartCycleInfos);
+                batch.insertAll(memoryGroupSmartCycleInfos, vo.memory_group_small_cycle_infos_list);
+              },
+            );
+            final result = driftDb.select(memoryGroupSmartCycleInfos);
+            await onSuccess(await result.get());
+          },
+        );
+      },
+      otherException: onError == null
+          ? null
+          : (a, b, c) async {
+              await onError(a, b, c);
+            },
+    );
+  }
+
   /// 将 [crtEntity] 实体插入云端，并存入本地
   ///
   /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
-  Future<void> insertCloudMemoryGroupCycleInfoAndOverwriteLocal({
+  Future<void> insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal({
     required MemoryGroupSmartCycleInfo crtEntity,
     required Future<void> Function(MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
@@ -191,7 +257,7 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
   }
 
   /// 将修改后的 [memoryGroupCycleInfo] 进行云端更新，并覆盖本地。
-  Future<void> updateCloudMemoryGroupCycleInfoAndOverwriteLocal({
+  Future<void> updateCloudMemoryGroupSmallCycleInfoAndOverwriteLocal({
     required MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo,
     required Future<void> Function(MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) onSuccess,
     required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
@@ -206,33 +272,6 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
         final result = MemoryGroupSmartCycleInfo.fromJson(vo.row);
         // 更新到本地
         await driftDb.update(memoryGroupSmartCycleInfos).replace(result);
-        await onSuccess(result);
-      },
-      onError: onError == null
-          ? null
-          : (a, b, c) async {
-              await onError(a, b, c);
-            },
-    );
-  }
-
-  /// 将 [crtEntity] 实体插入云端，并存入本地
-  ///
-  /// [crtEntity] - 要插入的实体，插入前不带有 id，插入云端后才带有 id
-  Future<void> insertCloudMemoryGroupAndOverwriteLocal({
-    required MemoryGroup crtEntity,
-    required Future<void> Function(MemoryGroup memoryGroup) onSuccess,
-    required Future<void> Function(int? code, HttperException httperException, StackTrace st)? onError,
-  }) async {
-    await requestSingleRowInsert(
-      isLoginRequired: true,
-      singleRowInsertDto: SingleRowInsertDto(
-        table_name: driftDb.memoryGroups.actualTableName,
-        row: crtEntity,
-      ),
-      onSuccess: (String showMessage, SingleRowInsertVo vo) async {
-        // 插入到本地
-        final result = await driftDb.into(memoryGroups).insertReturning(MemoryGroup.fromJson(vo.row), mode: InsertMode.insert);
         await onSuccess(result);
       },
       onError: onError == null

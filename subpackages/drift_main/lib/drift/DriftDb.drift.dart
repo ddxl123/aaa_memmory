@@ -2042,6 +2042,18 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
   late final GeneratedColumn<int> creator_user_id = GeneratedColumn<int>(
       'creator_user_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _incremental_new_learn_countMeta =
+      const VerificationMeta('incremental_new_learn_count');
+  @override
+  late final GeneratedColumn<int> incremental_new_learn_count =
+      GeneratedColumn<int>('incremental_new_learn_count', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _incremental_review_countMeta =
+      const VerificationMeta('incremental_review_count');
+  @override
+  late final GeneratedColumn<int> incremental_review_count =
+      GeneratedColumn<int>('incremental_review_count', aliasedName, false,
+          type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _loop_cycleMeta =
       const VerificationMeta('loop_cycle');
   @override
@@ -2060,40 +2072,31 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
   late final GeneratedColumn<int> memory_group_id = GeneratedColumn<int>(
       'memory_group_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _small_cycle_incremental_new_learn_countMeta =
-      const VerificationMeta('small_cycle_incremental_new_learn_count');
+  static const VerificationMeta _should_new_learn_countMeta =
+      const VerificationMeta('should_new_learn_count');
   @override
-  late final GeneratedColumn<int> small_cycle_incremental_new_learn_count =
-      GeneratedColumn<int>(
-          'small_cycle_incremental_new_learn_count', aliasedName, false,
-          type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _small_cycle_incremental_review_countMeta =
-      const VerificationMeta('small_cycle_incremental_review_count');
+  late final GeneratedColumn<int> should_new_learn_count = GeneratedColumn<int>(
+      'should_new_learn_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _should_review_countMeta =
+      const VerificationMeta('should_review_count');
   @override
-  late final GeneratedColumn<int> small_cycle_incremental_review_count =
-      GeneratedColumn<int>(
-          'small_cycle_incremental_review_count', aliasedName, false,
-          type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> should_review_count = GeneratedColumn<int>(
+      'should_review_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _should_small_cycle_end_timeMeta =
+      const VerificationMeta('should_small_cycle_end_time');
+  @override
+  late final GeneratedColumn<DateTime> should_small_cycle_end_time =
+      GeneratedColumn<DateTime>(
+          'should_small_cycle_end_time', aliasedName, false,
+          type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _small_cycle_orderMeta =
       const VerificationMeta('small_cycle_order');
   @override
   late final GeneratedColumn<int> small_cycle_order = GeneratedColumn<int>(
       'small_cycle_order', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _small_cycle_should_new_learn_countMeta =
-      const VerificationMeta('small_cycle_should_new_learn_count');
-  @override
-  late final GeneratedColumn<int> small_cycle_should_new_learn_count =
-      GeneratedColumn<int>(
-          'small_cycle_should_new_learn_count', aliasedName, false,
-          type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _small_cycle_should_review_countMeta =
-      const VerificationMeta('small_cycle_should_review_count');
-  @override
-  late final GeneratedColumn<int> small_cycle_should_review_count =
-      GeneratedColumn<int>(
-          'small_cycle_should_review_count', aliasedName, false,
-          type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _created_atMeta =
       const VerificationMeta('created_at');
   @override
@@ -2114,14 +2117,15 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
   @override
   List<GeneratedColumn> get $columns => [
         creator_user_id,
+        incremental_new_learn_count,
+        incremental_review_count,
         loop_cycle,
         memory_algorithm_id,
         memory_group_id,
-        small_cycle_incremental_new_learn_count,
-        small_cycle_incremental_review_count,
+        should_new_learn_count,
+        should_review_count,
+        should_small_cycle_end_time,
         small_cycle_order,
-        small_cycle_should_new_learn_count,
-        small_cycle_should_review_count,
         created_at,
         id,
         updated_at
@@ -2144,6 +2148,24 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
               data['creator_user_id']!, _creator_user_idMeta));
     } else if (isInserting) {
       context.missing(_creator_user_idMeta);
+    }
+    if (data.containsKey('incremental_new_learn_count')) {
+      context.handle(
+          _incremental_new_learn_countMeta,
+          incremental_new_learn_count.isAcceptableOrUnknown(
+              data['incremental_new_learn_count']!,
+              _incremental_new_learn_countMeta));
+    } else if (isInserting) {
+      context.missing(_incremental_new_learn_countMeta);
+    }
+    if (data.containsKey('incremental_review_count')) {
+      context.handle(
+          _incremental_review_countMeta,
+          incremental_review_count.isAcceptableOrUnknown(
+              data['incremental_review_count']!,
+              _incremental_review_countMeta));
+    } else if (isInserting) {
+      context.missing(_incremental_review_countMeta);
     }
     if (data.containsKey('loop_cycle')) {
       context.handle(
@@ -2169,23 +2191,30 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
     } else if (isInserting) {
       context.missing(_memory_group_idMeta);
     }
-    if (data.containsKey('small_cycle_incremental_new_learn_count')) {
+    if (data.containsKey('should_new_learn_count')) {
       context.handle(
-          _small_cycle_incremental_new_learn_countMeta,
-          small_cycle_incremental_new_learn_count.isAcceptableOrUnknown(
-              data['small_cycle_incremental_new_learn_count']!,
-              _small_cycle_incremental_new_learn_countMeta));
+          _should_new_learn_countMeta,
+          should_new_learn_count.isAcceptableOrUnknown(
+              data['should_new_learn_count']!, _should_new_learn_countMeta));
     } else if (isInserting) {
-      context.missing(_small_cycle_incremental_new_learn_countMeta);
+      context.missing(_should_new_learn_countMeta);
     }
-    if (data.containsKey('small_cycle_incremental_review_count')) {
+    if (data.containsKey('should_review_count')) {
       context.handle(
-          _small_cycle_incremental_review_countMeta,
-          small_cycle_incremental_review_count.isAcceptableOrUnknown(
-              data['small_cycle_incremental_review_count']!,
-              _small_cycle_incremental_review_countMeta));
+          _should_review_countMeta,
+          should_review_count.isAcceptableOrUnknown(
+              data['should_review_count']!, _should_review_countMeta));
     } else if (isInserting) {
-      context.missing(_small_cycle_incremental_review_countMeta);
+      context.missing(_should_review_countMeta);
+    }
+    if (data.containsKey('should_small_cycle_end_time')) {
+      context.handle(
+          _should_small_cycle_end_timeMeta,
+          should_small_cycle_end_time.isAcceptableOrUnknown(
+              data['should_small_cycle_end_time']!,
+              _should_small_cycle_end_timeMeta));
+    } else if (isInserting) {
+      context.missing(_should_small_cycle_end_timeMeta);
     }
     if (data.containsKey('small_cycle_order')) {
       context.handle(
@@ -2194,24 +2223,6 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
               data['small_cycle_order']!, _small_cycle_orderMeta));
     } else if (isInserting) {
       context.missing(_small_cycle_orderMeta);
-    }
-    if (data.containsKey('small_cycle_should_new_learn_count')) {
-      context.handle(
-          _small_cycle_should_new_learn_countMeta,
-          small_cycle_should_new_learn_count.isAcceptableOrUnknown(
-              data['small_cycle_should_new_learn_count']!,
-              _small_cycle_should_new_learn_countMeta));
-    } else if (isInserting) {
-      context.missing(_small_cycle_should_new_learn_countMeta);
-    }
-    if (data.containsKey('small_cycle_should_review_count')) {
-      context.handle(
-          _small_cycle_should_review_countMeta,
-          small_cycle_should_review_count.isAcceptableOrUnknown(
-              data['small_cycle_should_review_count']!,
-              _small_cycle_should_review_countMeta));
-    } else if (isInserting) {
-      context.missing(_small_cycle_should_review_countMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -2244,26 +2255,27 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
     return MemoryGroupSmartCycleInfo(
       creator_user_id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}creator_user_id'])!,
+      incremental_new_learn_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}incremental_new_learn_count'])!,
+      incremental_review_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}incremental_review_count'])!,
       loop_cycle: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}loop_cycle'])!,
       memory_algorithm_id: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}memory_algorithm_id'])!,
       memory_group_id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}memory_group_id'])!,
-      small_cycle_incremental_new_learn_count: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}small_cycle_incremental_new_learn_count'])!,
-      small_cycle_incremental_review_count: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}small_cycle_incremental_review_count'])!,
+      should_new_learn_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}should_new_learn_count'])!,
+      should_review_count: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}should_review_count'])!,
+      should_small_cycle_end_time: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime,
+          data['${effectivePrefix}should_small_cycle_end_time'])!,
       small_cycle_order: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}small_cycle_order'])!,
-      small_cycle_should_new_learn_count: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}small_cycle_should_new_learn_count'])!,
-      small_cycle_should_review_count: attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
-          data['${effectivePrefix}small_cycle_should_review_count'])!,
       created_at: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       id: attachedDatabase.typeMapping
@@ -2282,27 +2294,29 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
 class MemoryGroupSmartCycleInfo extends DataClass
     implements Insertable<MemoryGroupSmartCycleInfo> {
   int creator_user_id;
+  int incremental_new_learn_count;
+  int incremental_review_count;
   String loop_cycle;
   int memory_algorithm_id;
   int memory_group_id;
-  int small_cycle_incremental_new_learn_count;
-  int small_cycle_incremental_review_count;
+  int should_new_learn_count;
+  int should_review_count;
+  DateTime should_small_cycle_end_time;
   int small_cycle_order;
-  int small_cycle_should_new_learn_count;
-  int small_cycle_should_review_count;
   DateTime created_at;
   int id;
   DateTime updated_at;
   MemoryGroupSmartCycleInfo(
       {required this.creator_user_id,
+      required this.incremental_new_learn_count,
+      required this.incremental_review_count,
       required this.loop_cycle,
       required this.memory_algorithm_id,
       required this.memory_group_id,
-      required this.small_cycle_incremental_new_learn_count,
-      required this.small_cycle_incremental_review_count,
+      required this.should_new_learn_count,
+      required this.should_review_count,
+      required this.should_small_cycle_end_time,
       required this.small_cycle_order,
-      required this.small_cycle_should_new_learn_count,
-      required this.small_cycle_should_review_count,
       required this.created_at,
       required this.id,
       required this.updated_at});
@@ -2310,18 +2324,17 @@ class MemoryGroupSmartCycleInfo extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['creator_user_id'] = Variable<int>(creator_user_id);
+    map['incremental_new_learn_count'] =
+        Variable<int>(incremental_new_learn_count);
+    map['incremental_review_count'] = Variable<int>(incremental_review_count);
     map['loop_cycle'] = Variable<String>(loop_cycle);
     map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id);
     map['memory_group_id'] = Variable<int>(memory_group_id);
-    map['small_cycle_incremental_new_learn_count'] =
-        Variable<int>(small_cycle_incremental_new_learn_count);
-    map['small_cycle_incremental_review_count'] =
-        Variable<int>(small_cycle_incremental_review_count);
+    map['should_new_learn_count'] = Variable<int>(should_new_learn_count);
+    map['should_review_count'] = Variable<int>(should_review_count);
+    map['should_small_cycle_end_time'] =
+        Variable<DateTime>(should_small_cycle_end_time);
     map['small_cycle_order'] = Variable<int>(small_cycle_order);
-    map['small_cycle_should_new_learn_count'] =
-        Variable<int>(small_cycle_should_new_learn_count);
-    map['small_cycle_should_review_count'] =
-        Variable<int>(small_cycle_should_review_count);
     map['created_at'] = Variable<DateTime>(created_at);
     map['id'] = Variable<int>(id);
     map['updated_at'] = Variable<DateTime>(updated_at);
@@ -2331,17 +2344,15 @@ class MemoryGroupSmartCycleInfo extends DataClass
   MemoryGroupSmartCycleInfosCompanion toCompanion(bool nullToAbsent) {
     return MemoryGroupSmartCycleInfosCompanion(
       creator_user_id: Value(creator_user_id),
+      incremental_new_learn_count: Value(incremental_new_learn_count),
+      incremental_review_count: Value(incremental_review_count),
       loop_cycle: Value(loop_cycle),
       memory_algorithm_id: Value(memory_algorithm_id),
       memory_group_id: Value(memory_group_id),
-      small_cycle_incremental_new_learn_count:
-          Value(small_cycle_incremental_new_learn_count),
-      small_cycle_incremental_review_count:
-          Value(small_cycle_incremental_review_count),
+      should_new_learn_count: Value(should_new_learn_count),
+      should_review_count: Value(should_review_count),
+      should_small_cycle_end_time: Value(should_small_cycle_end_time),
       small_cycle_order: Value(small_cycle_order),
-      small_cycle_should_new_learn_count:
-          Value(small_cycle_should_new_learn_count),
-      small_cycle_should_review_count: Value(small_cycle_should_review_count),
       created_at: Value(created_at),
       id: Value(id),
       updated_at: Value(updated_at),
@@ -2353,19 +2364,21 @@ class MemoryGroupSmartCycleInfo extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MemoryGroupSmartCycleInfo(
       creator_user_id: serializer.fromJson<int>(json['creator_user_id']),
+      incremental_new_learn_count:
+          serializer.fromJson<int>(json['incremental_new_learn_count']),
+      incremental_review_count:
+          serializer.fromJson<int>(json['incremental_review_count']),
       loop_cycle: serializer.fromJson<String>(json['loop_cycle']),
       memory_algorithm_id:
           serializer.fromJson<int>(json['memory_algorithm_id']),
       memory_group_id: serializer.fromJson<int>(json['memory_group_id']),
-      small_cycle_incremental_new_learn_count: serializer
-          .fromJson<int>(json['small_cycle_incremental_new_learn_count']),
-      small_cycle_incremental_review_count: serializer
-          .fromJson<int>(json['small_cycle_incremental_review_count']),
+      should_new_learn_count:
+          serializer.fromJson<int>(json['should_new_learn_count']),
+      should_review_count:
+          serializer.fromJson<int>(json['should_review_count']),
+      should_small_cycle_end_time:
+          serializer.fromJson<DateTime>(json['should_small_cycle_end_time']),
       small_cycle_order: serializer.fromJson<int>(json['small_cycle_order']),
-      small_cycle_should_new_learn_count:
-          serializer.fromJson<int>(json['small_cycle_should_new_learn_count']),
-      small_cycle_should_review_count:
-          serializer.fromJson<int>(json['small_cycle_should_review_count']),
       created_at: serializer.fromJson<DateTime>(json['created_at']),
       id: serializer.fromJson<int>(json['id']),
       updated_at: serializer.fromJson<DateTime>(json['updated_at']),
@@ -2376,18 +2389,18 @@ class MemoryGroupSmartCycleInfo extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'creator_user_id': serializer.toJson<int>(creator_user_id),
+      'incremental_new_learn_count':
+          serializer.toJson<int>(incremental_new_learn_count),
+      'incremental_review_count':
+          serializer.toJson<int>(incremental_review_count),
       'loop_cycle': serializer.toJson<String>(loop_cycle),
       'memory_algorithm_id': serializer.toJson<int>(memory_algorithm_id),
       'memory_group_id': serializer.toJson<int>(memory_group_id),
-      'small_cycle_incremental_new_learn_count':
-          serializer.toJson<int>(small_cycle_incremental_new_learn_count),
-      'small_cycle_incremental_review_count':
-          serializer.toJson<int>(small_cycle_incremental_review_count),
+      'should_new_learn_count': serializer.toJson<int>(should_new_learn_count),
+      'should_review_count': serializer.toJson<int>(should_review_count),
+      'should_small_cycle_end_time':
+          serializer.toJson<DateTime>(should_small_cycle_end_time),
       'small_cycle_order': serializer.toJson<int>(small_cycle_order),
-      'small_cycle_should_new_learn_count':
-          serializer.toJson<int>(small_cycle_should_new_learn_count),
-      'small_cycle_should_review_count':
-          serializer.toJson<int>(small_cycle_should_review_count),
       'created_at': serializer.toJson<DateTime>(created_at),
       'id': serializer.toJson<int>(id),
       'updated_at': serializer.toJson<DateTime>(updated_at),
@@ -2396,34 +2409,33 @@ class MemoryGroupSmartCycleInfo extends DataClass
 
   MemoryGroupSmartCycleInfo copyWith(
           {int? creator_user_id,
+          int? incremental_new_learn_count,
+          int? incremental_review_count,
           String? loop_cycle,
           int? memory_algorithm_id,
           int? memory_group_id,
-          int? small_cycle_incremental_new_learn_count,
-          int? small_cycle_incremental_review_count,
+          int? should_new_learn_count,
+          int? should_review_count,
+          DateTime? should_small_cycle_end_time,
           int? small_cycle_order,
-          int? small_cycle_should_new_learn_count,
-          int? small_cycle_should_review_count,
           DateTime? created_at,
           int? id,
           DateTime? updated_at}) =>
       MemoryGroupSmartCycleInfo(
         creator_user_id: creator_user_id ?? this.creator_user_id,
+        incremental_new_learn_count:
+            incremental_new_learn_count ?? this.incremental_new_learn_count,
+        incremental_review_count:
+            incremental_review_count ?? this.incremental_review_count,
         loop_cycle: loop_cycle ?? this.loop_cycle,
         memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
         memory_group_id: memory_group_id ?? this.memory_group_id,
-        small_cycle_incremental_new_learn_count:
-            small_cycle_incremental_new_learn_count ??
-                this.small_cycle_incremental_new_learn_count,
-        small_cycle_incremental_review_count:
-            small_cycle_incremental_review_count ??
-                this.small_cycle_incremental_review_count,
+        should_new_learn_count:
+            should_new_learn_count ?? this.should_new_learn_count,
+        should_review_count: should_review_count ?? this.should_review_count,
+        should_small_cycle_end_time:
+            should_small_cycle_end_time ?? this.should_small_cycle_end_time,
         small_cycle_order: small_cycle_order ?? this.small_cycle_order,
-        small_cycle_should_new_learn_count:
-            small_cycle_should_new_learn_count ??
-                this.small_cycle_should_new_learn_count,
-        small_cycle_should_review_count: small_cycle_should_review_count ??
-            this.small_cycle_should_review_count,
         created_at: created_at ?? this.created_at,
         id: id ?? this.id,
         updated_at: updated_at ?? this.updated_at,
@@ -2432,18 +2444,15 @@ class MemoryGroupSmartCycleInfo extends DataClass
   String toString() {
     return (StringBuffer('MemoryGroupSmartCycleInfo(')
           ..write('creator_user_id: $creator_user_id, ')
+          ..write('incremental_new_learn_count: $incremental_new_learn_count, ')
+          ..write('incremental_review_count: $incremental_review_count, ')
           ..write('loop_cycle: $loop_cycle, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
-          ..write(
-              'small_cycle_incremental_new_learn_count: $small_cycle_incremental_new_learn_count, ')
-          ..write(
-              'small_cycle_incremental_review_count: $small_cycle_incremental_review_count, ')
+          ..write('should_new_learn_count: $should_new_learn_count, ')
+          ..write('should_review_count: $should_review_count, ')
+          ..write('should_small_cycle_end_time: $should_small_cycle_end_time, ')
           ..write('small_cycle_order: $small_cycle_order, ')
-          ..write(
-              'small_cycle_should_new_learn_count: $small_cycle_should_new_learn_count, ')
-          ..write(
-              'small_cycle_should_review_count: $small_cycle_should_review_count, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')
@@ -2454,14 +2463,15 @@ class MemoryGroupSmartCycleInfo extends DataClass
   @override
   int get hashCode => Object.hash(
       creator_user_id,
+      incremental_new_learn_count,
+      incremental_review_count,
       loop_cycle,
       memory_algorithm_id,
       memory_group_id,
-      small_cycle_incremental_new_learn_count,
-      small_cycle_incremental_review_count,
+      should_new_learn_count,
+      should_review_count,
+      should_small_cycle_end_time,
       small_cycle_order,
-      small_cycle_should_new_learn_count,
-      small_cycle_should_review_count,
       created_at,
       id,
       updated_at);
@@ -2470,18 +2480,17 @@ class MemoryGroupSmartCycleInfo extends DataClass
       identical(this, other) ||
       (other is MemoryGroupSmartCycleInfo &&
           other.creator_user_id == this.creator_user_id &&
+          other.incremental_new_learn_count ==
+              this.incremental_new_learn_count &&
+          other.incremental_review_count == this.incremental_review_count &&
           other.loop_cycle == this.loop_cycle &&
           other.memory_algorithm_id == this.memory_algorithm_id &&
           other.memory_group_id == this.memory_group_id &&
-          other.small_cycle_incremental_new_learn_count ==
-              this.small_cycle_incremental_new_learn_count &&
-          other.small_cycle_incremental_review_count ==
-              this.small_cycle_incremental_review_count &&
+          other.should_new_learn_count == this.should_new_learn_count &&
+          other.should_review_count == this.should_review_count &&
+          other.should_small_cycle_end_time ==
+              this.should_small_cycle_end_time &&
           other.small_cycle_order == this.small_cycle_order &&
-          other.small_cycle_should_new_learn_count ==
-              this.small_cycle_should_new_learn_count &&
-          other.small_cycle_should_review_count ==
-              this.small_cycle_should_review_count &&
           other.created_at == this.created_at &&
           other.id == this.id &&
           other.updated_at == this.updated_at);
@@ -2490,91 +2499,91 @@ class MemoryGroupSmartCycleInfo extends DataClass
 class MemoryGroupSmartCycleInfosCompanion
     extends UpdateCompanion<MemoryGroupSmartCycleInfo> {
   Value<int> creator_user_id;
+  Value<int> incremental_new_learn_count;
+  Value<int> incremental_review_count;
   Value<String> loop_cycle;
   Value<int> memory_algorithm_id;
   Value<int> memory_group_id;
-  Value<int> small_cycle_incremental_new_learn_count;
-  Value<int> small_cycle_incremental_review_count;
+  Value<int> should_new_learn_count;
+  Value<int> should_review_count;
+  Value<DateTime> should_small_cycle_end_time;
   Value<int> small_cycle_order;
-  Value<int> small_cycle_should_new_learn_count;
-  Value<int> small_cycle_should_review_count;
   Value<DateTime> created_at;
   Value<int> id;
   Value<DateTime> updated_at;
   MemoryGroupSmartCycleInfosCompanion({
     this.creator_user_id = const Value.absent(),
+    this.incremental_new_learn_count = const Value.absent(),
+    this.incremental_review_count = const Value.absent(),
     this.loop_cycle = const Value.absent(),
     this.memory_algorithm_id = const Value.absent(),
     this.memory_group_id = const Value.absent(),
-    this.small_cycle_incremental_new_learn_count = const Value.absent(),
-    this.small_cycle_incremental_review_count = const Value.absent(),
+    this.should_new_learn_count = const Value.absent(),
+    this.should_review_count = const Value.absent(),
+    this.should_small_cycle_end_time = const Value.absent(),
     this.small_cycle_order = const Value.absent(),
-    this.small_cycle_should_new_learn_count = const Value.absent(),
-    this.small_cycle_should_review_count = const Value.absent(),
     this.created_at = const Value.absent(),
     this.id = const Value.absent(),
     this.updated_at = const Value.absent(),
   });
   MemoryGroupSmartCycleInfosCompanion.insert({
     required int creator_user_id,
+    required int incremental_new_learn_count,
+    required int incremental_review_count,
     required String loop_cycle,
     required int memory_algorithm_id,
     required int memory_group_id,
-    required int small_cycle_incremental_new_learn_count,
-    required int small_cycle_incremental_review_count,
+    required int should_new_learn_count,
+    required int should_review_count,
+    required DateTime should_small_cycle_end_time,
     required int small_cycle_order,
-    required int small_cycle_should_new_learn_count,
-    required int small_cycle_should_review_count,
     required DateTime created_at,
     this.id = const Value.absent(),
     required DateTime updated_at,
   })  : creator_user_id = Value(creator_user_id),
+        incremental_new_learn_count = Value(incremental_new_learn_count),
+        incremental_review_count = Value(incremental_review_count),
         loop_cycle = Value(loop_cycle),
         memory_algorithm_id = Value(memory_algorithm_id),
         memory_group_id = Value(memory_group_id),
-        small_cycle_incremental_new_learn_count =
-            Value(small_cycle_incremental_new_learn_count),
-        small_cycle_incremental_review_count =
-            Value(small_cycle_incremental_review_count),
+        should_new_learn_count = Value(should_new_learn_count),
+        should_review_count = Value(should_review_count),
+        should_small_cycle_end_time = Value(should_small_cycle_end_time),
         small_cycle_order = Value(small_cycle_order),
-        small_cycle_should_new_learn_count =
-            Value(small_cycle_should_new_learn_count),
-        small_cycle_should_review_count =
-            Value(small_cycle_should_review_count),
         created_at = Value(created_at),
         updated_at = Value(updated_at);
   static Insertable<MemoryGroupSmartCycleInfo> custom({
     Expression<int>? creator_user_id,
+    Expression<int>? incremental_new_learn_count,
+    Expression<int>? incremental_review_count,
     Expression<String>? loop_cycle,
     Expression<int>? memory_algorithm_id,
     Expression<int>? memory_group_id,
-    Expression<int>? small_cycle_incremental_new_learn_count,
-    Expression<int>? small_cycle_incremental_review_count,
+    Expression<int>? should_new_learn_count,
+    Expression<int>? should_review_count,
+    Expression<DateTime>? should_small_cycle_end_time,
     Expression<int>? small_cycle_order,
-    Expression<int>? small_cycle_should_new_learn_count,
-    Expression<int>? small_cycle_should_review_count,
     Expression<DateTime>? created_at,
     Expression<int>? id,
     Expression<DateTime>? updated_at,
   }) {
     return RawValuesInsertable({
       if (creator_user_id != null) 'creator_user_id': creator_user_id,
+      if (incremental_new_learn_count != null)
+        'incremental_new_learn_count': incremental_new_learn_count,
+      if (incremental_review_count != null)
+        'incremental_review_count': incremental_review_count,
       if (loop_cycle != null) 'loop_cycle': loop_cycle,
       if (memory_algorithm_id != null)
         'memory_algorithm_id': memory_algorithm_id,
       if (memory_group_id != null) 'memory_group_id': memory_group_id,
-      if (small_cycle_incremental_new_learn_count != null)
-        'small_cycle_incremental_new_learn_count':
-            small_cycle_incremental_new_learn_count,
-      if (small_cycle_incremental_review_count != null)
-        'small_cycle_incremental_review_count':
-            small_cycle_incremental_review_count,
+      if (should_new_learn_count != null)
+        'should_new_learn_count': should_new_learn_count,
+      if (should_review_count != null)
+        'should_review_count': should_review_count,
+      if (should_small_cycle_end_time != null)
+        'should_small_cycle_end_time': should_small_cycle_end_time,
       if (small_cycle_order != null) 'small_cycle_order': small_cycle_order,
-      if (small_cycle_should_new_learn_count != null)
-        'small_cycle_should_new_learn_count':
-            small_cycle_should_new_learn_count,
-      if (small_cycle_should_review_count != null)
-        'small_cycle_should_review_count': small_cycle_should_review_count,
       if (created_at != null) 'created_at': created_at,
       if (id != null) 'id': id,
       if (updated_at != null) 'updated_at': updated_at,
@@ -2583,33 +2592,33 @@ class MemoryGroupSmartCycleInfosCompanion
 
   MemoryGroupSmartCycleInfosCompanion copyWith(
       {Value<int>? creator_user_id,
+      Value<int>? incremental_new_learn_count,
+      Value<int>? incremental_review_count,
       Value<String>? loop_cycle,
       Value<int>? memory_algorithm_id,
       Value<int>? memory_group_id,
-      Value<int>? small_cycle_incremental_new_learn_count,
-      Value<int>? small_cycle_incremental_review_count,
+      Value<int>? should_new_learn_count,
+      Value<int>? should_review_count,
+      Value<DateTime>? should_small_cycle_end_time,
       Value<int>? small_cycle_order,
-      Value<int>? small_cycle_should_new_learn_count,
-      Value<int>? small_cycle_should_review_count,
       Value<DateTime>? created_at,
       Value<int>? id,
       Value<DateTime>? updated_at}) {
     return MemoryGroupSmartCycleInfosCompanion(
       creator_user_id: creator_user_id ?? this.creator_user_id,
+      incremental_new_learn_count:
+          incremental_new_learn_count ?? this.incremental_new_learn_count,
+      incremental_review_count:
+          incremental_review_count ?? this.incremental_review_count,
       loop_cycle: loop_cycle ?? this.loop_cycle,
       memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
       memory_group_id: memory_group_id ?? this.memory_group_id,
-      small_cycle_incremental_new_learn_count:
-          small_cycle_incremental_new_learn_count ??
-              this.small_cycle_incremental_new_learn_count,
-      small_cycle_incremental_review_count:
-          small_cycle_incremental_review_count ??
-              this.small_cycle_incremental_review_count,
+      should_new_learn_count:
+          should_new_learn_count ?? this.should_new_learn_count,
+      should_review_count: should_review_count ?? this.should_review_count,
+      should_small_cycle_end_time:
+          should_small_cycle_end_time ?? this.should_small_cycle_end_time,
       small_cycle_order: small_cycle_order ?? this.small_cycle_order,
-      small_cycle_should_new_learn_count: small_cycle_should_new_learn_count ??
-          this.small_cycle_should_new_learn_count,
-      small_cycle_should_review_count: small_cycle_should_review_count ??
-          this.small_cycle_should_review_count,
       created_at: created_at ?? this.created_at,
       id: id ?? this.id,
       updated_at: updated_at ?? this.updated_at,
@@ -2622,6 +2631,14 @@ class MemoryGroupSmartCycleInfosCompanion
     if (creator_user_id.present) {
       map['creator_user_id'] = Variable<int>(creator_user_id.value);
     }
+    if (incremental_new_learn_count.present) {
+      map['incremental_new_learn_count'] =
+          Variable<int>(incremental_new_learn_count.value);
+    }
+    if (incremental_review_count.present) {
+      map['incremental_review_count'] =
+          Variable<int>(incremental_review_count.value);
+    }
     if (loop_cycle.present) {
       map['loop_cycle'] = Variable<String>(loop_cycle.value);
     }
@@ -2631,24 +2648,19 @@ class MemoryGroupSmartCycleInfosCompanion
     if (memory_group_id.present) {
       map['memory_group_id'] = Variable<int>(memory_group_id.value);
     }
-    if (small_cycle_incremental_new_learn_count.present) {
-      map['small_cycle_incremental_new_learn_count'] =
-          Variable<int>(small_cycle_incremental_new_learn_count.value);
+    if (should_new_learn_count.present) {
+      map['should_new_learn_count'] =
+          Variable<int>(should_new_learn_count.value);
     }
-    if (small_cycle_incremental_review_count.present) {
-      map['small_cycle_incremental_review_count'] =
-          Variable<int>(small_cycle_incremental_review_count.value);
+    if (should_review_count.present) {
+      map['should_review_count'] = Variable<int>(should_review_count.value);
+    }
+    if (should_small_cycle_end_time.present) {
+      map['should_small_cycle_end_time'] =
+          Variable<DateTime>(should_small_cycle_end_time.value);
     }
     if (small_cycle_order.present) {
       map['small_cycle_order'] = Variable<int>(small_cycle_order.value);
-    }
-    if (small_cycle_should_new_learn_count.present) {
-      map['small_cycle_should_new_learn_count'] =
-          Variable<int>(small_cycle_should_new_learn_count.value);
-    }
-    if (small_cycle_should_review_count.present) {
-      map['small_cycle_should_review_count'] =
-          Variable<int>(small_cycle_should_review_count.value);
     }
     if (created_at.present) {
       map['created_at'] = Variable<DateTime>(created_at.value);
@@ -2666,18 +2678,15 @@ class MemoryGroupSmartCycleInfosCompanion
   String toString() {
     return (StringBuffer('MemoryGroupSmartCycleInfosCompanion(')
           ..write('creator_user_id: $creator_user_id, ')
+          ..write('incremental_new_learn_count: $incremental_new_learn_count, ')
+          ..write('incremental_review_count: $incremental_review_count, ')
           ..write('loop_cycle: $loop_cycle, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
-          ..write(
-              'small_cycle_incremental_new_learn_count: $small_cycle_incremental_new_learn_count, ')
-          ..write(
-              'small_cycle_incremental_review_count: $small_cycle_incremental_review_count, ')
+          ..write('should_new_learn_count: $should_new_learn_count, ')
+          ..write('should_review_count: $should_review_count, ')
+          ..write('should_small_cycle_end_time: $should_small_cycle_end_time, ')
           ..write('small_cycle_order: $small_cycle_order, ')
-          ..write(
-              'small_cycle_should_new_learn_count: $small_cycle_should_new_learn_count, ')
-          ..write(
-              'small_cycle_should_review_count: $small_cycle_should_review_count, ')
           ..write('created_at: $created_at, ')
           ..write('id: $id, ')
           ..write('updated_at: $updated_at')

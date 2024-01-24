@@ -64,10 +64,6 @@ class HttpPath {
 
   static const String POST__NO_LOGIN_REQUIRED_KNOWLEDGE_BASE_QUERY_KNOWLEDGE_BASE_FRAGMENT_GROUPS = 'POST_/no_login_required/knowledge_base/query_knowledge_base_fragment_groups';
 
-  static const String POST__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_MEMORY_MODEL_MANY_UPDATE = 'POST_/login_required/memory_group_cycle_info_handle/memory_model_many_update';
-
-  static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_LAST_ONE = 'GET_/login_required/memory_group_cycle_info_handle/query_last_one';
-
   static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_FRAGMENT_IDS_QUERY = 'GET_/login_required/memory_group_handle/fragment_ids_query';
 
   static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_FRAGMENTS_COUNT_QUERY = 'GET_/login_required/memory_group_handle/fragments_count_query';
@@ -91,6 +87,12 @@ class HttpPath {
   static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_MEMORY_GROUP_PAGE_OTHER_QUERY = 'GET_/login_required/memory_group_handle/memory_group_page_other_query';
 
   static const String POST__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_SELECTED_FRAGMENTS_INSERT = 'POST_/login_required/memory_group_handle/selected_fragments_insert';
+
+  static const String POST__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_MEMORY_MODEL_MANY_UPDATE = 'POST_/login_required/memory_group_cycle_info_handle/memory_model_many_update';
+
+  static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_LAST_ONE = 'GET_/login_required/memory_group_cycle_info_handle/query_last_one';
+
+  static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_SINGLE_MEMORY_GROUP_ALL_SMALL_CYCLE_INFO = 'GET_/login_required/memory_group_cycle_info_handle/query_single_memory_group_all_small_cycle_info';
 
   static const String POST__NO_LOGIN_REQUIRED_MEMORY_MODEL_HANDLE_MEMORY_MODEL_MANY_UPDATE = 'POST_/no_login_required/memory_model_handle/memory_model_many_update';
 

@@ -93,27 +93,27 @@ class Crt {
 
   static MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfoEntity({
     required int creator_user_id,
+    required int incremental_new_learn_count,
+    required int incremental_review_count,
     required String loop_cycle,
     required int memory_algorithm_id,
     required int memory_group_id,
-    required int small_cycle_incremental_new_learn_count,
-    required int small_cycle_incremental_review_count,
+    required int should_new_learn_count,
+    required int should_review_count,
+    required DateTime should_small_cycle_end_time,
     required int small_cycle_order,
-    required int small_cycle_should_new_learn_count,
-    required int small_cycle_should_review_count,
   }) {
     return MemoryGroupSmartCycleInfo(
       creator_user_id: creator_user_id,
+      incremental_new_learn_count: incremental_new_learn_count,
+      incremental_review_count: incremental_review_count,
       loop_cycle: loop_cycle,
       memory_algorithm_id: memory_algorithm_id,
       memory_group_id: memory_group_id,
-      small_cycle_incremental_new_learn_count:
-          small_cycle_incremental_new_learn_count,
-      small_cycle_incremental_review_count:
-          small_cycle_incremental_review_count,
+      should_new_learn_count: should_new_learn_count,
+      should_review_count: should_review_count,
+      should_small_cycle_end_time: should_small_cycle_end_time,
       small_cycle_order: small_cycle_order,
-      small_cycle_should_new_learn_count: small_cycle_should_new_learn_count,
-      small_cycle_should_review_count: small_cycle_should_review_count,
       created_at: DateTime(0),
       id: -1,
       updated_at: DateTime(0),

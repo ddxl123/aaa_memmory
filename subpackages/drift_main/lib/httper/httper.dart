@@ -200,12 +200,6 @@ part 'dto_vo_bo/dto_vo/KnowledgeBaseFragmentGroupQueryDto.dart';
 part 'dto_vo_bo/dto_vo/KnowledgeBaseFragmentGroupQueryVo.dart';
 
 
-part 'dto_vo_bo/dto_vo/MemoryGroupCycleInfoQueryLastOneDto.dart';
-
-
-part 'dto_vo_bo/dto_vo/MemoryGroupCycleInfoQueryLastOneVo.dart';
-
-
 part 'dto_vo_bo/dto_vo/MemoryGroupFragmentIdsQueryDto.dart';
 
 
@@ -260,6 +254,12 @@ part 'dto_vo_bo/dto_vo/MemoryGroupSelectedFragmentsInsertDto.dart';
 part 'dto_vo_bo/dto_vo/MemoryGroupSelectedFragmentsInsertVo.dart';
 
 
+part 'dto_vo_bo/dto_vo/MemoryGroupSmallCycleInfoQueryLastOneDto.dart';
+
+
+part 'dto_vo_bo/dto_vo/MemoryGroupSmallCycleInfoQueryLastOneVo.dart';
+
+
 part 'dto_vo_bo/dto_vo/MemoryGroupsQueryDto.dart';
 
 
@@ -312,6 +312,12 @@ part 'dto_vo_bo/dto_vo/QueryFragmentGroupTagByLikeDto.dart';
 
 
 part 'dto_vo_bo/dto_vo/QueryFragmentGroupTagByLikeVo.dart';
+
+
+part 'dto_vo_bo/dto_vo/QuerySingleMemoryGroupAllSmallCycleInfoDto.dart';
+
+
+part 'dto_vo_bo/dto_vo/QuerySingleMemoryGroupAllSmallCycleInfoVo.dart';
 
 
 part 'dto_vo_bo/dto_vo/ShorthandsQueryDto.dart';

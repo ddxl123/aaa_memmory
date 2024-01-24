@@ -139,6 +139,10 @@ int timeDifference({required DateTime right, required DateTime left}) {
   return right.difference(left).inSeconds;
 }
 
+bool isTimeBetween({required DateTime target, required DateTime left, required DateTime right}) {
+  return left.isBefore(target) && target.isBefore(right);
+}
+
 /// x秒 转换成 x天x时x分x秒。
 ///
 /// 例如，601秒 转化成 1时0分1秒。

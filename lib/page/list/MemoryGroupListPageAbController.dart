@@ -1,4 +1,6 @@
 import 'package:aaa_memory/page/edit/MemoryGroupGizmoEditPage/MemoryGroupGizmoEditPageAbController.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/extensions/json1.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
 import 'package:drift_main/share_common/share_enum.dart';
@@ -218,13 +220,112 @@ class StatusButton extends StatelessWidget {
   }
 }
 
+class SmallCycleInfo {
+  SmallCycleInfo({required this.memoryGroupAndOther, required this.memoryGroupSmartCycleInfo});
+
+  final MemoryGroupAndOther memoryGroupAndOther;
+
+  final MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo;
+}
+
+class CurrentSmallCycleInfo extends SmallCycleInfo {
+  CurrentSmallCycleInfo({required super.memoryGroupAndOther, required super.memoryGroupSmartCycleInfo});
+
+  /// 当前记忆组的记忆算法，注意是查询云端并覆盖本地后的
+  ///
+  /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
+  MemoryAlgorithm? _memoryAlgorithm;
+
+  MemoryAlgorithm? get getMemoryAlgorithm => _memoryAlgorithm;
+
+  set setMemoryAlgorithm(MemoryAlgorithm? newMemoryAlgorithm) {
+    _memoryAlgorithm = newMemoryAlgorithm;
+    memoryGroupAndOther.memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
+  }
+
+  /// 算法结果数量，当前小周期需要学习和复习的数量。
+  ///
+  /// 为 -1 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
+  NewAndReviewCount currentSmallCycleAlgorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+
+  /// 增量数量，当前小周期需要增量新学和复习的数量。
+  NewAndReviewCount currentSmallCycleIncrementalNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
+
+  /// 当前小周期已经学习和已经复习的数量。
+  NewAndReviewCount currentSmallCycleLearnedNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
+
+  /// 当前小周期计算出的循环周期结果。
+  ///
+  /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
+  LoopCycle? currentSmallCycleAlgorithmLoopCycle;
+
+  /// 解析循环周期算法
+  Future<void> parseLoopCycleAlgorithm() async {
+    await AlgorithmParser.parse(
+      stateFunc: () => SuggestLoopCycleState(
+        algorithmWrapper: getMemoryAlgorithm?.suggest_loop_cycle_algorithm == null
+            ? AlgorithmWrapper.emptyAlgorithmWrapper
+            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_loop_cycle_algorithm!),
+        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
+        simulationType: SimulationType.syntaxCheck,
+        externalResultHandler: null,
+      ),
+      onSuccess: (SuggestLoopCycleState state) async {
+        currentSmallCycleAlgorithmLoopCycle = state.result;
+      },
+      onError: (AlgorithmException ec) async {
+        /// TODO：如何给错误提示
+        currentSmallCycleAlgorithmLoopCycle = null;
+      },
+    );
+  }
+
+  /// 解析当前小周期新学和复习数量算法
+  Future<void> parseCurrentSmallCycleCountForNewAndReviewAlgorithm() async {
+    await AlgorithmParser.parse(
+      stateFunc: () => SuggestCountForNewAndReviewState(
+        algorithmWrapper: getMemoryAlgorithm?.suggest_count_for_new_and_review_algorithm == null
+            ? AlgorithmWrapper.emptyAlgorithmWrapper
+            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_count_for_new_and_review_algorithm!),
+        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
+        simulationType: SimulationType.syntaxCheck,
+        externalResultHandler: null,
+      ),
+      onSuccess: (SuggestCountForNewAndReviewState state) async {
+        currentSmallCycleAlgorithmNewAndReviewCount = state.result;
+      },
+      onError: (AlgorithmException ec) async {
+        currentSmallCycleAlgorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+      },
+    );
+  }
+
+  Future<void> queryCurrentSmallCycleLearnedCountForNewAndReview() async {
+    final sel = driftDb.select(driftDb.fragmentMemoryInfos);
+    // riftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]"
+
+    // 距离启动时时间点的秒数
+    final smallCycleStartSeconds = timeDifference(right: right, left: memoryGroup.start_time!);
+
+    sel.where(
+      (tbl) => tbl.memory_group_id.equals(memoryGroup.id) & tbl.click_time.jsonExtract(r"$[0]").dartCast<int>().isBiggerOrEqualValue(other),
+    );
+  }
+}
+
 class MemoryGroupAndOther {
   MemoryGroupAndOther({required this.memoryGroup});
+
+  DownloadStatus downloadStatus = DownloadStatus.other_loading;
 
   /// 注意是查询云端并覆盖本地后的
   final MemoryGroup memoryGroup;
 
-  DownloadStatus downloadStatus = DownloadStatus.other_loading;
+  /// 当前记忆组的全部小周期，包含了 [currentSmallCycleInfo]。
+  final smallCycleInfos = <SmallCycleInfo>[];
+
+  /// 当前正在执行的小周期
+  CurrentSmallCycleInfo? currentSmallCycleInfo;
 
   /// 当前记忆组碎片总数量
   ///
@@ -252,39 +353,31 @@ class MemoryGroupAndOther {
   /// 在学时长。
   Duration totalLearnedDuration = Duration.zero;
 
-  /// 当前周期需要学习的数量
-  ///
-  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int cycleFragmentCount = 0;
+  // /// 当前周期需要学习的数量
+  // ///
+  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  // int cycleFragmentCount = 0;
+  //
+  // /// 当前周期已完成的数量，注意是查询云端并覆盖本地后的
+  // ///
+  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  // int cycleCompleteCount = 0;
+  //
+  // /// 当前周期待新学的数量，注意是查询云端并覆盖本地后的
+  // ///
+  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  // int cycleWaitNewLearnCount = 0;
+  //
+  // /// 当前周期待复习的数量，注意是查询云端并覆盖本地后的
+  // ///
+  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
+  // int cycleWaitReviewCount = 0;
 
-  /// 当前周期已完成的数量，注意是查询云端并覆盖本地后的
-  ///
-  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int cycleCompleteCount = 0;
-
-  /// 当前周期待新学的数量，注意是查询云端并覆盖本地后的
-  ///
-  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int cycleWaitNewLearnCount = 0;
-
-  /// 当前周期待复习的数量，注意是查询云端并覆盖本地后的
-  ///
-  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int cycleWaitReviewCount = 0;
-
-  /// 当前周期约定完成期限的时间点。
-  DateTime cycleSetCompletionTime = DateTime.now();
-
-  /// 当前周期在学时长。
-  Duration cycleLearnedDuration = Duration.zero;
-
-  (int, int, int, int) get cycleProportion {
-    final one = cycleCompleteCount;
-    final two = cycleWaitNewLearnCount;
-    final three = cycleWaitReviewCount;
-    final four = cycleFragmentCount - one - two - three;
-    return (one, two, three, four);
-  }
+  // /// 当前周期约定完成期限的时间点。
+  // DateTime cycleSetCompletionTime = DateTime.now();
+  //
+  // /// 当前周期在学时长。
+  // Duration cycleLearnedDuration = Duration.zero;
 
   (int, int, int, int) get totalProportion {
     final one = totalCompleteCount;
@@ -294,83 +387,35 @@ class MemoryGroupAndOther {
     return (one, two, three, four);
   }
 
-  /// 当前记忆组的记忆算法，注意是查询云端并覆盖本地后的
-  ///
-  /// 如果记忆模型是被删除掉而未查询到，则直接赋值为 null
-  MemoryAlgorithm? _memoryAlgorithm;
+// MemoryGroupAndOther clone() {
+//   return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())
+//     ..downloadStatus = downloadStatus
+//     ..totalFragmentCount = totalFragmentCount
+//     ..totalWaitNewLearnCount = totalWaitNewLearnCount
+//     ..setMemoryAlgorithm = getMemoryAlgorithm?.copyWith();
+// }
 
-  MemoryAlgorithm? get getMemoryAlgorithm => _memoryAlgorithm;
-
-  set setMemoryAlgorithm(MemoryAlgorithm? newMemoryAlgorithm) {
-    _memoryAlgorithm = newMemoryAlgorithm;
-    memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
-  }
-
-  /// 增量数量
-  NewAndReviewCount incrementalNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
-
-  /// 算法结果数量
-  ///
-  /// 为 -1 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
-  NewAndReviewCount algorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
-
-  /// 算法结果循环周期
-  ///
-  /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
-  LoopCycle? algorithmLoopCycle;
-
-  Future<void> parseOther() async {
-    await parseLoopCycleAlgorithm();
-    await parseSmallCycleCountForNewAndReviewAlgorithm();
-  }
-
-  /// 解析循环周期算法
-  Future<void> parseLoopCycleAlgorithm() async {
-    await AlgorithmParser.parse(
-      stateFunc: () => SuggestLoopCycleState(
-        algorithmWrapper: getMemoryAlgorithm?.suggest_loop_cycle_algorithm == null
-            ? AlgorithmWrapper.emptyAlgorithmWrapper
-            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_loop_cycle_algorithm!),
-        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
-        simulationType: SimulationType.syntaxCheck,
-        externalResultHandler: null,
-      ),
-      onSuccess: (SuggestLoopCycleState state) async {
-        algorithmLoopCycle = state.result;
+  Future<void> querySmallCycleInfos() async {
+    await driftDb.cloudOverwriteLocalDAO.queryCloudSingleMemoryGroupAllSmallCycleInfoAndOverwriteLocal(
+      memoryGroupId: memoryGroup.id,
+      onSuccess: (List<MemoryGroupSmartCycleInfo> memoryGroupSmartCycleInfo) async {
+        smallCycleInfos.clear();
+        currentSmallCycleInfo = null;
+        smallCycleInfos.addAll(
+          memoryGroupSmartCycleInfo.map((e) {
+            if (isTimeBetween(target: DateTime.now(), left: e.created_at, right: e.should_small_cycle_end_time)) {
+              final c = CurrentSmallCycleInfo(memoryGroupAndOther: this, memoryGroupSmartCycleInfo: e);
+              currentSmallCycleInfo = c;
+              return c;
+            }
+            return SmallCycleInfo(memoryGroupAndOther: this, memoryGroupSmartCycleInfo: e);
+          }),
+        );
       },
-      onError: (AlgorithmException ec) async {
-        /// TODO：如何给错误提示
-        algorithmLoopCycle = null;
+      onError: (int? code, HttperException httperException, StackTrace st) async {
+        logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
       },
     );
-  }
-
-  /// 解析当前小周期新学和复习数量算法
-  Future<void> parseSmallCycleCountForNewAndReviewAlgorithm() async {
-    await AlgorithmParser.parse(
-      stateFunc: () => SuggestCountForNewAndReviewState(
-        algorithmWrapper: getMemoryAlgorithm?.suggest_count_for_new_and_review_algorithm == null
-            ? AlgorithmWrapper.emptyAlgorithmWrapper
-            : AlgorithmWrapper.fromJsonString(getMemoryAlgorithm!.suggest_count_for_new_and_review_algorithm!),
-        // TODO: 改成 SimulationType.external，以便可获取到内部变量值
-        simulationType: SimulationType.syntaxCheck,
-        externalResultHandler: null,
-      ),
-      onSuccess: (SuggestCountForNewAndReviewState state) async {
-        algorithmNewAndReviewCount = state.result;
-      },
-      onError: (AlgorithmException ec) async {
-        algorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
-      },
-    );
-  }
-
-  MemoryGroupAndOther clone() {
-    return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())
-      ..downloadStatus = downloadStatus
-      ..totalFragmentCount = totalFragmentCount
-      ..totalWaitNewLearnCount = totalWaitNewLearnCount
-      ..setMemoryAlgorithm = getMemoryAlgorithm?.copyWith();
   }
 }
 

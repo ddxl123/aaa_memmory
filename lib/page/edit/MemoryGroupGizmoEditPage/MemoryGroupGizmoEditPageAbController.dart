@@ -93,7 +93,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       return false;
     }
 
-    if (cloneMemoryGroupAndOtherAb().algorithmLoopCycle == null) {
+    if (cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmLoopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
       return false;
     }
@@ -263,17 +263,17 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
           return;
         }
 
-        await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupCycleInfoAndOverwriteLocal(
+        await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
           crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
             creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
             memory_algorithm_id: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.id,
             memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
-            loop_cycle: cloneMemoryGroupAndOtherAb().algorithmLoopCycle!.toText(),
+            loop_cycle: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmLoopCycle!.toText(),
             small_cycle_order: target!.order,
-            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().algorithmNewAndReviewCount.newLearnCount,
-            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().algorithmNewAndReviewCount.reviewCount,
-            small_cycle_incremental_new_learn_count: cloneMemoryGroupAndOtherAb().incrementalNewAndReviewCount.newLearnCount,
-            small_cycle_incremental_review_count: cloneMemoryGroupAndOtherAb().incrementalNewAndReviewCount.reviewCount,
+            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmNewAndReviewCount.newLearnCount,
+            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmNewAndReviewCount.reviewCount,
+            small_cycle_incremental_new_learn_count: cloneMemoryGroupAndOtherAb().currentSmallCycleIncrementalNewAndReviewCount.newLearnCount,
+            small_cycle_incremental_review_count: cloneMemoryGroupAndOtherAb().currentSmallCycleIncrementalNewAndReviewCount.reviewCount,
           ),
           onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
             // TODO: 在这之前得有个加载界面
