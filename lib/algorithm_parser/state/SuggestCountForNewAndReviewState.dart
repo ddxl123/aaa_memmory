@@ -2,12 +2,17 @@ part of algorithm_parser;
 
 class NewAndReviewCount {
   NewAndReviewCount({
-    required this.newLearnCount,
+    required this.newCount,
     required this.reviewCount,
   });
 
-  final int newLearnCount;
+  /// 新学习的数量
+  final int newCount;
+
+  /// 复习的数量
   final int reviewCount;
+
+  int get getNewAndReviewCount => newCount + reviewCount;
 }
 
 /// 下一次展示时间的算法状态
@@ -49,7 +54,7 @@ class SuggestCountForNewAndReviewState extends ClassificationState {
     final list = useContent.split(",");
 
     result = NewAndReviewCount(
-      newLearnCount: AlgorithmParser.calculate(list.first).toInt(),
+      newCount: AlgorithmParser.calculate(list.first).toInt(),
       reviewCount: AlgorithmParser.calculate(list.last).toInt(),
     );
     return this;

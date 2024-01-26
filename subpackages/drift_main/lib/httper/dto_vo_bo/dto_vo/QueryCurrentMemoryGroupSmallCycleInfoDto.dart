@@ -4,7 +4,7 @@ part of httper;
 
 /// 
 @JsonSerializable()
-class MemoryGroupCycleInfoQueryLastOneDto extends BaseObject{
+class QueryCurrentMemoryGroupSmallCycleInfoDto extends BaseObject{
 
     /// 要查询的记忆组
     int memory_group_id;
@@ -13,17 +13,17 @@ class MemoryGroupCycleInfoQueryLastOneDto extends BaseObject{
     bool? dto_padding_1;
 
 
-MemoryGroupCycleInfoQueryLastOneDto({
+QueryCurrentMemoryGroupSmallCycleInfoDto({
 
     required this.memory_group_id,
 
     required this.dto_padding_1,
 
 });
-  factory MemoryGroupCycleInfoQueryLastOneDto.fromJson(Map<String, dynamic> json) => _$MemoryGroupCycleInfoQueryLastOneDtoFromJson(json);
+  factory QueryCurrentMemoryGroupSmallCycleInfoDto.fromJson(Map<String, dynamic> json) => _$QueryCurrentMemoryGroupSmallCycleInfoDtoFromJson(json);
     
   @override
-  Map<String, dynamic> toJson() => _$MemoryGroupCycleInfoQueryLastOneDtoToJson(this);
+  Map<String, dynamic> toJson() => _$QueryCurrentMemoryGroupSmallCycleInfoDtoToJson(this);
   
   
           
@@ -40,7 +40,7 @@ MemoryGroupCycleInfoQueryLastOneDto({
   StackTrace? st;
 
   @JsonKey(ignore: true)
-  MemoryGroupCycleInfoQueryLastOneVo? vo;
+  QueryCurrentMemoryGroupSmallCycleInfoVo? vo;
 
   /// 内部抛出的异常将在 [otherException] 中捕获。
   Future<T> handleCode<T>({
@@ -48,8 +48,8 @@ MemoryGroupCycleInfoQueryLastOneDto({
     Future<T> Function(int? code, HttperException httperException, StackTrace st)? otherException,
 
     // message: 获取成功！
-    // explain: 查询其记忆组的最后一个 记忆组循环信息。
-    required Future<T> Function(String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) code200101,
+    // explain: 查询其记忆组的当前正在执行的小周期的记忆组小周期信息，如果没有则返回 null。
+    required Future<T> Function(String showMessage, QueryCurrentMemoryGroupSmallCycleInfoVo vo) code200101,
     
     }) async {
     try {

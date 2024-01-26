@@ -122,7 +122,7 @@ class InAppStageAbController extends AbController {
     if (currentPerformerAb() == null) return;
 
     // 必须按照顺序进行获取，否则要么没有对应的值，要么可能会使用上一次的值。
-    currentShowTimeAb.refreshEasy((oldValue) => timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!));
+    currentShowTimeAb.refreshEasy((oldValue) => timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!));
     await _parseStartFamiliarity();
 
     final pbd = await _parseStartButtonDatas();
@@ -151,7 +151,7 @@ class InAppStageAbController extends AbController {
 
     final info = currentPerformerAb()!.fragmentMemoryInfo;
     info
-      ..click_time = info.click_time.arrayAdd<int>(timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!))
+      ..click_time = info.click_time.arrayAdd<int>(timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!))
       ..click_value = info.click_value.arrayAdd<double>(clickValue)
       ..actual_show_time = info.actual_show_time.arrayAdd<int>(currentShowTimeAb()!)
       ..next_plan_show_time = info.next_plan_show_time.arrayAdd<int>(targetButtonDataValue2NextShowTime.nextShowTime!)
@@ -511,7 +511,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k7CurrentClickTimeConst: IvFilter(
-              ivf: () async => timeDifference(right: DateTime.now(), left: memoryGroupAb().start_time!),
+              ivf: () async => timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!),
               isReGet: false,
             ),
             i1ActualShowTimeConst: IvFilter(

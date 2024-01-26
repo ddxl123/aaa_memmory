@@ -1373,39 +1373,6 @@ Map<String, dynamic> _$MemoryGroupSelectedFragmentsInsertVoToJson(
       'memory_info_ids_list': instance.memory_info_ids_list,
     };
 
-MemoryGroupSmallCycleInfoQueryLastOneDto
-    _$MemoryGroupSmallCycleInfoQueryLastOneDtoFromJson(
-            Map<String, dynamic> json) =>
-        MemoryGroupSmallCycleInfoQueryLastOneDto(
-          memory_group_id: json['memory_group_id'] as int,
-          dto_padding_1: json['dto_padding_1'] as bool?,
-        );
-
-Map<String, dynamic> _$MemoryGroupSmallCycleInfoQueryLastOneDtoToJson(
-        MemoryGroupSmallCycleInfoQueryLastOneDto instance) =>
-    <String, dynamic>{
-      'memory_group_id': instance.memory_group_id,
-      'dto_padding_1': instance.dto_padding_1,
-    };
-
-MemoryGroupSmallCycleInfoQueryLastOneVo
-    _$MemoryGroupSmallCycleInfoQueryLastOneVoFromJson(
-            Map<String, dynamic> json) =>
-        MemoryGroupSmallCycleInfoQueryLastOneVo(
-          memory_group_small_cycle_info:
-              json['memory_group_small_cycle_info'] == null
-                  ? null
-                  : MemoryGroupSmartCycleInfo.fromJson(
-                      json['memory_group_small_cycle_info']
-                          as Map<String, dynamic>),
-        );
-
-Map<String, dynamic> _$MemoryGroupSmallCycleInfoQueryLastOneVoToJson(
-        MemoryGroupSmallCycleInfoQueryLastOneVo instance) =>
-    <String, dynamic>{
-      'memory_group_small_cycle_info': instance.memory_group_small_cycle_info,
-    };
-
 MemoryGroupsQueryDto _$MemoryGroupsQueryDtoFromJson(
         Map<String, dynamic> json) =>
     MemoryGroupsQueryDto(
@@ -1596,6 +1563,39 @@ Map<String, dynamic> _$PersonalHomePageForUserInfoVoToJson(
         PersonalHomePageForUserInfoVo instance) =>
     <String, dynamic>{
       'user_info': instance.user_info,
+    };
+
+QueryCurrentMemoryGroupSmallCycleInfoDto
+    _$QueryCurrentMemoryGroupSmallCycleInfoDtoFromJson(
+            Map<String, dynamic> json) =>
+        QueryCurrentMemoryGroupSmallCycleInfoDto(
+          memory_group_id: json['memory_group_id'] as int,
+          dto_padding_1: json['dto_padding_1'] as bool?,
+        );
+
+Map<String, dynamic> _$QueryCurrentMemoryGroupSmallCycleInfoDtoToJson(
+        QueryCurrentMemoryGroupSmallCycleInfoDto instance) =>
+    <String, dynamic>{
+      'memory_group_id': instance.memory_group_id,
+      'dto_padding_1': instance.dto_padding_1,
+    };
+
+QueryCurrentMemoryGroupSmallCycleInfoVo
+    _$QueryCurrentMemoryGroupSmallCycleInfoVoFromJson(
+            Map<String, dynamic> json) =>
+        QueryCurrentMemoryGroupSmallCycleInfoVo(
+          memory_group_small_cycle_info:
+              json['memory_group_small_cycle_info'] == null
+                  ? null
+                  : MemoryGroupSmartCycleInfo.fromJson(
+                      json['memory_group_small_cycle_info']
+                          as Map<String, dynamic>),
+        );
+
+Map<String, dynamic> _$QueryCurrentMemoryGroupSmallCycleInfoVoToJson(
+        QueryCurrentMemoryGroupSmallCycleInfoVo instance) =>
+    <String, dynamic>{
+      'memory_group_small_cycle_info': instance.memory_group_small_cycle_info,
     };
 
 QueryFragmentGroupTagByFragmentGroupIdDto

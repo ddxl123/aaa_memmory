@@ -29,14 +29,71 @@ class SmallCycle {
   /// 获取当前小周期 24小时制 的时间点
   double get cumulative24Sys => cumulativeWithStart % 24;
 
-  /// 获取上一个周期 24小时制 的时间点
+  /// 获取上一个小周期 24小时制 的时间点
   double get lastCumulative24Syc => (cumulative - rawDelta! + rawStart) % 24;
 
   /// 相对上一个小周期，增量是否大于 24h
   bool get isCross24h => rawDelta! >= 24;
 
-  /// 相对 [rawStart]，跨了多少天
-  int get cross24hCount => cumulativeWithStart ~/ 24;
+  /// 相对 [rawStart]，跨了几个 24h
+  int get cross24hCountFromStart => cumulativeWithStart ~/ 24;
+
+  int get cross24hCountFromLast => rawDelta! ~/ 24;
+
+  /// 当前时间点是否在上一个小周期往后最近的 00:00 前
+  bool get isCross0PointFromLastForNowLeft {
+    final now = DateTime.now();
+    final nowHour = (now.hour * 60 + now.minute) / 60;
+    if (rawDelta == null) {
+      if (nowHour >= rawStart) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (nowHour >= lastCumulative24Syc) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  /// 当前时间点是否在当前小周期往前最近的 00:00 后
+  bool get isCross0PointFromLastForNowRight {
+    final now = DateTime.now();
+    final nowHour = (now.hour * 60 + now.minute) / 60;
+    if (rawDelta == null) {
+      if (nowHour < rawStart) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (nowHour < cumulative24Sys) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  /// 掐头去尾跨 00:00 次数
+  ///
+  /// 相对  [rawDelta]/[rawStart]，即上一个小周期，跨了几个 00:00 点
+  ///
+  /// 如果 [rawDelta] 不为 null，则可能跨 0 个 00:00
+  /// 如果 [rawDelta] 为 null，则利用 [rawStart] 处理，此时必然跨 1 个 00:00
+  int get cross0PointFromLastForNowCount {
+    if (rawDelta == null) {
+      return 0;
+    }
+
+    // 掐头去尾。结果应始终是24小时的倍数，或是0，若不跨天也是0。
+    final cutTheFrills = (rawDelta! - (24 - lastCumulative24Syc) - cumulative24Sys).toInt();
+
+    return cutTheFrills ~/ 24;
+  }
 
   /// 将24小时制的时间点浮点数转换成时分字符
   ///

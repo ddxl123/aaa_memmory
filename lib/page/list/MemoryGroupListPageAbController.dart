@@ -42,23 +42,23 @@ class StatusButton extends StatelessWidget {
     super.key,
     required this.listPageC,
     required this.editPageC,
-    required this.memoryGroupAndOtherAb,
+    required this.singleMemoryGroupAb,
   }) {
     if (editPageC == null) {
       customOnPressed = () {
-        listPageC.onStatusTap(memoryGroupAndOtherAb);
+        listPageC.onStatusTap(singleMemoryGroupAb);
       };
     }
   }
 
   final MemoryGroupListPageAbController listPageC;
   final MemoryGroupGizmoEditPageAbController? editPageC;
-  final Ab<MemoryGroupAndOther> memoryGroupAndOtherAb;
+  final Ab<SingleMemoryGroup> singleMemoryGroupAb;
   late final void Function()? customOnPressed;
 
   @override
   Widget build(BuildContext context) {
-    switch (memoryGroupAndOtherAb().downloadStatus) {
+    switch (singleMemoryGroupAb().downloadStatus) {
       case DownloadStatus.other_loading:
         return CustomRoundCornerButton(
           isMinVisualDensity: editPageC == null ? true : false,
@@ -142,12 +142,12 @@ class StatusButton extends StatelessWidget {
         return allDownloadedWidget();
 
       default:
-        throw "未处理 ${memoryGroupAndOtherAb().downloadStatus}";
+        throw "未处理 ${singleMemoryGroupAb().downloadStatus}";
     }
   }
 
   Widget allDownloadedWidget() {
-    switch (memoryGroupAndOtherAb().memoryGroup.study_status) {
+    switch (singleMemoryGroupAb().memoryGroup.study_status) {
       case StudyStatus.not_startup:
         return CustomRoundCornerButton(
           isMinVisualDensity: editPageC == null ? true : false,
@@ -174,7 +174,7 @@ class StatusButton extends StatelessWidget {
           onPressed: editPageC == null
               ? customOnPressed!
               : () async {
-                  await editPageC?.startCurrentCycle();
+                  await editPageC?.createOrContinueSmallCycle();
                 },
         );
       case StudyStatus.not_study_for_this_cycle:
@@ -186,7 +186,7 @@ class StatusButton extends StatelessWidget {
           onPressed: editPageC == null
               ? customOnPressed!
               : () async {
-                  await editPageC?.startCurrentCycle();
+                  await editPageC?.createOrContinueSmallCycle();
                 },
         );
       case StudyStatus.completed_for_this_cycle:
@@ -215,21 +215,22 @@ class StatusButton extends StatelessWidget {
           onPressed: editPageC == null ? customOnPressed! : () async {},
         );
       default:
-        throw "未处理 ${memoryGroupAndOtherAb().memoryGroup.study_status}";
+        throw "未处理 ${singleMemoryGroupAb().memoryGroup.study_status}";
     }
   }
 }
 
 class SmallCycleInfo {
-  SmallCycleInfo({required this.memoryGroupAndOther, required this.memoryGroupSmartCycleInfo});
+  SmallCycleInfo({required this.singleMemoryGroup, required this.memoryGroupSmartCycleInfo});
 
-  final MemoryGroupAndOther memoryGroupAndOther;
+  final SingleMemoryGroup singleMemoryGroup;
 
-  final MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo;
+  /// 如果为 null，则表示当前没有正在执行的小周期。
+  final MemoryGroupSmartCycleInfo? memoryGroupSmartCycleInfo;
 }
 
 class CurrentSmallCycleInfo extends SmallCycleInfo {
-  CurrentSmallCycleInfo({required super.memoryGroupAndOther, required super.memoryGroupSmartCycleInfo});
+  CurrentSmallCycleInfo({required super.singleMemoryGroup, required super.memoryGroupSmartCycleInfo});
 
   /// 当前记忆组的记忆算法，注意是查询云端并覆盖本地后的
   ///
@@ -240,27 +241,48 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
 
   set setMemoryAlgorithm(MemoryAlgorithm? newMemoryAlgorithm) {
     _memoryAlgorithm = newMemoryAlgorithm;
-    memoryGroupAndOther.memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
+    singleMemoryGroup.memoryGroup.memory_algorithm_id = _memoryAlgorithm?.id;
   }
 
   /// 算法结果数量，当前小周期需要学习和复习的数量。
   ///
-  /// 为 -1 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
-  NewAndReviewCount currentSmallCycleAlgorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+  /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
+  NewAndReviewCount? shouldNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
 
   /// 增量数量，当前小周期需要增量新学和复习的数量。
-  NewAndReviewCount currentSmallCycleIncrementalNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
+  NewAndReviewCount shouldIncrementalNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
 
-  /// 当前小周期已经学习和已经复习的数量。
-  NewAndReviewCount currentSmallCycleLearnedNewAndReviewCount = NewAndReviewCount(newLearnCount: 0, reviewCount: 0);
+  /// 当前小周期已学习和已复习的数量。
+  ///
+  /// 注意是在当前小周期内，即应在当前小周期的应新学和应复习的碎片中的已学习和已复习的数量。
+  NewAndReviewCount learnedNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
 
   /// 当前小周期计算出的循环周期结果。
   ///
   /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
-  LoopCycle? currentSmallCycleAlgorithmLoopCycle;
+  LoopCycle? loopCycle;
+
+  /// 为 null 表示算法计算异常。// TODO：将为空和计算异常分开提示
+  ///
+  /// 注意是在当前小周期内，即应在当前小周期的应新学和应复习的碎片中的未学习和未复习的数量。
+  NewAndReviewCount? get getNotLearnNewAndReviewCount {
+    if (shouldNewAndReviewCount == null) {
+      return null;
+    }
+    return NewAndReviewCount(
+      newCount: shouldNewAndReviewCount!.newCount - learnedNewAndReviewCount.newCount,
+      reviewCount: shouldNewAndReviewCount!.reviewCount - learnedNewAndReviewCount.reviewCount,
+    );
+  }
+
+  Future<void> read() async {
+    await parseLoopCycle();
+    await parseShouldCountForNewAndReview();
+    await queryLearnedCountForNewAndReview();
+  }
 
   /// 解析循环周期算法
-  Future<void> parseLoopCycleAlgorithm() async {
+  Future<void> parseLoopCycle() async {
     await AlgorithmParser.parse(
       stateFunc: () => SuggestLoopCycleState(
         algorithmWrapper: getMemoryAlgorithm?.suggest_loop_cycle_algorithm == null
@@ -271,17 +293,17 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
         externalResultHandler: null,
       ),
       onSuccess: (SuggestLoopCycleState state) async {
-        currentSmallCycleAlgorithmLoopCycle = state.result;
+        loopCycle = state.result;
       },
       onError: (AlgorithmException ec) async {
         /// TODO：如何给错误提示
-        currentSmallCycleAlgorithmLoopCycle = null;
+        loopCycle = null;
       },
     );
   }
 
-  /// 解析当前小周期新学和复习数量算法
-  Future<void> parseCurrentSmallCycleCountForNewAndReviewAlgorithm() async {
+  /// 解析应该新学和复习数量
+  Future<void> parseShouldCountForNewAndReview() async {
     await AlgorithmParser.parse(
       stateFunc: () => SuggestCountForNewAndReviewState(
         algorithmWrapper: getMemoryAlgorithm?.suggest_count_for_new_and_review_algorithm == null
@@ -292,29 +314,64 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
         externalResultHandler: null,
       ),
       onSuccess: (SuggestCountForNewAndReviewState state) async {
-        currentSmallCycleAlgorithmNewAndReviewCount = state.result;
+        shouldNewAndReviewCount = state.result;
       },
       onError: (AlgorithmException ec) async {
-        currentSmallCycleAlgorithmNewAndReviewCount = NewAndReviewCount(newLearnCount: -1, reviewCount: -1);
+        shouldNewAndReviewCount = NewAndReviewCount(newCount: -1, reviewCount: -1);
       },
     );
   }
 
-  Future<void> queryCurrentSmallCycleLearnedCountForNewAndReview() async {
-    final sel = driftDb.select(driftDb.fragmentMemoryInfos);
-    // riftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]"
+  /// 解析在当前小周期已学习和已复习的数量
+  ///
+  /// TODO: 处理当 [FragmentMemoryInfoStudyStatus.paused] 时。
+  Future<void> queryLearnedCountForNewAndReview() async {
+    late final DateTime memoryGroupStartTime;
+    if (singleMemoryGroup.memoryGroup.start_time == null) {
+      learnedNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
+      return;
+    }
 
-    // 距离启动时时间点的秒数
-    final smallCycleStartSeconds = timeDifference(right: right, left: memoryGroup.start_time!);
+    if (memoryGroupSmartCycleInfo == null) {
+      learnedNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
+      return;
+    }
 
-    sel.where(
-      (tbl) => tbl.memory_group_id.equals(memoryGroup.id) & tbl.click_time.jsonExtract(r"$[0]").dartCast<int>().isBiggerOrEqualValue(other),
+    memoryGroupStartTime = singleMemoryGroup.memoryGroup.start_time!;
+
+    // 当前小周期开始时间，距离启动时时间点的秒数
+    final smallCycleStartSeconds = timeSecondsDifference(right: memoryGroupSmartCycleInfo!.created_at, left: memoryGroupStartTime);
+
+    // 当前小周期应该结束时间，距离启动时间的秒数
+    final smallCycleEndSeconds = timeSecondsDifference(right: memoryGroupSmartCycleInfo!.should_small_cycle_end_time, left: memoryGroupStartTime);
+
+    // 在当前小周期已学习的
+    final newCountExpr = driftDb.fragmentMemoryInfos.id.count();
+    final newSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    newSel.where(
+      driftDb.fragmentMemoryInfos.memory_group_id.equals(singleMemoryGroup.memoryGroup.id) &
+          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isBetweenValues(smallCycleStartSeconds, smallCycleEndSeconds),
     );
+    newSel.addColumns([newCountExpr]);
+    final newCount = (await newSel.getSingle()).read(newCountExpr)!;
+
+    final reviewCountExpr = driftDb.fragmentMemoryInfos.id.count();
+    final reviewSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    reviewSel.where(
+      driftDb.fragmentMemoryInfos.memory_group_id.equals(singleMemoryGroup.memoryGroup.id) &
+          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isSmallerThanValue(smallCycleStartSeconds) &
+          driftDb.fragmentMemoryInfos.click_time.jsonArrayLength().isBiggerOrEqualValue(2) &
+          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isBiggerThanValue(smallCycleEndSeconds),
+    );
+    reviewSel.addColumns([reviewCountExpr]);
+    final reviewCount = (await reviewSel.getSingle()).read(reviewCountExpr)!;
+
+    learnedNewAndReviewCount = NewAndReviewCount(newCount: newCount, reviewCount: reviewCount);
   }
 }
 
-class MemoryGroupAndOther {
-  MemoryGroupAndOther({required this.memoryGroup});
+class SingleMemoryGroup {
+  SingleMemoryGroup({required this.memoryGroup});
 
   DownloadStatus downloadStatus = DownloadStatus.other_loading;
 
@@ -324,91 +381,38 @@ class MemoryGroupAndOther {
   /// 当前记忆组的全部小周期，包含了 [currentSmallCycleInfo]。
   final smallCycleInfos = <SmallCycleInfo>[];
 
-  /// 当前正在执行的小周期
-  CurrentSmallCycleInfo? currentSmallCycleInfo;
+  /// 当前正在执行的小周期，如果没有正在执行的，则为 [CurrentSmallCycleInfo.memoryGroupSmartCycleInfo] 为 null
+  late final CurrentSmallCycleInfo currentSmallCycleInfo;
 
   /// 当前记忆组碎片总数量
   ///
   /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
   int totalFragmentCount = 0;
 
-  /// 已完成的总数量，注意是查询云端并覆盖本地后的
+  /// [FragmentMemoryInfoStudyStatus.completed]
   ///
   /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int totalCompleteCount = 0;
+  int totalCompletedCount = 0;
 
-  /// 待新学的总数量，注意是查询云端并覆盖本地后的
+  /// [FragmentMemoryInfoStudyStatus.reviewing]
   ///
   /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int totalWaitNewLearnCount = 0;
+  int totalReviewingCount = 0;
 
-  /// 待复习的总数量，注意是查询云端并覆盖本地后的
-  ///
-  /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  int totalWaitReviewCount = 0;
-
-  /// 约定全部完成期限的时间点。
-  DateTime totalSetCompletionTime = DateTime.now();
-
-  /// 在学时长。
-  Duration totalLearnedDuration = Duration.zero;
-
-  // /// 当前周期需要学习的数量
-  // ///
-  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  // int cycleFragmentCount = 0;
-  //
-  // /// 当前周期已完成的数量，注意是查询云端并覆盖本地后的
-  // ///
-  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  // int cycleCompleteCount = 0;
-  //
-  // /// 当前周期待新学的数量，注意是查询云端并覆盖本地后的
-  // ///
-  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  // int cycleWaitNewLearnCount = 0;
-  //
-  // /// 当前周期待复习的数量，注意是查询云端并覆盖本地后的
-  // ///
-  // /// 注意，先是本地查询后的数量，后进行数量同步后，才是云端同步后的数量。
-  // int cycleWaitReviewCount = 0;
-
-  // /// 当前周期约定完成期限的时间点。
-  // DateTime cycleSetCompletionTime = DateTime.now();
-  //
-  // /// 当前周期在学时长。
-  // Duration cycleLearnedDuration = Duration.zero;
-
-  (int, int, int, int) get totalProportion {
-    final one = totalCompleteCount;
-    final two = totalWaitNewLearnCount;
-    final three = totalWaitReviewCount;
-    final four = totalFragmentCount - one - two - three;
-    return (one, two, three, four);
-  }
-
-// MemoryGroupAndOther clone() {
-//   return MemoryGroupAndOther(memoryGroup: memoryGroup.copyWith())
-//     ..downloadStatus = downloadStatus
-//     ..totalFragmentCount = totalFragmentCount
-//     ..totalWaitNewLearnCount = totalWaitNewLearnCount
-//     ..setMemoryAlgorithm = getMemoryAlgorithm?.copyWith();
-// }
-
-  Future<void> querySmallCycleInfos() async {
+  Future<void> queryAllSmallCycleInfos() async {
     await driftDb.cloudOverwriteLocalDAO.queryCloudSingleMemoryGroupAllSmallCycleInfoAndOverwriteLocal(
       memoryGroupId: memoryGroup.id,
       onSuccess: (List<MemoryGroupSmartCycleInfo> memoryGroupSmartCycleInfo) async {
         smallCycleInfos.clear();
-        currentSmallCycleInfo = null;
+        currentSmallCycleInfo = CurrentSmallCycleInfo(singleMemoryGroup: this, memoryGroupSmartCycleInfo: null);
         smallCycleInfos.addAll(
           memoryGroupSmartCycleInfo.map((e) {
             if (isTimeBetween(target: DateTime.now(), left: e.created_at, right: e.should_small_cycle_end_time)) {
-              final c = CurrentSmallCycleInfo(memoryGroupAndOther: this, memoryGroupSmartCycleInfo: e);
+              final c = CurrentSmallCycleInfo(singleMemoryGroup: this, memoryGroupSmartCycleInfo: e);
               currentSmallCycleInfo = c;
               return c;
             }
-            return SmallCycleInfo(memoryGroupAndOther: this, memoryGroupSmartCycleInfo: e);
+            return SmallCycleInfo(singleMemoryGroup: this, memoryGroupSmartCycleInfo: e);
           }),
         );
       },
@@ -416,6 +420,28 @@ class MemoryGroupAndOther {
         logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
       },
     );
+  }
+
+  Future<void> queryTotalCount() async {
+    final fragmentCount = driftDb.fragmentMemoryInfos.id.count();
+    final fragmentSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    fragmentSel.where(driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id));
+    fragmentSel.addColumns([fragmentCount]);
+    totalFragmentCount = (await fragmentSel.getSingle()).read(fragmentCount)!;
+
+    final completedCount = driftDb.fragmentMemoryInfos.id.count();
+    final completedSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    completedSel
+        .where(driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) & driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.completed));
+    completedSel.addColumns([completedCount]);
+    totalCompletedCount = (await fragmentSel.getSingle()).read(completedCount)!;
+
+    final reviewingCount = driftDb.fragmentMemoryInfos.id.count();
+    final reviewingSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+    reviewingSel
+        .where(driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) & driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.reviewing));
+    reviewingSel.addColumns([reviewingCount]);
+    totalReviewingCount = (await fragmentSel.getSingle()).read(reviewingCount)!;
   }
 }
 
@@ -425,17 +451,17 @@ class MemoryGroupListPageAbController extends AbController {
   final User user;
   final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  final memoryGroupAndOthersAb = <Ab<MemoryGroupAndOther>>[].ab;
+  final singleMemoryGroupsAb = <Ab<SingleMemoryGroup>>[].ab;
 
   Future<void> refreshPage() async {
     await driftDb.cloudOverwriteLocalDAO.queryCloudAllMemoryGroupOverwriteLocal(
       userId: user.id,
       onSuccess: (List<MemoryGroup> memoryGroups) async {
-        memoryGroupAndOthersAb.refreshInevitable(
+        singleMemoryGroupsAb.refreshInevitable(
           (obj) => obj
             ..clearBroken(this)
             ..addAll(
-              memoryGroups.map((e) => (MemoryGroupAndOther(memoryGroup: e)..downloadStatus = DownloadStatus.other_loading).ab),
+              memoryGroups.map((e) => (SingleMemoryGroup(memoryGroup: e)..downloadStatus = DownloadStatus.other_loading).ab),
             ),
         );
 
@@ -466,37 +492,40 @@ class MemoryGroupListPageAbController extends AbController {
     );
 
     if (isSuccess) {
-      for (var element in memoryGroupAndOthersAb()) {
+      for (var element in singleMemoryGroupsAb()) {
         // 如果记忆模型是被删除掉，则直接赋值为 null
-        element().setMemoryAlgorithm = newMemoryAlgorithms.where((mm) => element().memoryGroup.memory_algorithm_id == mm.id).firstOrNull;
+        element().currentSmallCycleInfo.setMemoryAlgorithm = newMemoryAlgorithms.where((mm) => element().memoryGroup.memory_algorithm_id == mm.id).firstOrNull;
         element.refreshForce();
 
-        await element().parseOther();
+        await element().queryAllSmallCycleInfos();
         element.refreshForce();
 
         // 无需 await
         _forOtherSingle(mgAndOtherAb: element);
       }
-      memoryGroupAndOthersAb.refreshForce();
+      singleMemoryGroupsAb.refreshForce();
     }
   }
 
-  Future<void> _forOtherSingle({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
-    await _forTotalCount(memoryGroupAndOther: mgAndOtherAb());
+  Future<void> _forOtherSingle({required Ab<SingleMemoryGroup> mgAndOtherAb}) async {
+    await _forTotalCount(singleMemoryGroup: mgAndOtherAb());
   }
 
   /// TODO：当本地总数量与云端总数量相同时，但是存在修改时，该怎么办？
-  Future<void> _forTotalCount({required MemoryGroupAndOther memoryGroupAndOther}) async {
+  Future<void> _forTotalCount({required SingleMemoryGroup singleMemoryGroup}) async {
     // 查询本地总数量
-    final localTotalCount = await driftDb.generalQueryDAO.queryFragmentInMemoryGroupCount(memoryGroupId: memoryGroupAndOther.memoryGroup.id);
-    memoryGroupAndOther.totalFragmentCount = localTotalCount;
-    memoryGroupAndOthersAb.refreshForce();
+    final localTotalCount = await driftDb.generalQueryDAO.queryFragmentMemoryInfosCountByStudyStatus(
+      memoryGroupId: singleMemoryGroup.memoryGroup.id,
+      studyStatus: null,
+    );
+    singleMemoryGroup.totalFragmentCount = localTotalCount;
+    singleMemoryGroupsAb.refreshForce();
 
     // 查询云端总数量
     final result = await request(
       path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_FRAGMENTS_COUNT_QUERY,
       dtoData: MemoryGroupFragmentsCountQueryDto(
-        memory_group_id: memoryGroupAndOther.memoryGroup.id,
+        memory_group_id: singleMemoryGroup.memoryGroup.id,
         dto_padding_1: null,
       ),
       parseResponseVoData: MemoryGroupFragmentsCountQueryVo.fromJson,
@@ -505,22 +534,22 @@ class MemoryGroupListPageAbController extends AbController {
       code160201: (String showMessage, vo) async {
         // 数量相关
         if (localTotalCount == 0 && vo.count == 0) {
-          memoryGroupAndOther.downloadStatus = DownloadStatus.zero;
-          memoryGroupAndOthersAb.refreshForce();
+          singleMemoryGroup.downloadStatus = DownloadStatus.zero;
+          singleMemoryGroupsAb.refreshForce();
           return;
         }
         if (localTotalCount == 0 && vo.count > 0) {
-          memoryGroupAndOther.downloadStatus = DownloadStatus.never_downloaded;
-          memoryGroupAndOthersAb.refreshForce();
+          singleMemoryGroup.downloadStatus = DownloadStatus.never_downloaded;
+          singleMemoryGroupsAb.refreshForce();
           return;
         }
         if (localTotalCount != vo.count) {
-          memoryGroupAndOther.downloadStatus = DownloadStatus.different_download;
-          memoryGroupAndOthersAb.refreshForce();
+          singleMemoryGroup.downloadStatus = DownloadStatus.different_download;
+          singleMemoryGroupsAb.refreshForce();
           return;
         }
 
-        await _forRemainNeverStudyCount(memoryGroupAndOther: memoryGroupAndOther);
+        await singleMemoryGroup.queryTotalCount();
       },
       otherException: (a, b, c) async {
         logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
@@ -528,22 +557,12 @@ class MemoryGroupListPageAbController extends AbController {
     );
   }
 
-  Future<void> _forRemainNeverStudyCount({required MemoryGroupAndOther memoryGroupAndOther}) async {
-    final count = await driftDb.generalQueryDAO.queryManyFragmentByStudyStatusCount(
-      memoryGroupId: memoryGroupAndOther.memoryGroup.id,
-      studyStatus: FragmentMemoryInfoStudyStatus.never,
-    );
-    memoryGroupAndOther.totalWaitNewLearnCount = count;
-    memoryGroupAndOther.downloadStatus = DownloadStatus.all_downloaded;
-    memoryGroupAndOthersAb.refreshForce();
-  }
-
-  Future<void> onStatusTap(Ab<MemoryGroupAndOther> cloneMemoryGroupAndOtherAb) async {
+  Future<void> onStatusTap(Ab<SingleMemoryGroup> cloneSingleMemoryGroupAb) async {
     await showCustomDialog(
       builder: (ctx) {
         return MemoryGroupGizmoEditPage(
           editPageType: MemoryGroupGizmoEditPageType.modify,
-          cloneMemoryGroupAndOtherAb: cloneMemoryGroupAndOtherAb,
+          cloneSingleMemoryGroupAb: cloneSingleMemoryGroupAb,
           listPageC: this,
         );
       },

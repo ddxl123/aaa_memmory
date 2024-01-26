@@ -6,6 +6,11 @@ abstract class AlgorithmException {
   final Object error;
 
   final StackTrace? stackTrace;
+
+  @override
+  String toString() {
+    return "{'error':$error,'stackTrace':$stackTrace}";
+  }
 }
 
 class KnownAlgorithmException extends AlgorithmException {

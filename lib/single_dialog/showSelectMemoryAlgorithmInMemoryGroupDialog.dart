@@ -7,14 +7,14 @@ import '../page/list/MemoryAlgorithmListPageAbController.dart';
 import '../push_page/push_page.dart';
 import 'showCreateMemoryAlgorithmDialog.dart';
 
-Future<void> showSelectMemoryAlgorithmInMemoryGroupDialog({required Ab<MemoryGroupAndOther> mgAndOtherAb}) async {
+Future<void> showSelectMemoryAlgorithmInMemoryGroupDialog({required Ab<SingleMemoryGroup> mgAndOtherAb}) async {
   await showCustomDialog(builder: (_) => SelectMemoryAlgorithmInMemoryGroupDialogWidget(mgAndOtherAb: mgAndOtherAb));
 }
 
 class SelectMemoryAlgorithmInMemoryGroupDialogWidget extends StatefulWidget {
   const SelectMemoryAlgorithmInMemoryGroupDialogWidget({super.key, required this.mgAndOtherAb});
 
-  final Ab<MemoryGroupAndOther> mgAndOtherAb;
+  final Ab<SingleMemoryGroup> mgAndOtherAb;
 
   @override
   State<SelectMemoryAlgorithmInMemoryGroupDialogWidget> createState() => _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState();
@@ -40,7 +40,7 @@ class _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState extends State<SelectM
   @override
   void initState() {
     super.initState();
-    _selectedMa = widget.mgAndOtherAb().getMemoryAlgorithm;
+    _selectedMa = widget.mgAndOtherAb().currentSmallCycleInfo?.getMemoryAlgorithm;
     getMms();
   }
 
@@ -95,7 +95,7 @@ class _SelectMemoryAlgorithmInMemoryGroupDialogWidgetState extends State<SelectM
   }
 
   Future<void> _onOk() async {
-    widget.mgAndOtherAb.refreshInevitable((obj) => obj..setMemoryAlgorithm = _selectedMa);
+    widget.mgAndOtherAb.refreshInevitable((obj) => obj..currentSmallCycleInfo?.setMemoryAlgorithm = _selectedMa);
     if (_selectedMa == null) {
       SmartDialog.showToast('不选择');
     } else {

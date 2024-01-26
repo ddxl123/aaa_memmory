@@ -51,33 +51,26 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
     return await (select(memoryAlgorithms)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
   }
 
-  // Future<List<MemoryModel>> queryAllMemoryModels() async {
-  //   return await select(memoryModels).get();
-  // }
-
-  Future<int> queryFragmentInMemoryGroupCount({required int memoryGroupId}) async {
-    final result = await (select(fragmentMemoryInfos)..where((tbl) => tbl.memory_group_id.equals(memoryGroupId))).get();
-    return result.length;
-  }
-
-  Future<int> queryFragmentCountByStudyStatus({
+  /// 通过 [studyStatus] 查询 [memoryGroupId] 中的碎片数量 (即 [FragmentMemoryInfo] 数量)
+  ///
+  /// 如果 [studyStatus] 为 null，则查询 [memoryGroupId] 中的全部碎片数量
+  Future<int> queryFragmentMemoryInfosCountByStudyStatus({
     required int memoryGroupId,
-    required FragmentMemoryInfoStudyStatus studyStatus,
-  }) async {
-    final result = await (select(fragmentMemoryInfos)..where((tbl) => tbl.memory_group_id.equals(memoryGroupId) & tbl.study_status.equalsValue(studyStatus))).get();
-    return result.length;
-  }
-
-  Future<int> queryManyFragmentByStudyStatusCount({
-    required int memoryGroupId,
-    required FragmentMemoryInfoStudyStatus studyStatus,
+    required FragmentMemoryInfoStudyStatus? studyStatus,
   }) async {
     final count = fragmentMemoryInfos.id.count();
     final sel = selectOnly(fragmentMemoryInfos);
 
-    sel.where(fragmentMemoryInfos.memory_group_id.equals(memoryGroupId) & fragmentMemoryInfos.study_status.equalsValue(studyStatus));
+    late final Expression<bool> selExpr;
+    if (studyStatus == null) {
+      selExpr = fragmentMemoryInfos.memory_group_id.equals(memoryGroupId);
+    } else {
+      selExpr = fragmentMemoryInfos.memory_group_id.equals(memoryGroupId) & fragmentMemoryInfos.study_status.equalsValue(studyStatus);
+    }
+
+    sel.where(selExpr);
     sel.addColumns([count]);
-    final result = (await sel.get()).first.read(count);
+    final result = (await sel.getSingle()).read(count);
     return result!;
   }
 

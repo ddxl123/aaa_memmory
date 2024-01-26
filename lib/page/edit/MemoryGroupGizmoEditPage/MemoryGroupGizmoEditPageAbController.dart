@@ -8,20 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
 
+import '../../../algorithm_parser/AlgorithmException.dart';
 import '../../../push_page/push_page.dart';
 import '../../list/MemoryGroupListPageAbController.dart';
 
 class MemoryGroupGizmoEditPageAbController extends AbController {
   /// 把 gizmo 内所以信息打包成一个对象进行传入。
-  /// 如果只传入 [cloneMemoryGroupAndOtherAb] 的话，会缺少 [bSelectedMemoryModelStorage]、[fragmentCountAb] 等，修改它们后， gizmo 外的数据并没有被刷新。
+  /// 如果只传入 [cloneSingleMemoryGroup] 的话，会缺少 [bSelectedMemoryModelStorage]、[fragmentCountAb] 等，修改它们后， gizmo 外的数据并没有被刷新。
   MemoryGroupGizmoEditPageAbController({
-    required this.cloneMemoryGroupAndOtherAb,
+    required this.cloneSingleMemoryGroup,
     required this.listPageC,
   });
 
   final MemoryGroupListPageAbController listPageC;
 
-  final Ab<MemoryGroupAndOther> cloneMemoryGroupAndOtherAb;
+  final Ab<SingleMemoryGroup> cloneSingleMemoryGroup;
 
   final titleTextEditingController = TextEditingController();
 
@@ -31,7 +32,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   @override
   void onInit() {
     super.onInit();
-    titleTextEditingController.text = cloneMemoryGroupAndOtherAb().memoryGroup.title;
+    titleTextEditingController.text = cloneSingleMemoryGroup().memoryGroup.title;
   }
 
   @override
@@ -47,19 +48,20 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     }
     bool isBack = false;
     await showCustomDialog(
-      builder: (_) => OkAndCancelDialogWidget(
-        title: '内容存在修改，是否要丢弃？',
-        okText: '丢弃',
-        cancelText: '继续编辑',
-        text: null,
-        onOk: () async {
-          SmartDialog.dismiss();
-          isBack = true;
-        },
-        onCancel: () {
-          SmartDialog.dismiss();
-        },
-      ),
+      builder: (_) =>
+          OkAndCancelDialogWidget(
+            title: '内容存在修改，是否要丢弃？',
+            okText: '丢弃',
+            cancelText: '继续编辑',
+            text: null,
+            onOk: () async {
+              SmartDialog.dismiss();
+              isBack = true;
+            },
+            onCancel: () {
+              SmartDialog.dismiss();
+            },
+          ),
     );
     return !isBack;
   }
@@ -72,28 +74,86 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
   /// 返回 true 则存在修改
   Future<bool> checkIsExistModify() async {
-    final mg = await driftDb.generalQueryDAO.queryOrNullMemoryGroup(memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
-    if (mg != cloneMemoryGroupAndOtherAb().memoryGroup) {
+    final mg = await driftDb.generalQueryDAO.queryOrNullMemoryGroup(memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id);
+    if (mg != cloneSingleMemoryGroup().memoryGroup) {
       return true;
     } else {
       return false;
     }
   }
 
-  /// 验证
+  /// 仅保存时的验证。
   ///
   /// 返回 true，则验证通过。
-  bool verify() {
-    if (cloneMemoryGroupAndOtherAb().memoryGroup.title.trim() == "") {
+  bool verifyForOnlySave() {
+    if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
       SmartDialog.showToast("名称不能为空");
       return false;
     }
-    if (cloneMemoryGroupAndOtherAb().getMemoryAlgorithm == null) {
+    // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
+    // TODO：进行语法检查
+    return true;
+  }
+
+  /// 重新读取，并启动记忆组时的验证。
+  ///
+  /// 返回 true，则验证通过。
+  bool verifyForStartup() {
+    // TODO：是否需要重新读取
+    if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
+      SmartDialog.showToast("名称不能为空");
+      return false;
+    }
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm == null) {
+      SmartDialog.showToast("必须选择一个记忆算法！");
+      return false;
+    }
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.loopCycle == null) {
+      SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
+    // TODO：进行语法检查
+    return true;
+  }
+
+  /// 重新读取，并开始新的小周期时的验证。
+  ///
+  /// 返回 true，则验证通过。
+  Future<bool> verifyForCreateSmallCycle() async {
+    await cloneSingleMemoryGroup().currentSmallCycleInfo.read();
+    if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
+      SmartDialog.showToast("名称不能为空");
+      return false;
+    }
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm == null) {
+      SmartDialog.showToast("必须选择一个记忆算法！");
+      return false;
+    }
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.loopCycle == null) {
+      SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
+    // TODO：进行语法检查
+    return true;
+  }
+
+
+  /// 重新读取，并继续当前小周期时的验证。
+  Future<bool> verifyForContinueCurrentSmallCycle() async {
+    await cloneSingleMemoryGroup().currentSmallCycleInfo.read();
+
+    if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
+      SmartDialog.showToast("名称不能为空");
+      return false;
+    }
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm == null) {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return false;
     }
 
-    if (cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmLoopCycle == null) {
+    if (cloneSingleMemoryGroup().currentSmallCycleInfo.loopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
       return false;
     }
@@ -103,17 +163,10 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   }
 
   /// 只进行存储。
-  Future<bool> onlySave({bool isVerify = true}) async {
-    if (isVerify) {
-      final result = verify();
-      if (!result) {
-        return false;
-      }
-    }
-    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneMemoryGroupAndOtherAb().memoryGroup);
-    cloneMemoryGroupAndOtherAb.refreshForce();
+  Future<void> onlySave() async {
+    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneSingleMemoryGroup().memoryGroup);
+    cloneSingleMemoryGroup.refreshForce();
     listPageC.refreshController.requestRefresh();
-    return true;
   }
 
   /// 启动任务
@@ -122,42 +175,71 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   ///
   /// 返回是否启动成功。
   Future<bool> startup() async {
-    final result = verify();
+    final result = verifyForStartup();
     if (!result) {
       return false;
     }
     // TODO：检查启动时，是否已存在记忆信息，如果存在，则需要提醒用户清除，或者重写创建一个记忆组。
-    cloneMemoryGroupAndOtherAb().memoryGroup.start_time = DateTime.now();
-    cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.not_study_for_this_cycle;
-    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneMemoryGroupAndOtherAb().memoryGroup);
-    cloneMemoryGroupAndOtherAb.refreshForce();
+    cloneSingleMemoryGroup().memoryGroup.start_time = DateTime.now();
+    cloneSingleMemoryGroup().memoryGroup.study_status = StudyStatus.not_study_for_this_cycle;
+    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneSingleMemoryGroup().memoryGroup);
+    cloneSingleMemoryGroup.refreshForce();
     return true;
   }
 
-  /// 开始本周期
-  Future<void> startCurrentCycle() async {
-    final isVerifySuccess = verify();
-    if (!isVerifySuccess) {
-      return;
+  /// 创建或继续小周期
+  Future<void> createOrContinueSmallCycle() async {
+    // 如果为 true，则为创建，如果为 false，则为继续
+    bool isCreate = cloneSingleMemoryGroup().currentSmallCycleInfo.memoryGroupSmartCycleInfo == null;
+
+    if (isCreate) {
+      final isVerifySuccess = await verifyForCreateSmallCycle();
+      if (!isVerifySuccess) {
+        return;
+      }
+    } else {
+      // 验证的是原来小周期修改后的
+      final isVerifySuccess = await verifyForContinueCurrentSmallCycle();
+      if (!isVerifySuccess) {
+        return;
+      }
     }
 
+    // 查询云端的，即修改前的
     final result = await request(
-      path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_LAST_ONE,
-      dtoData: MemoryGroupCycleInfoQueryLastOneDto(
-        memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
+      path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_CURRENT_MEMORY_GROUP_SMALL_CYCLE_INFO,
+      dtoData: QueryCurrentMemoryGroupSmallCycleInfoDto(
+        memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
         dto_padding_1: null,
       ),
-      parseResponseVoData: MemoryGroupCycleInfoQueryLastOneVo.fromJson,
+      parseResponseVoData: QueryCurrentMemoryGroupSmallCycleInfoVo.fromJson,
     );
     await result.handleCode(
-      code200101: (String showMessage, MemoryGroupCycleInfoQueryLastOneVo vo) async {
-        // 当前周期所设置的循环周期
-        final oldCycleSetting = vo.memory_group_cycle_info?.loop_cycle;
+      code200101: (String showMessage, QueryCurrentMemoryGroupSmallCycleInfoVo vo) async {
         // 新设置的循环周期
-        final newCycleSetting = cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.suggest_loop_cycle_algorithm!;
+        final newCycleSettingAlgorithm = cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.suggest_loop_cycle_algorithm!;
+        late final LoopCycle newCycle;
+        await AlgorithmParser.parse(
+          stateFunc: () =>
+              SuggestLoopCycleState(
+                algorithmWrapper: AlgorithmWrapper.fromJsonString(newCycleSettingAlgorithm),
+                // TODO: 改成 SimulationType.external 类型
+                simulationType: SimulationType.syntaxCheck,
+                externalResultHandler: null,),
+          onSuccess: (SuggestLoopCycleState state) async {
+            newCycle = state.result;
+          },
+          onError: (AlgorithmException ec) async {
+            throw ec;
+          },);
 
+
+        // 当前周期所设置的循环周期
+        // 这个为 null 说明当前不存在正在执行的小周期
+        final oldCycleSetting = vo.memory_group_small_cycle_info?.loop_cycle;
         final LoopCycle? oldCycle = oldCycleSetting == null ? null : LoopCycle.fromText(text: oldCycleSetting);
-        final LoopCycle newCycle = LoopCycle.fromText(text: newCycleSetting);
+
+
         final List<SmallCycle> targets = newCycle.nowBeforeWhich();
 
         SmallCycle? target;
@@ -168,9 +250,12 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
         // 如果有多个
         else {
           // 如果循环周期被修改过，则让用户选择要从哪个小周期开始
+          // 如果 oldCycle 为 null，也按照已修改的处理方式进行处理
           if (!newCycle.equal(target: oldCycle)) {
             final controller = ScrollController();
             SmallCycle? selected;
+            // 第几个 00:00 前
+            int nthBefore = 0;
             await showCustomDialog(
               stfBuilder: (ctx, r) {
                 return OkAndCancelDialogWidget(
@@ -187,17 +272,19 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                       children: [
                         Expanded(
                           child: Text(
-                            "原循环周期：${oldCycleSetting ?? "无"}",
+                            "原循环周期：$oldCycleSetting",
                             style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                           ),
                         ),
                       ],
                     ),
-                    Row(children: [Expanded(child: Text("现循环周期：${newCycleSetting}", style: TextStyle(color: Colors.green)))]),
+                    Row(children: [Expanded(child: Text("现循环周期：${newCycle.toText()}", style: TextStyle(color: Colors.green)))]),
                     SizedBox(height: 10),
                     Row(children: [Expanded(child: Text("请点击橙色圆圈对区间进行选择", style: TextStyle(color: Colors.grey)))]),
                     Container(
-                      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).primaryColor)),
+                      decoration: BoxDecoration(border: Border.all(color: Theme
+                          .of(context)
+                          .primaryColor)),
                       child: Scrollbar(
                         controller: controller,
                         thumbVisibility: true,
@@ -210,16 +297,60 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               ...newCycle.completeSmallCycles.map(
-                                (e) {
+                                    (e) {
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       if (e.rawDelta != null) Text("+${e.rawDelta}", style: TextStyle(color: Colors.green)),
                                       Row(
                                         children: [
-                                          Text("———", style: TextStyle(color: Colors.grey)),
-                                          Text(e.cumulative24Sys.toString(), style: TextStyle(color: Theme.of(context).primaryColor)),
-                                          Text("———", style: TextStyle(color: Colors.grey)),
+                                          Text("——", style: TextStyle(color: Colors.grey)),
+                                          // TODO: 处理跨天的情况 target!.cross0PointCountFromLastForNow
+
+                                          if()
+                                            Row(children: [
+                                              Text("——", style: TextStyle(color: Colors.grey)),
+                                              if(e.cross0PointCountFromLastForNow.$1) GestureDetector(
+                                                child: Text("选择", style: TextStyle(color: Colors.orange)),
+                                                onTap: () {
+                                                  selected = e;
+                                                  nthBefore = 1;
+                                                },),
+                                              Text("——", style: TextStyle(color: Colors.grey)),
+                                              Text("00:00", style: TextStyle(color: Colors.grey)),
+                                            ],),
+
+                                          for(int i = 0; i < e.cross0PointCountFromLastForNow.$2; i++)
+                                            Row(
+                                              children: [
+                                                Text("——", style: TextStyle(color: Colors.grey)),
+                                                GestureDetector(
+                                                  child: Text("选择", style: TextStyle(color: Colors.orange)),
+                                                  onTap: () {
+                                                    selected = e;
+                                                    nthBefore = i + 1;
+                                                  },),
+                                                Text("——", style: TextStyle(color: Colors.grey)),
+                                              ],
+                                            ),
+                                          if(e.cross0PointCountFromLastForNow.$1 || e.cross0PointCountFromLastForNow.$3 || e.cross0PointCountFromLastForNow.$2 > 0)
+                                            Row(children: [
+                                              if(!e.cross0PointCountFromLastForNow.$1)
+                                                Text("00:00", style: TextStyle(color: Colors.grey)),
+                                              Text("——", style: TextStyle(color: Colors.grey)),
+                                              GestureDetector(
+                                                child: Text("选择", style: TextStyle(color: Colors.orange)),
+                                                onTap: () {
+                                                  selected = e;
+                                                  nthBefore = 1;
+                                                },),
+                                              Text("——", style: TextStyle(color: Colors.grey)),
+                                            ],),
+                                          Text("——", style: TextStyle(color: Colors.grey)),
+                                          Text(e.cumulative24Sys.toString(), style: TextStyle(color: Theme
+                                              .of(context)
+                                              .primaryColor)),
+                                          Text("————", style: TextStyle(color: Colors.grey)),
                                         ],
                                       ),
                                       if (e.rawDelta == null) Text("", style: TextStyle(color: Colors.grey, fontSize: 12)),
@@ -238,7 +369,9 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                         Expanded(
                           child: Text(
                             "当前时间：${DateFormat("y/M/d H:mm").format(DateTime.now())}",
-                            style: TextStyle(color: Theme.of(context).primaryColor),
+                            style: TextStyle(color: Theme
+                                .of(context)
+                                .primaryColor),
                           ),
                         ),
                       ],
@@ -263,32 +396,57 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
           return;
         }
 
-        await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
-          crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
-            creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-            memory_algorithm_id: cloneMemoryGroupAndOtherAb().getMemoryAlgorithm!.id,
-            memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
-            loop_cycle: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmLoopCycle!.toText(),
-            small_cycle_order: target!.order,
-            small_cycle_should_new_learn_count: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmNewAndReviewCount.newLearnCount,
-            small_cycle_should_review_count: cloneMemoryGroupAndOtherAb().currentSmallCycleAlgorithmNewAndReviewCount.reviewCount,
-            small_cycle_incremental_new_learn_count: cloneMemoryGroupAndOtherAb().currentSmallCycleIncrementalNewAndReviewCount.newLearnCount,
-            small_cycle_incremental_review_count: cloneMemoryGroupAndOtherAb().currentSmallCycleIncrementalNewAndReviewCount.reviewCount,
-          ),
-          onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
-            // TODO: 在这之前得有个加载界面
-            cloneMemoryGroupAndOtherAb().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
-            await onlySave(isVerify: false);
+        if (vo.memory_group_small_cycle_info == null) {
+          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
+            crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
+              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+              memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.id,
+              memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
+              loop_cycle: newCycle.toText(),
+              small_cycle_order: target!.order,
+              should_small_cycle_end_time
+              :,
+            ),
+            onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
+              // TODO: 在这之前得有个加载界面
+              cloneSingleMemoryGroup().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
+              await onlySave(isVerify: false);
 
-            Navigator.pop(context);
-            listPageC.refreshController.requestRefresh();
+              Navigator.pop(context);
+              listPageC.refreshController.requestRefresh();
 
-            await pushToInAppStage(context: context, memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id);
-          },
-          onError: (int? code, HttperException httperException, StackTrace st) async {
-            logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
-          },
-        );
+              await pushToInAppStage(context: context, memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id);
+            },
+            onError: (int? code, HttperException httperException, StackTrace st) async {
+              logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
+            },
+          );
+        } else {
+          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
+            crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
+              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+              memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.id,
+              memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
+              loop_cycle: cloneSingleMemoryGroup().currentSmallCycleInfo.loopCycle!.toText(),
+              small_cycle_order: target!.order,
+              should_small_cycle_end_time
+              :,
+            ),
+            onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
+              // TODO: 在这之前得有个加载界面
+              cloneSingleMemoryGroup().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
+              await onlySave(isVerify: false);
+
+              Navigator.pop(context);
+              listPageC.refreshController.requestRefresh();
+
+              await pushToInAppStage(context: context, memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id);
+            },
+            onError: (int? code, HttperException httperException, StackTrace st) async {
+              logger.outErrorHttp(code: code, showMessage: httperException.showMessage, debugMessage: httperException.debugMessage, st: st);
+            },
+          );
+        }
       },
       otherException: (a, b, c) async {
         logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
@@ -307,7 +465,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     final result = await request(
       path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_MEMORY_GROUP_MEMORY_INFO_DOWNLOAD,
       dtoData: MemoryGroupMemoryInfoDownloadDto(
-        memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
+        memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
         dto_padding_1: null,
       ),
       parseResponseVoData: MemoryGroupMemoryInfoDownloadVo.fromJson,
@@ -330,7 +488,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     SmartDialog.dismiss(status: SmartStatus.dialog);
     SmartDialog.dismiss(status: SmartStatus.dialog);
 
-    cloneMemoryGroupAndOtherAb.refreshForce();
+    cloneSingleMemoryGroup.refreshForce();
     listPageC.refreshController.requestRefresh();
   }
 
@@ -340,14 +498,14 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     final result = await request(
       path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_MEMORY_INFO_DOWNLOAD_ONLY_ID,
       dtoData: MemoryInfoDownloadOnlyIdDto(
-        memory_group_id: cloneMemoryGroupAndOtherAb().memoryGroup.id,
+        memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
         dto_padding_1: null,
       ),
       parseResponseVoData: MemoryInfoDownloadOnlyIdVo.fromJson,
     );
     await result.handleCode(
       code151601: (String showMessage, vo) async {
-        final localAll = (await driftDb.generalQueryDAO.queryMemoryInfoIdAndVersion(memoryGroupId: cloneMemoryGroupAndOtherAb().memoryGroup.id)).toSet();
+        final localAll = (await driftDb.generalQueryDAO.queryMemoryInfoIdAndVersion(memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id)).toSet();
         final cloudAll = vo.memory_info_id_list.toSet();
         // 定义三个空列表，用来存储结果
         List<int> onlyLocal = []; // 仅存在于本地
@@ -357,7 +515,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
         // 处理仅存在于本地
         await driftDb.batch(
-          (batch) async {
+              (batch) async {
             batch.deleteWhere(driftDb.fragmentMemoryInfos, (tbl) => tbl.id.isIn(onlyLocal));
           },
         );
@@ -384,7 +542,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
         logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
       },
     );
-    cloneMemoryGroupAndOtherAb.refreshForce();
+    cloneSingleMemoryGroup.refreshForce();
     SmartDialog.dismiss(status: SmartStatus.loading);
     listPageC.refreshController.requestRefresh();
   }

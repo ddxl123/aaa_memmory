@@ -254,12 +254,6 @@ part 'dto_vo_bo/dto_vo/MemoryGroupSelectedFragmentsInsertDto.dart';
 part 'dto_vo_bo/dto_vo/MemoryGroupSelectedFragmentsInsertVo.dart';
 
 
-part 'dto_vo_bo/dto_vo/MemoryGroupSmallCycleInfoQueryLastOneDto.dart';
-
-
-part 'dto_vo_bo/dto_vo/MemoryGroupSmallCycleInfoQueryLastOneVo.dart';
-
-
 part 'dto_vo_bo/dto_vo/MemoryGroupsQueryDto.dart';
 
 
@@ -300,6 +294,12 @@ part 'dto_vo_bo/dto_vo/PersonalHomePageForUserInfoDto.dart';
 
 
 part 'dto_vo_bo/dto_vo/PersonalHomePageForUserInfoVo.dart';
+
+
+part 'dto_vo_bo/dto_vo/QueryCurrentMemoryGroupSmallCycleInfoDto.dart';
+
+
+part 'dto_vo_bo/dto_vo/QueryCurrentMemoryGroupSmallCycleInfoVo.dart';
 
 
 part 'dto_vo_bo/dto_vo/QueryFragmentGroupTagByFragmentGroupIdDto.dart';

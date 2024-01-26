@@ -12,18 +12,18 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
   const MemoryGroupGizmoEditPage({
     super.key,
     required this.editPageType,
-    required this.cloneMemoryGroupAndOtherAb,
+    required this.cloneSingleMemoryGroupAb,
     required this.listPageC,
   });
 
   final MemoryGroupListPageAbController listPageC;
-  final Ab<MemoryGroupAndOther> cloneMemoryGroupAndOtherAb;
+  final Ab<SingleMemoryGroup> cloneSingleMemoryGroupAb;
   final MemoryGroupGizmoEditPageType editPageType;
 
   @override
   Widget build(BuildContext context) {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      putController: MemoryGroupGizmoEditPageAbController(cloneMemoryGroupAndOtherAb: cloneMemoryGroupAndOtherAb, listPageC: listPageC),
+      putController: MemoryGroupGizmoEditPageAbController(cloneSingleMemoryGroup: cloneSingleMemoryGroupAb, listPageC: listPageC),
       builder: (putController, putAbw) {
         return DialogWidget(
           fullPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -45,7 +45,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
               child: StatusButton(
                 listPageC: listPageC,
                 editPageC: putController,
-                memoryGroupAndOtherAb: cloneMemoryGroupAndOtherAb,
+                singleMemoryGroupAb: cloneSingleMemoryGroupAb,
               ),
             ),
           ],
@@ -62,7 +62,7 @@ class MemoryGroupGizmoEditPage extends StatelessWidget {
   Widget _appBarTitleWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
-        return Text(c.cloneMemoryGroupAndOtherAb(abw).memoryGroup.title);
+        return Text(c.cloneSingleMemoryGroup(abw).memoryGroup.title);
       },
     );
   }

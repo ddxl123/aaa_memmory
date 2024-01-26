@@ -90,7 +90,7 @@ class HttpPath {
 
   static const String POST__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_MEMORY_MODEL_MANY_UPDATE = 'POST_/login_required/memory_group_cycle_info_handle/memory_model_many_update';
 
-  static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_LAST_ONE = 'GET_/login_required/memory_group_cycle_info_handle/query_last_one';
+  static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_CURRENT_MEMORY_GROUP_SMALL_CYCLE_INFO = 'GET_/login_required/memory_group_cycle_info_handle/query_current_memory_group_small_cycle_info';
 
   static const String GET__LOGIN_REQUIRED_MEMORY_GROUP_CYCLE_INFO_HANDLE_QUERY_SINGLE_MEMORY_GROUP_ALL_SMALL_CYCLE_INFO = 'GET_/login_required/memory_group_cycle_info_handle/query_single_memory_group_all_small_cycle_info';
 

@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_icons/line_icon.dart';
 import 'package:tools/tools.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -61,14 +59,14 @@ class MemoryGroupListPage extends StatelessWidget {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        return c.memoryGroupAndOthersAb(abw).isEmpty
+        return c.singleMemoryGroupsAb(abw).isEmpty
             ? const SliverToBoxAdapter(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("还没有创建记忆任务~")]))
             : SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (ctx, index) {
                     return _memoryGroupGizmoWidget(index);
                   },
-                  childCount: c.memoryGroupAndOthersAb(abw).length,
+                  childCount: c.singleMemoryGroupsAb(abw).length,
                 ),
               );
       },
@@ -83,10 +81,10 @@ class MemoryGroupListPage extends StatelessWidget {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        final mgAndOtherAb = c.memoryGroupAndOthersAb(abw)[index];
+        final singleMgAb = c.singleMemoryGroupsAb(abw)[index];
 
         return Hero(
-          tag: mgAndOtherAb.hashCode,
+          tag: singleMgAb.hashCode,
           child: GestureDetector(
             child: Card(
               child: Padding(
@@ -99,7 +97,7 @@ class MemoryGroupListPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            mgAndOtherAb(abw).memoryGroup.title,
+                            singleMgAb(abw).memoryGroup.title,
                             style: Theme.of(c.context).textTheme.titleMedium,
                           ),
                         ),
@@ -141,7 +139,7 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待新学", style: TextStyle(color: Colors.deepOrange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.deepOrange)),
-                                        Text("${mgAndOtherAb(abw).cycleWaitNewLearnCount}", style: TextStyle(color: Colors.deepOrange)),
+                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.newCount}", style: TextStyle(color: Colors.deepOrange)),
                                       ],
                                     ),
                                   ),
@@ -154,7 +152,7 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待复习", style: TextStyle(color: Colors.orange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.orange)),
-                                        Text("${mgAndOtherAb(abw).cycleWaitReviewCount}", style: TextStyle(color: Colors.orange)),
+                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.reviewCount}", style: TextStyle(color: Colors.orange)),
                                       ],
                                     ),
                                   ),
@@ -195,7 +193,7 @@ class MemoryGroupListPage extends StatelessWidget {
                                       return StatusButton(
                                         listPageC: c,
                                         editPageC: null,
-                                        memoryGroupAndOtherAb: mgAndOtherAb,
+                                        singleMemoryGroupAb: singleMgAb,
                                       );
                                     },
                                   ),
@@ -215,7 +213,7 @@ class MemoryGroupListPage extends StatelessWidget {
                 c.context,
                 MaterialPageRoute(
                   builder: (_) => MemoryGroupGizmoPage(
-                    memoryGroupGizmo: mgAndOtherAb().memoryGroup,
+                    memoryGroupGizmo: singleMgAb().memoryGroup,
                     innerMemoryGroupGizmoWidget: _memoryGroupGizmoWidget(index),
                   ),
                 ),
@@ -231,8 +229,7 @@ class MemoryGroupListPage extends StatelessWidget {
     return AbBuilder<MemoryGroupListPageAbController>(
       tag: Aber.single,
       builder: (c, abw) {
-        final mgAndOtherAb = c.memoryGroupAndOthersAb(abw)[index];
-        final p = mgAndOtherAb(abw).cycleProportion;
+        final currentSmallCycleInfo = c.singleMemoryGroupsAb(abw)[index]().currentSmallCycleInfo;
         return Row(
           children: [
             Expanded(
@@ -244,25 +241,26 @@ class MemoryGroupListPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Flexible(
-                        flex: p.$1,
+                        flex: currentSmallCycleInfo?.learnedNewAndReviewCount.newCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.green),
                         ),
                       ),
                       Flexible(
-                        flex: p.$2,
+                        flex: currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.newCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.orange),
                         ),
                       ),
                       Flexible(
-                        flex: p.$3,
+                        flex: currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.reviewCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.amberAccent),
                         ),
                       ),
                       Flexible(
-                        flex: p.$4,
+                        flex: (currentSmallCycleInfo?.shouldNewAndReviewCount?.getNewAndReviewCount ?? 0) -
+                            (currentSmallCycleInfo?.learnedNewAndReviewCount.getNewAndReviewCount ?? 0),
                         child: Container(
                             // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
                             ),
@@ -272,7 +270,7 @@ class MemoryGroupListPage extends StatelessWidget {
                 ),
               ),
             ),
-            Text(" ${mgAndOtherAb(abw).cycleCompleteCount}/${mgAndOtherAb(abw).cycleFragmentCount}", style: TextStyle(color: Colors.grey, fontSize: 12)),
+            // Text(" ${}/${currentSmallCycleInfo(abw).cycleFragmentCount}", style: TextStyle(color: Colors.grey, fontSize: 12)),
             SizedBox(width: 10),
           ],
         );

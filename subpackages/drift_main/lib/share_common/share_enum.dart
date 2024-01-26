@@ -39,11 +39,11 @@ enum FragmentMemoryInfoStudyStatus {
   
   never,
 
-  review,
+  reviewing,
 
-  complete,
+  completed,
 
-  stop,
+  paused,
 
 }
         
