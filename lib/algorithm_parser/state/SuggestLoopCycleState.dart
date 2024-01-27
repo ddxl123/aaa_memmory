@@ -40,59 +40,112 @@ class SmallCycle {
 
   int get cross24hCountFromLast => rawDelta! ~/ 24;
 
-  /// 当前时间点是否在上一个小周期往后最近的 00:00 前
-  bool get isCross0PointFromLastForNowLeft {
+  /// 相对 [lastCumulative24Syc]，当前24制时间是否在以 00:00 分割的元素中，即需展示"选择"的元素
+  /// 返回 bool - 是否是尾巴(如果有尾)
+  List<(DateTime, bool)> cross0PointFromLastForNowCount() {
+    // 仅存储当前24制时间是否在以 00:00 分割的元素中，即需展示"选择"的元素
+    final result = <(DateTime, bool)>[];
     final now = DateTime.now();
     final nowHour = (now.hour * 60 + now.minute) / 60;
+
+    // 1.23 -> 1
+    final rawStartFloor = rawStart.floor();
+    // 1.23 -> 0.23*60
+    final rawStartDecimal = ((rawStart - rawStart.floor()) * 60).toInt();
+
+    // 仅有 rawStart
     if (rawDelta == null) {
-      if (nowHour >= rawStart) {
-        return true;
+      if (rawStart > nowHour) {
+        result.add((now.copyWith(hour: rawStartFloor, minute: rawStartDecimal), false));
+        return result;
       } else {
-        return false;
-      }
-    } else {
-      if (nowHour >= lastCumulative24Syc) {
-        return true;
-      } else {
-        return false;
+        result.add((now.add(const Duration(days: 1)).copyWith(hour: rawStartFloor, minute: rawStartDecimal), false));
+        return result;
       }
     }
-  }
 
-  /// 当前时间点是否在当前小周期往前最近的 00:00 后
-  bool get isCross0PointFromLastForNowRight {
-    final now = DateTime.now();
-    final nowHour = (now.hour * 60 + now.minute) / 60;
-    if (rawDelta == null) {
-      if (nowHour < rawStart) {
-        return true;
-      } else {
-        return false;
+    // 不超过24h
+    if (!isCross24h) {
+      // 跨 00:00
+      if (lastCumulative24Syc > cumulative24Sys) {
+        if (nowHour > lastCumulative24Syc || nowHour < cumulative24Sys) {
+          result.add(
+            (
+              now.add(const Duration(days: 1)).copyWith(
+                    hour: cumulative24Sys.floor(),
+                    minute: ((cumulative24Sys - cumulative24Sys.floor()) * 60).toInt(),
+                  ),
+              false
+            ),
+          );
+          return result;
+        }
       }
-    } else {
-      if (nowHour < cumulative24Sys) {
-        return true;
-      } else {
-        return false;
+      // 不跨 00:00
+      else {
+        if (nowHour > lastCumulative24Syc && nowHour < cumulative24Sys) {
+          result.add(
+            (
+              now.copyWith(
+                hour: cumulative24Sys.floor(),
+                minute: ((cumulative24Sys - cumulative24Sys.floor()) * 60).toInt(),
+              ),
+              false
+            ),
+          );
+          return result;
+        }
       }
     }
-  }
 
-  /// 掐头去尾跨 00:00 次数
-  ///
-  /// 相对  [rawDelta]/[rawStart]，即上一个小周期，跨了几个 00:00 点
-  ///
-  /// 如果 [rawDelta] 不为 null，则可能跨 0 个 00:00
-  /// 如果 [rawDelta] 为 null，则利用 [rawStart] 处理，此时必然跨 1 个 00:00
-  int get cross0PointFromLastForNowCount {
-    if (rawDelta == null) {
-      return 0;
-    }
+    // 超过24h
 
-    // 掐头去尾。结果应始终是24小时的倍数，或是0，若不跨天也是0。
+    // 掐头去尾，跨了多少个 00:00。结果应始终是24小时的倍数，或是0，若不跨天也是0。
+    // -头-|-1-|-2-|-3-|-尾-
+    // "|"表示 00:00，
+    // "1 2 3"序号，表示 count 数量有3个
     final cutTheFrills = (rawDelta! - (24 - lastCumulative24Syc) - cumulative24Sys).toInt();
+    int count = cutTheFrills ~/ 24;
 
-    return cutTheFrills ~/ 24;
+    // 是否有头
+    if (nowHour > lastCumulative24Syc) {
+      result.add(
+        (
+          now.add(Duration(days: count + 1)).copyWith(
+                hour: cumulative24Sys.floor(),
+                minute: ((cumulative24Sys - cumulative24Sys.floor()) * 60).toInt(),
+              ),
+          false
+        ),
+      );
+    }
+
+    for (int i = 0; i < count; i++) {
+      result.add(
+        (
+          now.add(Duration(days: count - i)).copyWith(
+                hour: cumulative24Sys.floor(),
+                minute: ((cumulative24Sys - cumulative24Sys.floor()) * 60).toInt(),
+              ),
+          false
+        ),
+      );
+    }
+
+    // 是否有尾
+    if (nowHour < cumulative24Sys) {
+      result.add(
+        (
+          now.copyWith(
+            hour: cumulative24Sys.floor(),
+            minute: ((cumulative24Sys - cumulative24Sys.floor()) * 60).toInt(),
+          ),
+          true
+        ),
+      );
+    }
+
+    return result;
   }
 
   /// 将24小时制的时间点浮点数转换成时分字符

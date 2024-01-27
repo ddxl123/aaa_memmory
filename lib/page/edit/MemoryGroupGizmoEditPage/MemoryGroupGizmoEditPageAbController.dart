@@ -48,20 +48,19 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     }
     bool isBack = false;
     await showCustomDialog(
-      builder: (_) =>
-          OkAndCancelDialogWidget(
-            title: '内容存在修改，是否要丢弃？',
-            okText: '丢弃',
-            cancelText: '继续编辑',
-            text: null,
-            onOk: () async {
-              SmartDialog.dismiss();
-              isBack = true;
-            },
-            onCancel: () {
-              SmartDialog.dismiss();
-            },
-          ),
+      builder: (_) => OkAndCancelDialogWidget(
+        title: '内容存在修改，是否要丢弃？',
+        okText: '丢弃',
+        cancelText: '继续编辑',
+        text: null,
+        onOk: () async {
+          SmartDialog.dismiss();
+          isBack = true;
+        },
+        onCancel: () {
+          SmartDialog.dismiss();
+        },
+      ),
     );
     return !isBack;
   }
@@ -139,7 +138,6 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
     return true;
   }
 
-
   /// 重新读取，并继续当前小周期时的验证。
   Future<bool> verifyForContinueCurrentSmallCycle() async {
     await cloneSingleMemoryGroup().currentSmallCycleInfo.read();
@@ -163,10 +161,15 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   }
 
   /// 只进行存储。
-  Future<void> onlySave() async {
+  Future<bool> onlySave() async {
+    bool isVerify = verifyForOnlySave();
+    if (!isVerify) {
+      return false;
+    }
     await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: cloneSingleMemoryGroup().memoryGroup);
     cloneSingleMemoryGroup.refreshForce();
     listPageC.refreshController.requestRefresh();
+    return true;
   }
 
   /// 启动任务
@@ -220,29 +223,31 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
         final newCycleSettingAlgorithm = cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.suggest_loop_cycle_algorithm!;
         late final LoopCycle newCycle;
         await AlgorithmParser.parse(
-          stateFunc: () =>
-              SuggestLoopCycleState(
-                algorithmWrapper: AlgorithmWrapper.fromJsonString(newCycleSettingAlgorithm),
-                // TODO: 改成 SimulationType.external 类型
-                simulationType: SimulationType.syntaxCheck,
-                externalResultHandler: null,),
+          stateFunc: () => SuggestLoopCycleState(
+            algorithmWrapper: AlgorithmWrapper.fromJsonString(newCycleSettingAlgorithm),
+            // TODO: 改成 SimulationType.external 类型
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          ),
           onSuccess: (SuggestLoopCycleState state) async {
             newCycle = state.result;
           },
           onError: (AlgorithmException ec) async {
             throw ec;
-          },);
-
+          },
+        );
 
         // 当前周期所设置的循环周期
         // 这个为 null 说明当前不存在正在执行的小周期
         final oldCycleSetting = vo.memory_group_small_cycle_info?.loop_cycle;
         final LoopCycle? oldCycle = oldCycleSetting == null ? null : LoopCycle.fromText(text: oldCycleSetting);
 
-
         final List<SmallCycle> targets = newCycle.nowBeforeWhich();
 
         SmallCycle? target;
+        // 第几个可选的 00:00 前
+        DateTime? selectedDateTime;
+
         // 如果只有一个，则直接赋予这一个
         if (targets.length == 1) {
           target = targets.single;
@@ -253,9 +258,8 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
           // 如果 oldCycle 为 null，也按照已修改的处理方式进行处理
           if (!newCycle.equal(target: oldCycle)) {
             final controller = ScrollController();
-            SmallCycle? selected;
-            // 第几个 00:00 前
-            int nthBefore = 0;
+            SmallCycle? tempSelected;
+            DateTime? tempSelectedDateTime;
             await showCustomDialog(
               stfBuilder: (ctx, r) {
                 return OkAndCancelDialogWidget(
@@ -280,11 +284,9 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                     ),
                     Row(children: [Expanded(child: Text("现循环周期：${newCycle.toText()}", style: TextStyle(color: Colors.green)))]),
                     SizedBox(height: 10),
-                    Row(children: [Expanded(child: Text("请点击橙色圆圈对区间进行选择", style: TextStyle(color: Colors.grey)))]),
+                    Row(children: [Expanded(child: Text("请点击橙色字体对区间进行选择", style: TextStyle(color: Colors.grey)))]),
                     Container(
-                      decoration: BoxDecoration(border: Border.all(color: Theme
-                          .of(context)
-                          .primaryColor)),
+                      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).primaryColor)),
                       child: Scrollbar(
                         controller: controller,
                         thumbVisibility: true,
@@ -297,7 +299,8 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               ...newCycle.completeSmallCycles.map(
-                                    (e) {
+                                (e) {
+                                  final zeroList = e.cross0PointFromLastForNowCount();
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -305,51 +308,22 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                                       Row(
                                         children: [
                                           Text("——", style: TextStyle(color: Colors.grey)),
-                                          // TODO: 处理跨天的情况 target!.cross0PointCountFromLastForNow
-
-                                          if()
-                                            Row(children: [
-                                              Text("——", style: TextStyle(color: Colors.grey)),
-                                              if(e.cross0PointCountFromLastForNow.$1) GestureDetector(
-                                                child: Text("选择", style: TextStyle(color: Colors.orange)),
-                                                onTap: () {
-                                                  selected = e;
-                                                  nthBefore = 1;
-                                                },),
-                                              Text("——", style: TextStyle(color: Colors.grey)),
-                                              Text("00:00", style: TextStyle(color: Colors.grey)),
-                                            ],),
-
-                                          for(int i = 0; i < e.cross0PointCountFromLastForNow.$2; i++)
+                                          for (int i = 0; i < zeroList.length; i++)
                                             Row(
                                               children: [
-                                                Text("——", style: TextStyle(color: Colors.grey)),
+                                                Text(zeroList[i].$2 ? "00:00——" : "——", style: TextStyle(color: Colors.grey)),
                                                 GestureDetector(
                                                   child: Text("选择", style: TextStyle(color: Colors.orange)),
                                                   onTap: () {
-                                                    selected = e;
-                                                    nthBefore = i + 1;
-                                                  },),
-                                                Text("——", style: TextStyle(color: Colors.grey)),
+                                                    tempSelected = e;
+                                                    tempSelectedDateTime = zeroList[i].$1;
+                                                  },
+                                                ),
+                                                Text(zeroList.length == 1 && zeroList[i].$2 ? "——" : "——00:00", style: TextStyle(color: Colors.grey)),
                                               ],
                                             ),
-                                          if(e.cross0PointCountFromLastForNow.$1 || e.cross0PointCountFromLastForNow.$3 || e.cross0PointCountFromLastForNow.$2 > 0)
-                                            Row(children: [
-                                              if(!e.cross0PointCountFromLastForNow.$1)
-                                                Text("00:00", style: TextStyle(color: Colors.grey)),
-                                              Text("——", style: TextStyle(color: Colors.grey)),
-                                              GestureDetector(
-                                                child: Text("选择", style: TextStyle(color: Colors.orange)),
-                                                onTap: () {
-                                                  selected = e;
-                                                  nthBefore = 1;
-                                                },),
-                                              Text("——", style: TextStyle(color: Colors.grey)),
-                                            ],),
                                           Text("——", style: TextStyle(color: Colors.grey)),
-                                          Text(e.cumulative24Sys.toString(), style: TextStyle(color: Theme
-                                              .of(context)
-                                              .primaryColor)),
+                                          Text(e.cumulative24Sys.toString(), style: TextStyle(color: Theme.of(context).primaryColor)),
                                           Text("————", style: TextStyle(color: Colors.grey)),
                                         ],
                                       ),
@@ -369,20 +343,19 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                         Expanded(
                           child: Text(
                             "当前时间：${DateFormat("y/M/d H:mm").format(DateTime.now())}",
-                            style: TextStyle(color: Theme
-                                .of(context)
-                                .primaryColor),
+                            style: TextStyle(color: Theme.of(context).primaryColor),
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: 10),
-                    Text("已选择第 ${selected?.order ?? "[未选择]"} 个小周期"),
+                    Text("已选择第 ${tempSelected?.order ?? "[未选择]"} 个小周期"),
                   ],
                   okText: "确定",
                   cancelText: "取消",
                   onOk: () {
-                    target = selected;
+                    target = tempSelected;
+                    selectedDateTime = tempSelectedDateTime;
                     SmartDialog.dismiss(status: SmartStatus.dialog);
                   },
                 );
@@ -395,26 +368,50 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
           SmartDialog.showToast("已取消选择");
           return;
         }
+        NewAndReviewCount? shouldNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
+        await AlgorithmParser.parse(
+          stateFunc: () => SuggestCountForNewAndReviewState(
+            algorithmWrapper: AlgorithmWrapper.fromJsonString(cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.suggest_count_for_new_and_review_algorithm!),
+            // TODO: 改成 SimulationType.external
+            simulationType: SimulationType.syntaxCheck,
+            externalResultHandler: null,
+          ),
+          onSuccess: (SuggestCountForNewAndReviewState state) async {
+            shouldNewAndReviewCount = state.result;
+          },
+          onError: (AlgorithmException ec) async {
+            shouldNewAndReviewCount = null;
+            logger.outError(show: ec.error, stackTrace: ec.stackTrace);
+          },
+        );
+        if (shouldNewAndReviewCount == null) {
+          return;
+        }
 
+        final newMemoryGroupSmallCycleInfo = Crt.memoryGroupSmartCycleInfoEntity(
+          creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
+          memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.id,
+          memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
+          loop_cycle: newCycle.toText(),
+          small_cycle_order: target!.order,
+          should_small_cycle_end_time: selectedDateTime!,
+          should_new_learn_count: shouldNewAndReviewCount!.newCount,
+          should_review_count: shouldNewAndReviewCount!.reviewCount,
+          incremental_new_learn_count: cloneSingleMemoryGroup().currentSmallCycleInfo.shouldIncrementalNewAndReviewCount.newCount,
+          incremental_review_count: cloneSingleMemoryGroup().currentSmallCycleInfo.shouldIncrementalNewAndReviewCount.reviewCount,
+        );
         if (vo.memory_group_small_cycle_info == null) {
           await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
-            crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
-              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-              memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.id,
-              memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
-              loop_cycle: newCycle.toText(),
-              small_cycle_order: target!.order,
-              should_small_cycle_end_time
-              :,
-            ),
+            crtEntity: newMemoryGroupSmallCycleInfo,
             onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
-              // TODO: 在这之前得有个加载界面
               cloneSingleMemoryGroup().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
-              await onlySave(isVerify: false);
+              SmartDialog.showLoading(msg: "保存中...");
+              await onlySave();
+              await listPageC.refreshPage();
+              SmartDialog.dismiss(status: SmartStatus.loading);
+              SmartDialog.showToast("保存成功！");
 
               Navigator.pop(context);
-              listPageC.refreshController.requestRefresh();
-
               await pushToInAppStage(context: context, memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id);
             },
             onError: (int? code, HttperException httperException, StackTrace st) async {
@@ -422,24 +419,16 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
             },
           );
         } else {
-          await driftDb.cloudOverwriteLocalDAO.insertCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
-            crtEntity: Crt.memoryGroupSmartCycleInfoEntity(
-              creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
-              memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo.getMemoryAlgorithm!.id,
-              memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
-              loop_cycle: cloneSingleMemoryGroup().currentSmallCycleInfo.loopCycle!.toText(),
-              small_cycle_order: target!.order,
-              should_small_cycle_end_time
-              :,
-            ),
+          await driftDb.cloudOverwriteLocalDAO.updateCloudMemoryGroupSmallCycleInfoAndOverwriteLocal(
+            memoryGroupSmartCycleInfo: newMemoryGroupSmallCycleInfo..id = cloneSingleMemoryGroup().currentSmallCycleInfo.memoryGroupSmartCycleInfo!.id,
             onSuccess: (MemoryGroupSmartCycleInfo memoryGroupSmartCycleInfo) async {
-              // TODO: 在这之前得有个加载界面
-              cloneSingleMemoryGroup().memoryGroup.study_status = StudyStatus.studying_for_this_cycle;
-              await onlySave(isVerify: false);
+              SmartDialog.showLoading(msg: "保存中...");
+              await onlySave();
+              await listPageC.refreshPage();
+              SmartDialog.dismiss(status: SmartStatus.loading);
+              SmartDialog.showToast("保存成功！");
 
               Navigator.pop(context);
-              listPageC.refreshController.requestRefresh();
-
               await pushToInAppStage(context: context, memoryGroupId: cloneSingleMemoryGroup().memoryGroup.id);
             },
             onError: (int? code, HttperException httperException, StackTrace st) async {
@@ -515,7 +504,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
         // 处理仅存在于本地
         await driftDb.batch(
-              (batch) async {
+          (batch) async {
             batch.deleteWhere(driftDb.fragmentMemoryInfos, (tbl) => tbl.id.isIn(onlyLocal));
           },
         );
