@@ -2,8 +2,9 @@ import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
-import '../page/list/MemoryGroupListPageAbController.dart';
 import '../page/list/MemoryAlgorithmListPageAbController.dart';
+import '../page/list/MemoryGroupListPage/MemoryGroupListPageAbController.dart';
+import '../page/list/MemoryGroupListPage/SingleMemoryGroup.dart';
 import '../push_page/push_page.dart';
 import 'showCreateMemoryAlgorithmDialog.dart';
 

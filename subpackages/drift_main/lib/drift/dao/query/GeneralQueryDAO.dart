@@ -8,7 +8,6 @@ enum QueryFragmentWhereType {
   selected,
 }
 
-/// TODO: 所有curd函数体都要包裹上事务。
 @DriftAccessor(
   tables: tableClasses,
 )
@@ -39,39 +38,52 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
     return sel.isEmpty ? null : sel.first;
   }
 
-  Future<MemoryGroup?> queryOrNullMemoryGroup({required int memoryGroupId}) async {
-    return await (select(memoryGroups)..where((tbl) => tbl.id.equals(memoryGroupId))).getSingleOrNull();
-  }
-
-  Future<List<MemoryGroup>> queryAllMemoryGroups() async {
-    return await select(memoryGroups).get();
-  }
-
-  Future<MemoryAlgorithm?> queryOrNullMemoryAlgorithm({required int memoryModelId}) async {
-    return await (select(memoryAlgorithms)..where((tbl) => tbl.id.equals(memoryModelId))).getSingleOrNull();
-  }
-
-  /// 通过 [studyStatus] 查询 [memoryGroupId] 中的碎片数量 (即 [FragmentMemoryInfo] 数量)
+  /// 根据实体 [id] 查询实体
   ///
-  /// 如果 [studyStatus] 为 null，则查询 [memoryGroupId] 中的全部碎片数量
-  Future<int> queryFragmentMemoryInfosCountByStudyStatus({
-    required int memoryGroupId,
-    required FragmentMemoryInfoStudyStatus? studyStatus,
+  /// 如果查询结果存在多个，则抛出异常
+  Future<D?> querySingleOrNullById<T extends Table, D extends DataClass>({
+    required TableInfo<T, D> tableInfo,
+    required int id,
   }) async {
-    final count = fragmentMemoryInfos.id.count();
-    final sel = selectOnly(fragmentMemoryInfos);
+    return await (select(tableInfo)..where((tbl) => (tbl as dynamic).id.equals(id))).getSingleOrNull();
+  }
 
-    late final Expression<bool> selExpr;
-    if (studyStatus == null) {
-      selExpr = fragmentMemoryInfos.memory_group_id.equals(memoryGroupId);
-    } else {
-      selExpr = fragmentMemoryInfos.memory_group_id.equals(memoryGroupId) & fragmentMemoryInfos.study_status.equalsValue(studyStatus);
-    }
+  /// 查询实体类对应的全部实体
+  Future<List<D>> queryAll<T extends Table, D extends DataClass>({required TableInfo<T, D> tableInfo}) async {
+    return await select(tableInfo).get();
+  }
 
-    sel.where(selExpr);
+  /// 通过 [where] 查询实体类对应的全部实体
+  Future<List<D>> queryAllByWhere<T extends Table, D extends DataClass>({
+    required TableInfo<T, D> tableInfo,
+    required Expression<bool> Function(T) whereExpr,
+  }) async {
+    final sel = select(tableInfo);
+    sel.where((tbl) => whereExpr(tbl));
+    return await sel.get();
+  }
+
+  /// 通过 [where] 查询实体类对应的单个实体
+  ///
+  /// 如果查询结果存在多个，则抛出异常
+  Future<D?> querySingleOrNullByWhere<T extends Table, D extends DataClass>({
+    required TableInfo<T, D> tableInfo,
+    required Expression<bool> Function(T) whereExpr,
+  }) async {
+    final sel = select(tableInfo);
+    sel.where((tbl) => whereExpr(tbl));
+    return await sel.getSingleOrNull();
+  }
+
+  Future<int> queryCount<T extends Table, D extends DataClass>({
+    required TableInfo<T, D> tableInfo,
+    required Expression<bool> whereExpr,
+  }) async {
+    final count = (tableInfo as dynamic).id.count();
+    final sel = selectOnly(tableInfo);
+    sel.where(whereExpr);
     sel.addColumns([count]);
-    final result = (await sel.getSingle()).read(count);
-    return result!;
+    return (await sel.getSingle()).read(count) as int;
   }
 
   /// [count] 要同步多少个

@@ -1,9 +1,10 @@
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../list/MemoryGroupListPageAbController.dart';
+import '../../list/MemoryGroupListPage/MemoryGroupListPageAbController.dart';
+import '../../list/MemoryGroupListPage/SingleMemoryGroup.dart';
+import '../../list/MemoryGroupListPage/StatusButton.dart';
 import '../edit_page_type.dart';
 import 'CurrentCircleWidget.dart';
 import 'MemoryGroupGizmoEditPageAbController.dart';

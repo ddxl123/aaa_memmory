@@ -11,8 +11,23 @@ class NewAndReviewCount {
 
   /// 复习的数量
   final int reviewCount;
+}
 
-  int get getNewAndReviewCount => newCount + reviewCount;
+class ThirdNewAndReviewCount {
+  ThirdNewAndReviewCount({
+    required this.newCount,
+    required this.reviewCount,
+    required this.newReviewCount,
+  });
+
+  /// 新学习的数量
+  final int newCount;
+
+  /// 复习的数量
+  final int reviewCount;
+
+  /// 新复习的数量
+  final int newReviewCount;
 }
 
 /// 下一次展示时间的算法状态

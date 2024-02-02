@@ -37,10 +37,13 @@ class PerformerQuery {
   ///
   /// 若没有新碎片了，则返回 null。
   Future<Performer?> getOneNewPerformer({required MemoryGroup mg, required InAppStageAbController inAppStageAbController}) async {
-    // 识别是否还需要学习新碎片。
-    if (mg.will_new_learn_count == 0) {
+    // 检查是否还需要学习新的
+    final have = inAppStageAbController.currentSmallCycleInfo!.getNotLearnThirdNewAndReviewCount!.newCount != 0;
+    if (!have) {
       return null;
     }
+
+    // 获取要新学习的碎片
     final selInfo = driftDb.select(driftDb.fragmentMemoryInfos);
     selInfo.where((tbl) => tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.never));
     if (mg.new_display_order == NewDisplayOrder.random) {
@@ -67,32 +70,39 @@ class PerformerQuery {
   ///
   /// 若没有复习碎片了，则返回 null。
   Future<Performer?> getOneReviewPerformer({required MemoryGroup mg, required InAppStageAbController inAppStageAbController}) async {
-    final lastNextPlanedShowTimeExpr = driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract<int>(r'$[#-1]');
-    final reviewIntervalDiff = timeSecondsDifference(right: mg.review_interval, left: mg.start_time!);
+    // 检查是否还需要学习新的
+    final have1 = inAppStageAbController.currentSmallCycleInfo!.getNotLearnThirdNewAndReviewCount!.reviewCount != 0;
+    final have2 = inAppStageAbController.currentSmallCycleInfo!.getNotLearnThirdNewAndReviewCount!.newReviewCount != 0;
+    if (!have1 && !have2) {
+      return null;
+    }
+
     // [isExpire] 查询的是否为过期类型。
     Future<FragmentMemoryInfo?> query(bool isExpire) async {
+      final lastNextPlanedShowTimeExpr = driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract<int>(r'$[#-1]');
       final selInfo = driftDb.select(driftDb.fragmentMemoryInfos);
       selInfo.addColumns([lastNextPlanedShowTimeExpr]);
       selInfo.where(
         (tbl) {
-          final expr = tbl.memory_group_id.equals(mg.id) &
-              tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
-              lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(reviewIntervalDiff);
+          final expr = tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.reviewing);
           if (isExpire) {
-            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(timeSecondsDifference(right: DateTime.now(), left: mg.start_time!));
+            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds);
           } else {
-            return expr & lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(timeSecondsDifference(right: DateTime.now(), left: mg.start_time!));
+            return expr &
+                lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds) &
+                lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleEndSeconds);
           }
         },
       );
+      // 升序
       selInfo.orderBy([(o) => OrderingTerm(expression: lastNextPlanedShowTimeExpr, mode: OrderingMode.asc)]);
       selInfo.limit(1);
       return await selInfo.getSingleOrNull();
     }
 
     late final FragmentMemoryInfo? finalResult;
-    final resultExpire = await query(true);
     final resultNoExpire = await query(false);
+    final resultExpire = await query(true);
     if (mg.review_display_order == ReviewDisplayOrder.expire_first) {
       finalResult = resultExpire ?? resultNoExpire;
     } else if (mg.review_display_order == ReviewDisplayOrder.no_expire_first) {
@@ -118,12 +128,18 @@ class PerformerQuery {
 
   /// [InternalVariableConstantHandler.k1FCountAllConst]
   Future<int> getCountAll({required int memoryGroupId}) async {
-    return await driftDb.generalQueryDAO.queryFragmentInMemoryGroupCount(memoryGroupId: memoryGroupId);
+    return await driftDb.generalQueryDAO.queryCount(
+      tableInfo: driftDb.fragmentMemoryInfos,
+      whereExpr: driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroupId),
+    );
   }
 
   /// [InternalVariableConstantHandler.k2CountNewConst]
   Future<int> queryFragmentCountByStudyStatus({required int memoryGroupId, required FragmentMemoryInfoStudyStatus studyStatus}) async {
-    return await driftDb.generalQueryDAO.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: studyStatus);
+    return await driftDb.generalQueryDAO.queryCount(
+      tableInfo: driftDb.fragmentMemoryInfos,
+      whereExpr: driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroupId) & driftDb.fragmentMemoryInfos.study_status.equalsValue(studyStatus),
+    );
   }
 
   /// TODO:

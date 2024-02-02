@@ -6,9 +6,10 @@ import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../single_dialog/showCreateMemoryGroupDialog.dart';
-import '../gizmo/MemoryGroupGizmoPage.dart';
+import '../../../single_dialog/showCreateMemoryGroupDialog.dart';
+import '../../gizmo/MemoryGroupGizmoPage.dart';
 import 'MemoryGroupListPageAbController.dart';
+import 'StatusButton.dart';
 
 class MemoryGroupListPage extends StatelessWidget {
   const MemoryGroupListPage({super.key, required this.user});
@@ -139,7 +140,8 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待新学", style: TextStyle(color: Colors.deepOrange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.deepOrange)),
-                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.newCount}", style: TextStyle(color: Colors.deepOrange)),
+                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnThirdNewAndReviewCount?.newCount ?? "-"}",
+                                            style: TextStyle(color: Colors.deepOrange)),
                                       ],
                                     ),
                                   ),
@@ -152,7 +154,8 @@ class MemoryGroupListPage extends StatelessWidget {
                                       children: [
                                         Text("待复习", style: TextStyle(color: Colors.orange)),
                                         Text("  ●  ", style: TextStyle(fontSize: 8, color: Colors.orange)),
-                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.reviewCount}", style: TextStyle(color: Colors.orange)),
+                                        Text("${singleMgAb(abw).currentSmallCycleInfo?.getNotLearnThirdNewAndReviewCount?.reviewCount ?? "-"}",
+                                            style: TextStyle(color: Colors.orange)),
                                       ],
                                     ),
                                   ),
@@ -241,30 +244,30 @@ class MemoryGroupListPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Flexible(
-                        flex: currentSmallCycleInfo?.learnedNewAndReviewCount.newCount ?? 0,
+                        flex: currentSmallCycleInfo?.learnedThirdNewAndReviewCount.newCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.green),
                         ),
                       ),
                       Flexible(
-                        flex: currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.newCount ?? 0,
+                        flex: currentSmallCycleInfo?.getNotLearnThirdNewAndReviewCount?.newCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.orange),
                         ),
                       ),
-                      Flexible(
-                        flex: currentSmallCycleInfo?.getNotLearnNewAndReviewCount?.reviewCount ?? 0,
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.amberAccent),
-                        ),
-                      ),
-                      Flexible(
-                        flex: (currentSmallCycleInfo?.shouldNewAndReviewCount?.getNewAndReviewCount ?? 0) -
-                            (currentSmallCycleInfo?.learnedNewAndReviewCount.getNewAndReviewCount ?? 0),
-                        child: Container(
-                            // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
-                            ),
-                      ),
+                      // Flexible(
+                      //   flex: currentSmallCycleInfo.getNotLearnThirdNewAndReviewCount?.reviewCount ?? 0,
+                      //   child: Container(
+                      //     decoration: BoxDecoration(color: Colors.amberAccent),
+                      //   ),
+                      // ),
+                      // Flexible(
+                      //   flex: (currentSmallCycleInfo.shouldNewAndReviewCount?.getNewAndReviewCount ?? 0) -
+                      //       (currentSmallCycleInfo.learnedThirdNewAndReviewCount.getNewAndReviewCount ?? 0),
+                      //   child: Container(
+                      //       // decoration: BoxDecoration(color: Colors.g.withOpacity(0.3), borderRadius: BorderRadius.circular(50)),
+                      //       ),
+                      // ),
                     ],
                   ),
                 ),

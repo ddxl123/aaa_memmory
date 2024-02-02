@@ -38,7 +38,7 @@ class MemoryAlgorithmGizmoEditPageAbController extends AbController {
       return false;
     }
 
-    final oldMa = await driftDb.generalQueryDAO.queryOrNullMemoryAlgorithm(memoryModelId: cloneMemoryAlgorithmAb().id);
+    final oldMa = await driftDb.generalQueryDAO.querySingleOrNullById(tableInfo: driftDb.memoryAlgorithms, id: cloneMemoryAlgorithmAb().id);
     if (oldMa == null) {
       SmartDialog.showToast("当前记忆算法不存在！");
       return false;

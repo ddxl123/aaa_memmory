@@ -1,13 +1,6 @@
-import 'package:aaa_memory/algorithm_parser/parser.dart';
 import 'package:aaa_memory/tool/other.dart';
-import 'package:drift/drift.dart' as d;
-import 'package:drift/extensions/json1.dart';
-import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/share_common/share_enum.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 
 import '../../../single_dialog/showSelectMemoryAlgorithmInMemoryGroupDialog.dart';
@@ -39,20 +32,10 @@ class CurrentCircleWidget extends StatelessWidget {
                   _memoryAlgorithmWidget(),
                   SizedBox(height: 10),
                   _memoryLoopCycleWidget(),
-                ],
-              ),
-              // _selectFragmentWidget(),
-              Divider(color: Colors.black12, height: 30),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: 10),
-                      Text("本周期学习数量 (已减去上次所学)", style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                  _newLearnCountWidget(),
-                  const ReviewIntervalWidget(),
+                  SizedBox(height: 10),
+                  _newCountWidget(),
+                  SizedBox(height: 10),
+                  _reviewCountWidget(),
                 ],
               ),
               Divider(color: Colors.black12, height: 30),
@@ -120,10 +103,10 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('使用算法：'),
               TextButton(
                 style: ButtonStyle(visualDensity: kMinVisualDensity),
-                child: Text(c.cloneSingleMemoryGroup(abw).getMemoryAlgorithm?.title ?? '点击选择'),
+                child: Text(c.cloneSingleMemoryGroup(abw).currentSmallCycleInfo?.getMemoryAlgorithm?.title ?? '点击选择'),
                 onPressed: () async {
                   await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneSingleMemoryGroup);
-                  await c.cloneSingleMemoryGroup().parseLoopCycle();
+                  await c.cloneSingleMemoryGroup().currentSmallCycleInfo!.parseLoopCycle();
                   abw.refresh();
                   c.cloneSingleMemoryGroup.refreshForce();
                 },
@@ -140,7 +123,7 @@ class CurrentCircleWidget extends StatelessWidget {
   Widget _memoryLoopCycleWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
-        final lc = c.cloneSingleMemoryGroup(abw).loopCycle;
+        final lc = c.cloneSingleMemoryGroup(abw).currentSmallCycleInfo?.loopCycle;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           child: Row(
@@ -158,7 +141,7 @@ class CurrentCircleWidget extends StatelessWidget {
                     // TODO：查询描述
                     CustomTooltipText(
                         text: "2. 以接下来最近的 [${lc.startSmallCycle.getHmText}] 为起始时间点，"
-                            "分别以 ${c.cloneSingleMemoryGroup(abw).loopCycle?.toTextWithoutStart() ?? "[未设置]"} 小时为累加周期。"),
+                            "分别以 ${lc.toTextWithoutStart()} 小时为累加周期。"),
                 ],
               ),
               // TODO:
@@ -170,54 +153,44 @@ class CurrentCircleWidget extends StatelessWidget {
     );
   }
 
-  Widget _newLearnCountWidget() {
+  Widget _newCountWidget() {
     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
       builder: (c, abw) {
+        final csi = c.cloneSingleMemoryGroup(abw).currentSmallCycleInfo!;
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           child: Row(
             children: [
-              const Text('新学数量：'),
+              const Text('新碎片数量：'),
               Expanded(
-                child: StfBuilder1<int>(
-                  // 保留上一次的设置
-                  initValue: 1,
-                  builder: (int value, BuildContext context, ResetValue<int> resetValue) {
-                    int changeValue = value;
-
-                    final mgAndOtherAb = c.cloneSingleMemoryGroup(abw);
-
-                    // 不能超过最大值
-                    if (changeValue > mgAndOtherAb.totalWaitNewLearnCount) {
-                      changeValue = mgAndOtherAb.totalWaitNewLearnCount;
-                    }
-                    // 如果没有 space，则 0/300，其中 0 字符长度会动态的变宽成 10 或 100，从而导致刷新的时候滑块抖动。
-                    // space 意味着将 0 前面添加两个 0，即 000/300。
-                    int space = mgAndOtherAb.totalWaitNewLearnCount.toString().length - changeValue.toInt().toString().length;
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: Slider(
-                            label: changeValue.toInt().toString(),
-                            min: 0,
-                            max: mgAndOtherAb.totalWaitNewLearnCount.toDouble(),
-                            value: changeValue.toDouble(),
-                            divisions: mgAndOtherAb.totalWaitNewLearnCount == 0 ? null : mgAndOtherAb.totalWaitNewLearnCount,
-                            onChanged: (n) {
-                              resetValue(n.toInt(), true);
-                            },
-                            onChangeEnd: (n) {
-                              // mgAndOtherAb.memoryGroup.will_new_learn_count = n.floor();
-                              c.cloneSingleMemoryGroup.refreshForce();
-                            },
-                          ),
-                        ),
-                        Text('${'0' * space}${changeValue.toInt()}/${mgAndOtherAb.totalWaitNewLearnCount}')
-                      ],
-                    );
-                  },
+                child: Text(
+                  "${csi.learnedThirdNewAndReviewCount.newCount}/${csi.shouldNewAndReviewCount?.newCount ?? "-"}",
                 ),
               ),
+              SizedBox(width: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _reviewCountWidget() {
+    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
+      builder: (c, abw) {
+        final csi = c.cloneSingleMemoryGroup(abw).currentSmallCycleInfo!;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          child: Row(
+            children: [
+              const Text('复习碎片数量：'),
+              Expanded(
+                child: Text(
+                  "${csi.learnedThirdNewAndReviewCount.reviewCount}/${csi.shouldNewAndReviewCount?.reviewCount ?? "-"}"
+                  "  (+${csi.learnedThirdNewAndReviewCount.newReviewCount})",
+                ),
+              ),
+              SizedBox(width: 10),
             ],
           ),
         );
@@ -307,94 +280,94 @@ class CurrentCircleWidget extends StatelessWidget {
   }
 }
 
-class ReviewIntervalWidget extends StatefulWidget {
-  const ReviewIntervalWidget({super.key});
-
-  @override
-  State<ReviewIntervalWidget> createState() => _ReviewIntervalWidgetState();
-}
-
-class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
-  final MemoryGroupGizmoEditPageAbController c = Aber.find<MemoryGroupGizmoEditPageAbController>();
-
-  DateTime reviewInterval = DateTime.now();
-
-  int reviewIntervalCount = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    queryCountForReviewInterval();
-  }
-
-  Future<void> queryCountForReviewInterval() async {
-    final mgAndOther = c.cloneSingleMemoryGroup();
-    if (mgAndOther.memoryGroup.study_status == StudyStatus.not_startup) {
-      return;
-    }
-    final diff = reviewInterval.difference(mgAndOther.memoryGroup.start_time!);
-    final count = driftDb.fragmentMemoryInfos.id.count();
-    final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
-    sel.where(
-      driftDb.fragmentMemoryInfos.memory_group_id.equals(mgAndOther.memoryGroup.id) &
-          driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
-          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isSmallerOrEqualValue(diff.inSeconds),
-    );
-    sel.addColumns([count]);
-    final result = await sel.get();
-    reviewIntervalCount = result.first.read(count)!;
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AbBuilder<MemoryGroupGizmoEditPageAbController>(
-      builder: (c, abw) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    text: "复习接下来 ",
-                    children: [
-                      TextSpan(
-                        text: time2TextTime(
-                          longSeconds: c.cloneSingleMemoryGroup(abw).memoryGroup.review_interval.difference(DateTime.now()).inSeconds,
-                          canNegative: true,
-                        ),
-                        style: TextStyle(decoration: TextDecoration.underline),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            DatePicker.showDateTimePicker(
-                              c.context,
-                              locale: LocaleType.zh,
-                              minTime: DateTime.now(),
-                              currentTime: c.cloneSingleMemoryGroup(abw).memoryGroup.review_interval,
-                              onChanged: (v) {
-                                c.cloneSingleMemoryGroup.refreshInevitable((obj) => obj..memoryGroup.review_interval = v);
-                                queryCountForReviewInterval();
-                              },
-                            );
-                          },
-                      ),
-                      TextSpan(
-                        text: " 前需要复习的 ",
-                      ),
-                      TextSpan(
-                        text: "${c.cloneSingleMemoryGroup().reviewIntervalCount}",
-                      ),
-                      TextSpan(text: " 个碎片")
-                    ],
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+// class ReviewIntervalWidget extends StatefulWidget {
+//   const ReviewIntervalWidget({super.key});
+//
+//   @override
+//   State<ReviewIntervalWidget> createState() => _ReviewIntervalWidgetState();
+// }
+//
+// class _ReviewIntervalWidgetState extends State<ReviewIntervalWidget> {
+//   final MemoryGroupGizmoEditPageAbController c = Aber.find<MemoryGroupGizmoEditPageAbController>();
+//
+//   DateTime reviewInterval = DateTime.now();
+//
+//   int reviewIntervalCount = 0;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     queryCountForReviewInterval();
+//   }
+//
+//   Future<void> queryCountForReviewInterval() async {
+//     final mgAndOther = c.cloneSingleMemoryGroup();
+//     if (mgAndOther.memoryGroup.study_status == StudyStatus.not_startup) {
+//       return;
+//     }
+//     final diff = reviewInterval.difference(mgAndOther.memoryGroup.start_time!);
+//     final count = driftDb.fragmentMemoryInfos.id.count();
+//     final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
+//     sel.where(
+//       driftDb.fragmentMemoryInfos.memory_group_id.equals(mgAndOther.memoryGroup.id) &
+//           driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.review) &
+//           driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isSmallerOrEqualValue(diff.inSeconds),
+//     );
+//     sel.addColumns([count]);
+//     final result = await sel.get();
+//     reviewIntervalCount = result.first.read(count)!;
+//     setState(() {});
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return AbBuilder<MemoryGroupGizmoEditPageAbController>(
+//       builder: (c, abw) {
+//         return Padding(
+//           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+//           child: Row(
+//             children: [
+//               Expanded(
+//                 child: RichText(
+//                   text: TextSpan(
+//                     text: "复习接下来 ",
+//                     children: [
+//                       TextSpan(
+//                         text: time2TextTime(
+//                           longSeconds: c.cloneSingleMemoryGroup(abw).memoryGroup.review_interval.difference(DateTime.now()).inSeconds,
+//                           canNegative: true,
+//                         ),
+//                         style: TextStyle(decoration: TextDecoration.underline),
+//                         recognizer: TapGestureRecognizer()
+//                           ..onTap = () {
+//                             DatePicker.showDateTimePicker(
+//                               c.context,
+//                               locale: LocaleType.zh,
+//                               minTime: DateTime.now(),
+//                               currentTime: c.cloneSingleMemoryGroup(abw).memoryGroup.review_interval,
+//                               onChanged: (v) {
+//                                 c.cloneSingleMemoryGroup.refreshInevitable((obj) => obj..memoryGroup.review_interval = v);
+//                                 queryCountForReviewInterval();
+//                               },
+//                             );
+//                           },
+//                       ),
+//                       TextSpan(
+//                         text: " 前需要复习的 ",
+//                       ),
+//                       TextSpan(
+//                         text: "${c.cloneSingleMemoryGroup().reviewIntervalCount}",
+//                       ),
+//                       TextSpan(text: " 个碎片")
+//                     ],
+//                     style: TextStyle(color: Colors.black),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }

@@ -25,10 +25,18 @@ class InAppStage extends StatefulWidget {
 
 // Dart
 class _InAppStageState extends State<InAppStage> {
+  late final InAppStageAbController inAppStageAbController;
+
+  @override
+  void initState() {
+    super.initState();
+    inAppStageAbController = InAppStageAbController(memoryGroupId: widget.memoryGroupId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return AbBuilder<InAppStageAbController>(
-      putController: InAppStageAbController(memoryGroupId: widget.memoryGroupId),
+      putController: inAppStageAbController,
       builder: (c, abw) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -85,7 +93,7 @@ class _InAppStageState extends State<InAppStage> {
         return Row(
           children: c.currentButtonDatasAb().map(
             (e) {
-              final parseTime = e.parseTimeToFixView(c.memoryGroupAb().start_time!);
+              final parseTime = e.parseTimeToFixView(c.memoryGroup.start_time!);
               if (parseTime == null) {
                 return const SizedBox(height: 0);
               }

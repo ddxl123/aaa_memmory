@@ -135,7 +135,7 @@ extension TccExt on String {
 }
 
 /// [right]减[left] 的时间差，返回单位秒。
-int timeSecondsDifference({required DateTime right, required DateTime left}) {
+int timeSecondsDifference({required DateTime left, required DateTime right}) {
   return right.difference(left).inSeconds;
 }
 

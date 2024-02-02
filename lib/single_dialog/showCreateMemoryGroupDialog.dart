@@ -5,7 +5,7 @@ import 'package:tools/tools.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 import '../global/GlobalAbController.dart';
-import '../page/list/MemoryGroupListPageAbController.dart';
+import '../page/list/MemoryGroupListPage/MemoryGroupListPageAbController.dart';
 
 /// 创建记忆组的 dialog。
 Future<void> showCreateMemoryGroupDialog() async {

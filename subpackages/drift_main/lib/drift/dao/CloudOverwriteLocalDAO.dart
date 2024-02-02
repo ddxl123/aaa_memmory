@@ -28,7 +28,7 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
           () async {
             // 因为记忆组可能被本地修改，所以需要判断是否将本地的进行云同步，而不能直接将本地的全部删除后全部覆盖。
 
-            final localAll = await driftDb.generalQueryDAO.queryAllMemoryGroups();
+            final localAll = await driftDb.generalQueryDAO.queryAll(tableInfo: driftDb.memoryGroups);
             final cloudAll = vo.memory_groups_list;
             final localSet = localAll.map((e) => e.id).toSet();
             final cloudSet = cloudAll.map((e) => e.id).toSet();
@@ -56,7 +56,7 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
             await uploadResult.handleCode(
               code151401: (String showMessage) async {
                 // 记忆组同步成功
-                final newLocalAll = await driftDb.generalQueryDAO.queryAllMemoryGroups();
+                final newLocalAll = await driftDb.generalQueryDAO.queryAll(tableInfo: driftDb.memoryGroups);
                 await onSuccess(newLocalAll);
               },
             );
@@ -204,7 +204,7 @@ class CloudOverwriteLocalDAO extends DatabaseAccessor<DriftDb> with _$CloudOverw
         memory_group_id: memoryGroupId,
         dto_padding_1: null,
       ),
-      parseResponseVoData: MemoryModelsQueryVo.fromJson,
+      parseResponseVoData: QuerySingleMemoryGroupAllSmallCycleInfoVo.fromJson,
     );
     await result.handleCode(
       code200201: (String showMessage, vo) async {

@@ -1,4 +1,7 @@
+import 'package:aaa_memory/page/list/MemoryGroupListPage/MemoryGroupListPageAbController.dart';
+import 'package:drift/drift.dart' as q;
 import 'package:drift_main/share_common/share_enum.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:tools/tools.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +10,7 @@ import '../../algorithm_parser/AlgorithmException.dart';
 import '../../algorithm_parser/parser.dart';
 import '../../push_page/push_page.dart';
 import '../edit/FragmentGizmoEditPage/FragmentTemplate/base/FragmentTemplate.dart';
+import '../list/MemoryGroupListPage/SmallCycleInfo.dart';
 import 'PerformerDAO.dart';
 
 class Performer {
@@ -34,19 +38,29 @@ class InAppStageAbController extends AbController {
 
   final int memoryGroupId;
 
-  final memoryGroupAb = Ab<MemoryGroup>.late();
+  late final MemoryGroup memoryGroup;
 
-  final memoryAlgorithmAb = Ab<MemoryAlgorithm>.late();
-
-  final performerQuery = PerformerQuery();
+  late final MemoryAlgorithm memoryAlgorithm;
 
   /// 若为 true，则展示按钮数据值；
   /// 若为 false，则表示按钮天数值。
   final isButtonDataShowValueAb = false.ab;
 
+  /// 仅存储当前展示的碎片信息，。
+  ///
   /// 每展示碎片时都会被重置。
   /// [PerformerQuery.getPerformer]
   final currentPerformerAb = Ab<Performer?>(null);
+
+  /// 用来查询或修改 [currentPerformerAb] 对象的封装类。
+  final performerQuery = PerformerQuery();
+
+  /// 当前小周期信息
+  ///
+  /// 一般情况不为 null，只有在用户正在学习的时候，恰好过了该周期的结束时间点才会为 null。
+  ///
+  /// 因为每次展示新 [Performer] 时，都会根据当前时间来确定 [currentSmallCycleInfo] 的结束时间是否超过，因此放到 [Performer] 类中每次都进行查询
+  late final CurrentSmallCycleInfo? currentSmallCycleInfo;
 
   /// 每展示碎片时都会被重置。
   final currentShowTimeAb = Ab<int?>(null);
@@ -78,7 +92,7 @@ class InAppStageAbController extends AbController {
                 TextButton(
                   child: Text("点击此处查看算法"),
                   onPressed: () {
-                    pushToMemoryAlgorithmGizmoEditPage(context: context, cloneMemoryAlgorithmAb: memoryAlgorithmAb().copyWith().ab);
+                    pushToMemoryAlgorithmGizmoEditPage(context: context, cloneMemoryAlgorithmAb: memoryAlgorithm.copyWith().ab);
                   },
                 ),
               ],
@@ -105,24 +119,35 @@ class InAppStageAbController extends AbController {
   }
 
   Future<void> _init() async {
-    final mg = (await driftDb.generalQueryDAO.queryOrNullMemoryGroup(memoryGroupId: memoryGroupId))!;
-    memoryGroupAb.lateAssign(mg);
+    final mg = (await driftDb.generalQueryDAO.querySingleOrNullById(tableInfo: driftDb.memoryGroups, id: memoryGroupId))!;
+    memoryGroup = mg;
 
-    final mm = (await driftDb.generalQueryDAO.queryOrNullMemoryAlgorithm(memoryModelId: mg.memory_algorithm_id!))!;
-    memoryAlgorithmAb.lateAssign(mm);
+    final mm = (await driftDb.generalQueryDAO.querySingleOrNullById(tableInfo: driftDb.memoryAlgorithms, id: mg.memory_algorithm_id!))!;
+    memoryAlgorithm = mm;
 
     await _executeNext();
   }
 
   /// 仅获取下一个 [Performer]。
   Future<void> _executeNext() async {
-    final performer = await performerQuery.getPerformer(mg: memoryGroupAb(), inAppStageAbController: this);
+    final memoryGroupSmartCycleInfoResult = await driftDb.generalQueryDAO.querySingleOrNullByWhere(
+      tableInfo: driftDb.memoryGroupSmartCycleInfos,
+      whereExpr: (tbl) => tbl.memory_group_id.equals(memoryGroupId) & tbl.should_small_cycle_end_time.isBiggerOrEqualValue(DateTime.now()),
+    );
+    currentSmallCycleInfo = CurrentSmallCycleInfo(memoryGroup: memoryGroup, memoryGroupSmartCycleInfo: memoryGroupSmartCycleInfoResult);
+    if (currentSmallCycleInfo == null) {
+      SmartDialog.showToast("本周期已经超过截止时间，请开始下一个周期！");
+      return;
+    }
+    await currentSmallCycleInfo!.read();
+
+    final performer = await performerQuery.getPerformer(mg: memoryGroup, inAppStageAbController: this);
     currentPerformerAb.refreshInevitable((obj) => performer);
     // 说明没有下一个了。
     if (currentPerformerAb() == null) return;
 
     // 必须按照顺序进行获取，否则要么没有对应的值，要么可能会使用上一次的值。
-    currentShowTimeAb.refreshEasy((oldValue) => timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!));
+    currentShowTimeAb.refreshEasy((oldValue) => timeSecondsDifference(right: DateTime.now(), left: memoryGroup.start_time!));
     await _parseStartFamiliarity();
 
     final pbd = await _parseStartButtonDatas();
@@ -151,7 +176,7 @@ class InAppStageAbController extends AbController {
 
     final info = currentPerformerAb()!.fragmentMemoryInfo;
     info
-      ..click_time = info.click_time.arrayAdd<int>(timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!))
+      ..click_time = info.click_time.arrayAdd<int>(timeSecondsDifference(right: DateTime.now(), left: memoryGroup.start_time!))
       ..click_value = info.click_value.arrayAdd<double>(clickValue)
       ..actual_show_time = info.actual_show_time.arrayAdd<int>(currentShowTimeAb()!)
       ..next_plan_show_time = info.next_plan_show_time.arrayAdd<int>(targetButtonDataValue2NextShowTime.nextShowTime!)
@@ -159,9 +184,9 @@ class InAppStageAbController extends AbController {
       ..click_familiarity = info.click_familiarity.arrayAdd<double>(currentClickFamiliarity)
       ..button_values = info.button_values.arrayAdd<List<double>>(currentButtonDatasAb().map((e) => e.value).toList())
       ..content_value = info.content_value.arrayAdd<List<String>>(contentValue)
-      ..study_status = FragmentMemoryInfoStudyStatus.review;
+      ..study_status = FragmentMemoryInfoStudyStatus.reviewing;
 
-    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: memoryGroupAb());
+    await driftDb.updateDAO.resetMemoryGroupAutoSyncVersion(entity: memoryGroup);
     await driftDb.updateDAO.resetMemoryInfoAutoSyncVersion(entity: info);
 
     currentButtonDatasAb.refreshInevitable((obj) => obj..clear());
@@ -180,7 +205,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseStartFamiliarity() async {
     await AlgorithmParser.parse<FamiliarityState, void>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm!),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithm.familiarity_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -194,15 +219,15 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.reviewing),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.completed),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.paused),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -210,7 +235,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k4CurrentShowTimeConst: IvFilter(
-              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroupAb()),
+              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroup),
               isReGet: false,
             ),
             k5CurrentShowFamiliarityConst: IvFilter(
@@ -275,7 +300,7 @@ class InAppStageAbController extends AbController {
   Future<double?> _parseClickFamiliarity(ButtonDataValue2NextShowTime buttonDataValue2NextShowTime) async {
     return await AlgorithmParser.parse<FamiliarityState, double?>(
       stateFunc: () => FamiliarityState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().familiarity_algorithm!),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithm.familiarity_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -289,15 +314,15 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.reviewing),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.completed),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.paused),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -305,7 +330,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k4CurrentShowTimeConst: IvFilter(
-              ivf: () async => await performerQuery.getCurrentShowTime(memoryGroup: memoryGroupAb()),
+              ivf: () async => await performerQuery.getCurrentShowTime(memoryGroup: memoryGroup),
               isReGet: false,
             ),
             k5CurrentShowFamiliarityConst: IvFilter(
@@ -370,7 +395,7 @@ class InAppStageAbController extends AbController {
   Future<ButtonDataState> _parseStartButtonDatas() async {
     return await AlgorithmParser.parse<ButtonDataState, ButtonDataState>(
       stateFunc: () => ButtonDataState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().button_algorithm!),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithm.button_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -384,15 +409,15 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.reviewing),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.completed),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.paused),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -400,7 +425,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k4CurrentShowTimeConst: IvFilter(
-              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroupAb()),
+              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroup),
               isReGet: false,
             ),
             k5CurrentShowFamiliarityConst: IvFilter(
@@ -465,7 +490,7 @@ class InAppStageAbController extends AbController {
   Future<void> _parseSingleButtonNextShowTime({required ButtonDataValue2NextShowTime buttonDataValue2NextShowTime}) async {
     await AlgorithmParser.parse<NextShowTimeState, void>(
       stateFunc: () => NextShowTimeState(
-        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithmAb().next_time_algorithm!),
+        algorithmWrapper: AlgorithmWrapper.fromJsonString(memoryAlgorithm.next_time_algorithm!),
         simulationType: SimulationType.external,
         externalResultHandler: (InternalVariableAtom atom) async {
           return await atom.filter(
@@ -479,15 +504,15 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k2CountReviewConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.review),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.reviewing),
               isReGet: false,
             ),
             k2CountCompleteConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.complete),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.completed),
               isReGet: false,
             ),
             k2CountStopConst: IvFilter(
-              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.stop),
+              ivf: () async => await performerQuery.queryFragmentCountByStudyStatus(memoryGroupId: memoryGroupId, studyStatus: FragmentMemoryInfoStudyStatus.paused),
               isReGet: false,
             ),
             k3StudiedTimesConst: IvFilter(
@@ -495,7 +520,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k4CurrentShowTimeConst: IvFilter(
-              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroupAb()),
+              ivf: () async => performerQuery.getCurrentShowTime(memoryGroup: memoryGroup),
               isReGet: false,
             ),
             k5CurrentShowFamiliarityConst: IvFilter(
@@ -511,7 +536,7 @@ class InAppStageAbController extends AbController {
               isReGet: false,
             ),
             k7CurrentClickTimeConst: IvFilter(
-              ivf: () async => timeSecondsDifference(right: DateTime.now(), left: memoryGroupAb().start_time!),
+              ivf: () async => timeSecondsDifference(right: DateTime.now(), left: memoryGroup.start_time!),
               isReGet: false,
             ),
             i1ActualShowTimeConst: IvFilter(

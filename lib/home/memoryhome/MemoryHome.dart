@@ -2,7 +2,7 @@ import 'package:tools/tools.dart';
 import 'package:flutter/material.dart';
 
 import '../../global/GlobalAbController.dart';
-import '../../page/list/MemoryGroupListPage.dart';
+import '../../page/list/MemoryGroupListPage/MemoryGroupListPage.dart';
 import '../../page/list/MemoryAlgorithmListPage.dart';
 import 'MemoryHomeAbController.dart';
 
