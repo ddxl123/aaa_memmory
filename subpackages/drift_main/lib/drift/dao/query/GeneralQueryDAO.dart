@@ -79,7 +79,9 @@ class GeneralQueryDAO extends DatabaseAccessor<DriftDb> with _$GeneralQueryDAOMi
     required TableInfo<T, D> tableInfo,
     required Expression<bool> whereExpr,
   }) async {
-    final count = (tableInfo as dynamic).id.count();
+    // 想办法恢复成这个
+    // final count = (tableInfo as dynamic).id.count();
+    final count = tableInfo.rowId.count();
     final sel = selectOnly(tableInfo);
     sel.where(whereExpr);
     sel.addColumns([count]);

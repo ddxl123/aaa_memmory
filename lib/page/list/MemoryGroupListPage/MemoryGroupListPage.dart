@@ -244,7 +244,7 @@ class MemoryGroupListPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Flexible(
-                        flex: currentSmallCycleInfo?.learnedThirdNewAndReviewCount.newCount ?? 0,
+                        flex: currentSmallCycleInfo?.learnedThirdNewAndReviewCount?.newCount ?? 0,
                         child: Container(
                           decoration: BoxDecoration(color: Colors.green),
                         ),

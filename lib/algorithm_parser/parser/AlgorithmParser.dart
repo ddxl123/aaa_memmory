@@ -102,8 +102,9 @@ class AlgorithmParser<CS extends ClassificationState> with Explain {
       );
       return await onSuccess(_state);
     } catch (o, st) {
+      // TODO
       if (isDebug) {
-        logger.outError(error: o, stackTrace: st);
+        logger.outWarning(error: o, stackTrace: st);
       }
       return await onError(UnknownAlgorithmException(o.toString(), st));
     }

@@ -165,6 +165,9 @@ class LoopCycle {
     required this.rawStart,
     required this.rawDeltas,
   }) {
+    if (rawStart < 0 && rawStart >= 24) {
+      throw "起始时间点必须大于等于0且小于24！";
+    }
     startSmallCycle = SmallCycle(
       rawStart: rawStart,
       rawDelta: rawStart,
@@ -207,6 +210,10 @@ class LoopCycle {
   late final List<SmallCycle> smallCycles;
 
   List<SmallCycle> get completeSmallCycles => [startSmallCycle, ...smallCycles];
+
+  int get getSmallCycleCount => rawDeltas.length + 1;
+
+  int getLoopCycleOrder(SmallCycle smallCycle) => smallCycles.indexOf(smallCycle);
 
   factory LoopCycle.fromText({required String text}) {
     final listAll = text.split(" ").where((element) => element.trim() != "").map((e) => double.parse(e)).toList();
@@ -327,6 +334,8 @@ class SuggestLoopCycleState extends ClassificationState {
                 [3]
               ],
           isReGet: true),
+      c1CurrentSmallCycleTheNthConst: IvFilter(ivf: () async => 0, isReGet: true),
+      c2CurrentLoopCycleTheNthConst: IvFilter(ivf: () async => 0, isReGet: true),
     );
   }
 }

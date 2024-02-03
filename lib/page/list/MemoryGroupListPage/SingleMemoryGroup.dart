@@ -41,11 +41,11 @@ class SingleMemoryGroup {
   Future<void> queryAllSmallCycleInfos() async {
     await driftDb.cloudOverwriteLocalDAO.queryCloudSingleMemoryGroupAllSmallCycleInfoAndOverwriteLocal(
       memoryGroupId: memoryGroup.id,
-      onSuccess: (List<MemoryGroupSmartCycleInfo> memoryGroupSmartCycleInfo) async {
+      onSuccess: (List<MemoryGroupSmartCycleInfo> memoryGroupSmartCycleInfos) async {
         smallCycleInfos.clear();
         currentSmallCycleInfo = CurrentSmallCycleInfo(memoryGroup: memoryGroup, memoryGroupSmartCycleInfo: null);
         smallCycleInfos.addAll(
-          memoryGroupSmartCycleInfo.map((e) {
+          memoryGroupSmartCycleInfos.map((e) {
             if (isTimeBetween(target: DateTime.now(), left: e.created_at, right: e.should_small_cycle_end_time)) {
               final c = CurrentSmallCycleInfo(memoryGroup: memoryGroup, memoryGroupSmartCycleInfo: e);
               currentSmallCycleInfo = c;
@@ -62,6 +62,8 @@ class SingleMemoryGroup {
   }
 
   /// 从本地查询总计数量
+  ///
+  /// 不能在该函数内设置 downloadStatus，否则每次调用都会被重新设置，而应该保持 downloadStatus 不变。
   Future<void> queryLocalTotalCount() async {
     totalFragmentCount = await driftDb.generalQueryDAO.queryCount(
       tableInfo: driftDb.fragmentMemoryInfos,
@@ -77,11 +79,11 @@ class SingleMemoryGroup {
       tableInfo: driftDb.fragmentMemoryInfos,
       whereExpr: driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) & driftDb.fragmentMemoryInfos.study_status.equalsValue(FragmentMemoryInfoStudyStatus.reviewing),
     );
-
-    // 不能在该函数内设置 downloadStatus，否则每次调用都会被重新设置，而应该保持 downloadStatus 不变。
   }
 
   /// 从云端查询总计数量，同时检测 [downloadStatus]
+  ///
+  /// TODO：当本地总数量与云端总数量相同时，但是存在修改时，该怎么办？
   Future<void> queryCloudTotalCount() async {
     final result = await request(
       path: HttpPath.GET__LOGIN_REQUIRED_MEMORY_GROUP_HANDLE_FRAGMENTS_COUNT_QUERY,
@@ -105,9 +107,14 @@ class SingleMemoryGroup {
           downloadStatus = DownloadStatus.different_download;
           return;
         }
+        if (totalFragmentCount == vo.count) {
+          downloadStatus = DownloadStatus.all_downloaded;
+          return;
+        }
       },
       otherException: (a, b, c) async {
         logger.outErrorHttp(code: a, showMessage: b.showMessage, debugMessage: b.debugMessage, st: c);
+        downloadStatus = DownloadStatus.other_load_fail;
       },
     );
   }

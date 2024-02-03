@@ -59,6 +59,8 @@ class CompleteConditionState extends ClassificationState {
                 [3]
               ],
           isReGet: true),
+      c1CurrentSmallCycleTheNthConst: IvFilter(ivf: () async => 0, isReGet: true),
+      c2CurrentLoopCycleTheNthConst: IvFilter(ivf: () async => 0, isReGet: true),
     );
   }
 }

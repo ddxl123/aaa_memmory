@@ -241,6 +241,29 @@ class InternalVariableConstantHandler {
     },
   );
 
+  /// ==================================== 下面是从周期信息中获取 ===========================================
+  static InternalVariableConstant c1CurrentSmallCycleTheNthConst = InternalVariableConstant<List<List<double>>>(
+    name: 'current_small_cycle_the_nth',
+    explain: '当前小周期是当前循环周期的第几个小周期',
+    numericTypeExplain: '单位：第n次\n例子：1,2,3...',
+    isReadFromMemoryInfo: true,
+    isNullable: false,
+    rawStringToDartTypeFunc: (String rawStringResult) {
+      return jsonDecode(rawStringResult);
+    },
+  );
+
+  static InternalVariableConstant c2CurrentLoopCycleTheNthConst = InternalVariableConstant<List<List<double>>>(
+    name: 'current_loop_cycle_the_nth',
+    explain: '当前循环周期是第几轮循环周期',
+    numericTypeExplain: '单位：第n次\n例子：1,2,3...',
+    isReadFromMemoryInfo: true,
+    isNullable: false,
+    rawStringToDartTypeFunc: (String rawStringResult) {
+      return jsonDecode(rawStringResult);
+    },
+  );
+
   /// TODO: 受 [NType.ntimes] 影响，必须把 [k3StudiedTimesConst] 放到最后，若放到前面，正则表达式会先识别 times。
   static Map<String, InternalVariableConstant> getKVs = {
     InternalVariableConstantHandler.i1ActualShowTimeConst.name: InternalVariableConstantHandler.i1ActualShowTimeConst,
@@ -261,6 +284,8 @@ class InternalVariableConstantHandler {
     InternalVariableConstantHandler.k6CurrentButtonValuesConst.name: InternalVariableConstantHandler.k6CurrentButtonValuesConst,
     InternalVariableConstantHandler.k6CurrentButtonValueConst.name: InternalVariableConstantHandler.k6CurrentButtonValueConst,
     InternalVariableConstantHandler.k7CurrentClickTimeConst.name: InternalVariableConstantHandler.k7CurrentClickTimeConst,
+    InternalVariableConstantHandler.c1CurrentSmallCycleTheNthConst.name: InternalVariableConstantHandler.c1CurrentSmallCycleTheNthConst,
+    InternalVariableConstantHandler.c2CurrentLoopCycleTheNthConst.name: InternalVariableConstantHandler.c2CurrentLoopCycleTheNthConst,
   };
 
   static Set<String> get getNames => getKVs.keys.toSet();

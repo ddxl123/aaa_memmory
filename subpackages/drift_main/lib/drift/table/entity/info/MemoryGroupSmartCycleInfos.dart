@@ -18,6 +18,8 @@ class MemoryGroupSmartCycleInfos extends CloudTableBase  {
 
   TextColumn get loop_cycle => text().named("loop_cycle")();
 
+  IntColumn get loop_cycle_order => integer().named("loop_cycle_order")();
+
   @ReferenceTo([MemoryAlgorithms])
   IntColumn get memory_algorithm_id => integer().named("memory_algorithm_id")();
 

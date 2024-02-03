@@ -2060,6 +2060,12 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
   late final GeneratedColumn<String> loop_cycle = GeneratedColumn<String>(
       'loop_cycle', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _loop_cycle_orderMeta =
+      const VerificationMeta('loop_cycle_order');
+  @override
+  late final GeneratedColumn<int> loop_cycle_order = GeneratedColumn<int>(
+      'loop_cycle_order', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _memory_algorithm_idMeta =
       const VerificationMeta('memory_algorithm_id');
   @override
@@ -2120,6 +2126,7 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
         incremental_new_learn_count,
         incremental_review_count,
         loop_cycle,
+        loop_cycle_order,
         memory_algorithm_id,
         memory_group_id,
         should_new_learn_count,
@@ -2174,6 +2181,14 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
               data['loop_cycle']!, _loop_cycleMeta));
     } else if (isInserting) {
       context.missing(_loop_cycleMeta);
+    }
+    if (data.containsKey('loop_cycle_order')) {
+      context.handle(
+          _loop_cycle_orderMeta,
+          loop_cycle_order.isAcceptableOrUnknown(
+              data['loop_cycle_order']!, _loop_cycle_orderMeta));
+    } else if (isInserting) {
+      context.missing(_loop_cycle_orderMeta);
     }
     if (data.containsKey('memory_algorithm_id')) {
       context.handle(
@@ -2263,6 +2278,8 @@ class $MemoryGroupSmartCycleInfosTable extends MemoryGroupSmartCycleInfos
           data['${effectivePrefix}incremental_review_count'])!,
       loop_cycle: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}loop_cycle'])!,
+      loop_cycle_order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}loop_cycle_order'])!,
       memory_algorithm_id: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}memory_algorithm_id'])!,
       memory_group_id: attachedDatabase.typeMapping
@@ -2297,6 +2314,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
   int incremental_new_learn_count;
   int incremental_review_count;
   String loop_cycle;
+  int loop_cycle_order;
   int memory_algorithm_id;
   int memory_group_id;
   int should_new_learn_count;
@@ -2311,6 +2329,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
       required this.incremental_new_learn_count,
       required this.incremental_review_count,
       required this.loop_cycle,
+      required this.loop_cycle_order,
       required this.memory_algorithm_id,
       required this.memory_group_id,
       required this.should_new_learn_count,
@@ -2328,6 +2347,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
         Variable<int>(incremental_new_learn_count);
     map['incremental_review_count'] = Variable<int>(incremental_review_count);
     map['loop_cycle'] = Variable<String>(loop_cycle);
+    map['loop_cycle_order'] = Variable<int>(loop_cycle_order);
     map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id);
     map['memory_group_id'] = Variable<int>(memory_group_id);
     map['should_new_learn_count'] = Variable<int>(should_new_learn_count);
@@ -2347,6 +2367,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
       incremental_new_learn_count: Value(incremental_new_learn_count),
       incremental_review_count: Value(incremental_review_count),
       loop_cycle: Value(loop_cycle),
+      loop_cycle_order: Value(loop_cycle_order),
       memory_algorithm_id: Value(memory_algorithm_id),
       memory_group_id: Value(memory_group_id),
       should_new_learn_count: Value(should_new_learn_count),
@@ -2369,6 +2390,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
       incremental_review_count:
           serializer.fromJson<int>(json['incremental_review_count']),
       loop_cycle: serializer.fromJson<String>(json['loop_cycle']),
+      loop_cycle_order: serializer.fromJson<int>(json['loop_cycle_order']),
       memory_algorithm_id:
           serializer.fromJson<int>(json['memory_algorithm_id']),
       memory_group_id: serializer.fromJson<int>(json['memory_group_id']),
@@ -2394,6 +2416,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
       'incremental_review_count':
           serializer.toJson<int>(incremental_review_count),
       'loop_cycle': serializer.toJson<String>(loop_cycle),
+      'loop_cycle_order': serializer.toJson<int>(loop_cycle_order),
       'memory_algorithm_id': serializer.toJson<int>(memory_algorithm_id),
       'memory_group_id': serializer.toJson<int>(memory_group_id),
       'should_new_learn_count': serializer.toJson<int>(should_new_learn_count),
@@ -2412,6 +2435,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
           int? incremental_new_learn_count,
           int? incremental_review_count,
           String? loop_cycle,
+          int? loop_cycle_order,
           int? memory_algorithm_id,
           int? memory_group_id,
           int? should_new_learn_count,
@@ -2428,6 +2452,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
         incremental_review_count:
             incremental_review_count ?? this.incremental_review_count,
         loop_cycle: loop_cycle ?? this.loop_cycle,
+        loop_cycle_order: loop_cycle_order ?? this.loop_cycle_order,
         memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
         memory_group_id: memory_group_id ?? this.memory_group_id,
         should_new_learn_count:
@@ -2447,6 +2472,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
           ..write('incremental_new_learn_count: $incremental_new_learn_count, ')
           ..write('incremental_review_count: $incremental_review_count, ')
           ..write('loop_cycle: $loop_cycle, ')
+          ..write('loop_cycle_order: $loop_cycle_order, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
           ..write('should_new_learn_count: $should_new_learn_count, ')
@@ -2466,6 +2492,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
       incremental_new_learn_count,
       incremental_review_count,
       loop_cycle,
+      loop_cycle_order,
       memory_algorithm_id,
       memory_group_id,
       should_new_learn_count,
@@ -2484,6 +2511,7 @@ class MemoryGroupSmartCycleInfo extends DataClass
               this.incremental_new_learn_count &&
           other.incremental_review_count == this.incremental_review_count &&
           other.loop_cycle == this.loop_cycle &&
+          other.loop_cycle_order == this.loop_cycle_order &&
           other.memory_algorithm_id == this.memory_algorithm_id &&
           other.memory_group_id == this.memory_group_id &&
           other.should_new_learn_count == this.should_new_learn_count &&
@@ -2502,6 +2530,7 @@ class MemoryGroupSmartCycleInfosCompanion
   Value<int> incremental_new_learn_count;
   Value<int> incremental_review_count;
   Value<String> loop_cycle;
+  Value<int> loop_cycle_order;
   Value<int> memory_algorithm_id;
   Value<int> memory_group_id;
   Value<int> should_new_learn_count;
@@ -2516,6 +2545,7 @@ class MemoryGroupSmartCycleInfosCompanion
     this.incremental_new_learn_count = const Value.absent(),
     this.incremental_review_count = const Value.absent(),
     this.loop_cycle = const Value.absent(),
+    this.loop_cycle_order = const Value.absent(),
     this.memory_algorithm_id = const Value.absent(),
     this.memory_group_id = const Value.absent(),
     this.should_new_learn_count = const Value.absent(),
@@ -2531,6 +2561,7 @@ class MemoryGroupSmartCycleInfosCompanion
     required int incremental_new_learn_count,
     required int incremental_review_count,
     required String loop_cycle,
+    required int loop_cycle_order,
     required int memory_algorithm_id,
     required int memory_group_id,
     required int should_new_learn_count,
@@ -2544,6 +2575,7 @@ class MemoryGroupSmartCycleInfosCompanion
         incremental_new_learn_count = Value(incremental_new_learn_count),
         incremental_review_count = Value(incremental_review_count),
         loop_cycle = Value(loop_cycle),
+        loop_cycle_order = Value(loop_cycle_order),
         memory_algorithm_id = Value(memory_algorithm_id),
         memory_group_id = Value(memory_group_id),
         should_new_learn_count = Value(should_new_learn_count),
@@ -2557,6 +2589,7 @@ class MemoryGroupSmartCycleInfosCompanion
     Expression<int>? incremental_new_learn_count,
     Expression<int>? incremental_review_count,
     Expression<String>? loop_cycle,
+    Expression<int>? loop_cycle_order,
     Expression<int>? memory_algorithm_id,
     Expression<int>? memory_group_id,
     Expression<int>? should_new_learn_count,
@@ -2574,6 +2607,7 @@ class MemoryGroupSmartCycleInfosCompanion
       if (incremental_review_count != null)
         'incremental_review_count': incremental_review_count,
       if (loop_cycle != null) 'loop_cycle': loop_cycle,
+      if (loop_cycle_order != null) 'loop_cycle_order': loop_cycle_order,
       if (memory_algorithm_id != null)
         'memory_algorithm_id': memory_algorithm_id,
       if (memory_group_id != null) 'memory_group_id': memory_group_id,
@@ -2595,6 +2629,7 @@ class MemoryGroupSmartCycleInfosCompanion
       Value<int>? incremental_new_learn_count,
       Value<int>? incremental_review_count,
       Value<String>? loop_cycle,
+      Value<int>? loop_cycle_order,
       Value<int>? memory_algorithm_id,
       Value<int>? memory_group_id,
       Value<int>? should_new_learn_count,
@@ -2611,6 +2646,7 @@ class MemoryGroupSmartCycleInfosCompanion
       incremental_review_count:
           incremental_review_count ?? this.incremental_review_count,
       loop_cycle: loop_cycle ?? this.loop_cycle,
+      loop_cycle_order: loop_cycle_order ?? this.loop_cycle_order,
       memory_algorithm_id: memory_algorithm_id ?? this.memory_algorithm_id,
       memory_group_id: memory_group_id ?? this.memory_group_id,
       should_new_learn_count:
@@ -2641,6 +2677,9 @@ class MemoryGroupSmartCycleInfosCompanion
     }
     if (loop_cycle.present) {
       map['loop_cycle'] = Variable<String>(loop_cycle.value);
+    }
+    if (loop_cycle_order.present) {
+      map['loop_cycle_order'] = Variable<int>(loop_cycle_order.value);
     }
     if (memory_algorithm_id.present) {
       map['memory_algorithm_id'] = Variable<int>(memory_algorithm_id.value);
@@ -2681,6 +2720,7 @@ class MemoryGroupSmartCycleInfosCompanion
           ..write('incremental_new_learn_count: $incremental_new_learn_count, ')
           ..write('incremental_review_count: $incremental_review_count, ')
           ..write('loop_cycle: $loop_cycle, ')
+          ..write('loop_cycle_order: $loop_cycle_order, ')
           ..write('memory_algorithm_id: $memory_algorithm_id, ')
           ..write('memory_group_id: $memory_group_id, ')
           ..write('should_new_learn_count: $should_new_learn_count, ')

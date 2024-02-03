@@ -114,6 +114,8 @@ class InternalVariableAtom<CS extends ClassificationState> {
     required IvFilter<List<int>> i5ClickTimeConst,
     required IvFilter<List<double>> i6ClickValueConst,
     required IvFilter<List<List<double>>> i7ButtonValuesConst,
+    required IvFilter<int> c1CurrentSmallCycleTheNthConst,
+    required IvFilter<int> c2CurrentLoopCycleTheNthConst,
   }) async {
     if (internalVariableConstant == InternalVariableConstantHandler.k1FCountAllConst) {
       return await saveAndGet<NR>(storage: storage, ivFilter: k1countAllConst);
@@ -168,6 +170,12 @@ class InternalVariableAtom<CS extends ClassificationState> {
     }
     if (internalVariableConstant == InternalVariableConstantHandler.i7ButtonValuesConst) {
       return await saveAndGet<NR>(storage: storage, ivFilter: i7ButtonValuesConst);
+    }
+    if (internalVariableConstant == InternalVariableConstantHandler.c1CurrentSmallCycleTheNthConst) {
+      return await saveAndGet<NR>(storage: storage, ivFilter: c1CurrentSmallCycleTheNthConst);
+    }
+    if (internalVariableConstant == InternalVariableConstantHandler.c2CurrentLoopCycleTheNthConst) {
+      return await saveAndGet<NR>(storage: storage, ivFilter: c2CurrentLoopCycleTheNthConst);
     }
     throw KnownAlgorithmException('filter 未处理变量: $getCombineName');
   }

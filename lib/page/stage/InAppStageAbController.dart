@@ -282,6 +282,14 @@ class InAppStageAbController extends AbController {
               ivf: () async => await performerQuery.getButtonValues(performer: currentPerformerAb()!),
               isReGet: false,
             ),
+            c1CurrentSmallCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.small_cycle_order,
+              isReGet: false,
+            ),
+            c2CurrentLoopCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.loop_cycle_order,
+              isReGet: false,
+            ),
           );
         },
       ),
@@ -375,6 +383,14 @@ class InAppStageAbController extends AbController {
             ),
             i7ButtonValuesConst: IvFilter(
               ivf: () async => await performerQuery.getButtonValues(performer: currentPerformerAb()!),
+              isReGet: false,
+            ),
+            c1CurrentSmallCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.small_cycle_order,
+              isReGet: false,
+            ),
+            c2CurrentLoopCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.loop_cycle_order,
               isReGet: false,
             ),
           );
@@ -472,6 +488,14 @@ class InAppStageAbController extends AbController {
               ivf: () async => await performerQuery.getButtonValues(performer: currentPerformerAb()!),
               isReGet: false,
             ),
+            c1CurrentSmallCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.small_cycle_order,
+              isReGet: false,
+            ),
+            c2CurrentLoopCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.loop_cycle_order,
+              isReGet: false,
+            ),
           );
         },
       ),
@@ -565,6 +589,14 @@ class InAppStageAbController extends AbController {
             ),
             i7ButtonValuesConst: IvFilter(
               ivf: () async => await performerQuery.getButtonValues(performer: currentPerformerAb()!),
+              isReGet: false,
+            ),
+            c1CurrentSmallCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.small_cycle_order,
+              isReGet: false,
+            ),
+            c2CurrentLoopCycleTheNthConst: IvFilter(
+              ivf: () async => currentSmallCycleInfo!.memoryGroupSmartCycleInfo!.loop_cycle_order,
               isReGet: false,
             ),
           );

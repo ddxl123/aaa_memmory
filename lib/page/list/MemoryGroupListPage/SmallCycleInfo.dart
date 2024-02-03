@@ -35,7 +35,7 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
   /// 算法结果数量，当前小周期需要学习和复习的数量。
   ///
   /// 为 null 表示算法为空或算法计算异常 // TODO：将为空和计算异常分开提示
-  NewAndReviewCount? shouldNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
+  NewAndReviewCount? shouldNewAndReviewCount;
 
   /// 增量数量，当前小周期需要增量新学和复习的数量。
   NewAndReviewCount shouldIncrementalNewAndReviewCount = NewAndReviewCount(newCount: 0, reviewCount: 0);
@@ -44,7 +44,9 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
   ///   - 在当前小周期内 新学过 的数量
   ///   - 在当前小周期内 在当前小周期之前新学过，且在当前小周期内复习完的 的的数量
   ///   - 在当前小周期内 在当前小周期内新学过，且在当前小周期内复习完的  的的数量
-  ThirdNewAndReviewCount learnedThirdNewAndReviewCount = ThirdNewAndReviewCount(newCount: 0, reviewCount: 0, newReviewCount: 0);
+  ///
+  /// 为 null 什么当前小周期未开始。
+  ThirdNewAndReviewCount? learnedThirdNewAndReviewCount;
 
   /// 过期数量
   ///   - 如果当前小周期未启动，则是按照当前实时时间前算的，在这之前没有按时完成记忆任务的数量。
@@ -60,27 +62,43 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
   ///
   /// 为 null 表示算法计算异常。// TODO：将为空和计算异常分开提示
   ThirdNewAndReviewCount? get getNotLearnThirdNewAndReviewCount {
-    if (shouldNewAndReviewCount == null) {
+    if (shouldNewAndReviewCount == null || learnedThirdNewAndReviewCount == null) {
       return null;
     }
+
     return ThirdNewAndReviewCount(
       // 在当前小周期内未新学的
-      newCount: shouldNewAndReviewCount!.newCount - learnedThirdNewAndReviewCount.newCount,
+      newCount: shouldNewAndReviewCount!.newCount - learnedThirdNewAndReviewCount!.newCount,
       // 在当前小周期之前新学过，但在当前小周期内未复习完的
-      reviewCount: shouldNewAndReviewCount!.reviewCount - learnedThirdNewAndReviewCount.reviewCount,
+      reviewCount: shouldNewAndReviewCount!.reviewCount - learnedThirdNewAndReviewCount!.reviewCount,
       // 在当前小周期新学过，且在当前小周期内未复习完的
-      newReviewCount: learnedThirdNewAndReviewCount.newCount - learnedThirdNewAndReviewCount.newReviewCount,
+      newReviewCount: learnedThirdNewAndReviewCount!.newCount - learnedThirdNewAndReviewCount!.newReviewCount,
     );
   }
 
   /// 当前时间的秒数，距离启动时时间点的秒数
-  int get getNowSeconds => timeSecondsDifference(left: memoryGroup.start_time!, right: DateTime.now());
+  int? get getNowSeconds => memoryGroup.start_time == null
+      ? null
+      : timeSecondsDifference(
+          left: memoryGroup.start_time!,
+          right: DateTime.now(),
+        );
 
   /// 当前小周期开始时间的秒数，距离启动时时间点的秒数
-  int get getSmallCycleStartSeconds => timeSecondsDifference(right: memoryGroupSmartCycleInfo!.created_at, left: memoryGroup.start_time!);
+  int? get getSmallCycleStartSeconds => memoryGroup.start_time == null
+      ? null
+      : timeSecondsDifference(
+          right: memoryGroupSmartCycleInfo!.created_at,
+          left: memoryGroup.start_time!,
+        );
 
   /// 当前小周期应该结束时间的秒数，距离启动时时间点的秒数
-  int get getSmallCycleEndSeconds => timeSecondsDifference(right: memoryGroupSmartCycleInfo!.should_small_cycle_end_time, left: memoryGroup.start_time!);
+  int? get getSmallCycleEndSeconds => memoryGroup.start_time == null
+      ? null
+      : timeSecondsDifference(
+          right: memoryGroupSmartCycleInfo!.should_small_cycle_end_time,
+          left: memoryGroup.start_time!,
+        );
 
   Future<void> read() async {
     await parseLoopCycle();
@@ -125,7 +143,7 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
         shouldNewAndReviewCount = state.result;
       },
       onError: (AlgorithmException ec) async {
-        shouldNewAndReviewCount = NewAndReviewCount(newCount: -1, reviewCount: -1);
+        shouldNewAndReviewCount = null;
       },
     );
   }
@@ -135,7 +153,7 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
   /// TODO: 处理当 [FragmentMemoryInfoStudyStatus.paused] 时。
   Future<void> queryLearnedCountForNewAndReview() async {
     if (memoryGroup.start_time == null) {
-      learnedThirdNewAndReviewCount = ThirdNewAndReviewCount(newCount: 0, reviewCount: 0, newReviewCount: 0);
+      learnedThirdNewAndReviewCount = null;
       return;
     }
 
@@ -149,7 +167,7 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
     final newSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
     newSel.where(
       driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) &
-          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isBetweenValues(getSmallCycleStartSeconds, getSmallCycleEndSeconds),
+          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isBetweenValues(getSmallCycleStartSeconds!, getSmallCycleEndSeconds!),
     );
     newSel.addColumns([newCountExpr]);
     final newCount = (await newSel.getSingle()).read(newCountExpr)!;
@@ -159,9 +177,9 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
     final reviewSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
     reviewSel.where(
       driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) &
-          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isSmallerThanValue(getSmallCycleStartSeconds) &
+          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isSmallerThanValue(getSmallCycleStartSeconds!) &
           driftDb.fragmentMemoryInfos.click_time.jsonArrayLength().isBiggerOrEqualValue(2) &
-          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isBiggerThanValue(getSmallCycleEndSeconds),
+          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isBiggerThanValue(getSmallCycleEndSeconds!),
     );
     reviewSel.addColumns([reviewCountExpr]);
     final reviewCount = (await reviewSel.getSingle()).read(reviewCountExpr)!;
@@ -170,9 +188,9 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
     final newReviewSel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);
     newReviewSel.where(
       driftDb.fragmentMemoryInfos.memory_group_id.equals(memoryGroup.id) &
-          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isBiggerOrEqualValue(getSmallCycleStartSeconds) &
+          driftDb.fragmentMemoryInfos.click_time.jsonExtract(r"$[0]").dartCast<int>().isBiggerOrEqualValue(getSmallCycleStartSeconds!) &
           driftDb.fragmentMemoryInfos.click_time.jsonArrayLength().isBiggerOrEqualValue(2) &
-          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isBiggerThanValue(getSmallCycleEndSeconds),
+          driftDb.fragmentMemoryInfos.next_plan_show_time.jsonExtract(r"$[#-1]").dartCast<int>().isBiggerThanValue(getSmallCycleEndSeconds!),
     );
     newReviewSel.addColumns([newReviewCountExpr]);
     final newReviewCount = (await newReviewSel.getSingle()).read(newReviewCountExpr)!;
@@ -182,7 +200,11 @@ class CurrentSmallCycleInfo extends SmallCycleInfo {
 
   /// 查看 [expireCount] 注释。
   Future<void> queryExpireCount() async {
-    int targetTime = memoryGroupSmartCycleInfo == null ? getNowSeconds : getSmallCycleStartSeconds;
+    if (memoryGroup.start_time == null) {
+      return;
+    }
+
+    int targetTime = memoryGroupSmartCycleInfo == null ? getNowSeconds! : getSmallCycleStartSeconds!;
 
     final countExpr = driftDb.fragmentMemoryInfos.id.count();
     final sel = driftDb.selectOnly(driftDb.fragmentMemoryInfos);

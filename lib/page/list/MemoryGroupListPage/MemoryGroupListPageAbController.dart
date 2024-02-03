@@ -27,7 +27,6 @@ class MemoryGroupListPageAbController extends AbController {
               memoryGroups.map((e) => (SingleMemoryGroup(memoryGroup: e)..downloadStatus = DownloadStatus.other_loading).ab),
             ),
         );
-
         refreshController.refreshCompleted();
       },
       onError: (int? code, HttperException httperException, StackTrace st) async {
@@ -35,7 +34,6 @@ class MemoryGroupListPageAbController extends AbController {
         refreshController.refreshFailed();
       },
     );
-
     // 无需 await
     _forOthers();
   }
@@ -71,17 +69,10 @@ class MemoryGroupListPageAbController extends AbController {
   }
 
   Future<void> _forOtherSingle({required Ab<SingleMemoryGroup> mgAndOtherAb}) async {
-    await _forTotalCount(singleMemoryGroup: mgAndOtherAb());
-  }
-
-  /// TODO：当本地总数量与云端总数量相同时，但是存在修改时，该怎么办？
-  Future<void> _forTotalCount({required SingleMemoryGroup singleMemoryGroup}) async {
-    // 先查询本地总数量
-    final localTotalCount =
-    singleMemoryGroup.totalFragmentCount = localTotalCount;
+    await mgAndOtherAb().queryLocalTotalCount();
     singleMemoryGroupsAb.refreshForce();
-
-    // 再查询云端总数量
+    await mgAndOtherAb().queryCloudTotalCount();
+    singleMemoryGroupsAb.refreshForce();
   }
 
   Future<void> onStatusTap(Ab<SingleMemoryGroup> cloneSingleMemoryGroupAb) async {

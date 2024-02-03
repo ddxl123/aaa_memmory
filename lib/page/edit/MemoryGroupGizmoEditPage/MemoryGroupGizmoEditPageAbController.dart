@@ -1,5 +1,6 @@
 import 'package:aaa_memory/algorithm_parser/parser.dart';
 import 'package:aaa_memory/global/GlobalAbController.dart';
+import 'package:aaa_memory/page/list/MemoryGroupListPage/SmallCycleInfo.dart';
 import 'package:aaa_memory/page/list/MemoryGroupListPage/StatusButton.dart';
 import 'package:drift_main/drift/DriftDb.dart';
 import 'package:drift_main/httper/httper.dart';
@@ -25,6 +26,8 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   final MemoryGroupListPageAbController listPageC;
 
   final Ab<SingleMemoryGroup> cloneSingleMemoryGroup;
+
+  CurrentSmallCycleInfo? get currentSmallCycleInfo => cloneSingleMemoryGroup().currentSmallCycleInfo;
 
   final titleTextEditingController = TextEditingController();
 
@@ -105,12 +108,16 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       SmartDialog.showToast("名称不能为空");
       return false;
     }
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.getMemoryAlgorithm == null) {
+    if (currentSmallCycleInfo?.getMemoryAlgorithm == null) {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return false;
     }
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.loopCycle == null) {
+    if (currentSmallCycleInfo?.loopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    if (currentSmallCycleInfo?.shouldNewAndReviewCount == null || currentSmallCycleInfo?.learnedThirdNewAndReviewCount == null) {
+      SmartDialog.showToast("数量不能为空！");
       return false;
     }
     // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
@@ -122,17 +129,21 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
   ///
   /// 返回 true，则验证通过。
   Future<bool> verifyForCreateSmallCycle() async {
-    await cloneSingleMemoryGroup().currentSmallCycleInfo?.read();
+    await currentSmallCycleInfo?.read();
     if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
       SmartDialog.showToast("名称不能为空");
       return false;
     }
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.getMemoryAlgorithm == null) {
+    if (currentSmallCycleInfo?.getMemoryAlgorithm == null) {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return false;
     }
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.loopCycle == null) {
+    if (currentSmallCycleInfo?.loopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    if (currentSmallCycleInfo?.shouldNewAndReviewCount == null || currentSmallCycleInfo?.learnedThirdNewAndReviewCount == null) {
+      SmartDialog.showToast("数量不能为空！");
       return false;
     }
     // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
@@ -142,19 +153,23 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
   /// 重新读取，并继续当前小周期时的验证。
   Future<bool> verifyForContinueCurrentSmallCycle() async {
-    await cloneSingleMemoryGroup().currentSmallCycleInfo?.read();
+    await currentSmallCycleInfo?.read();
 
     if (cloneSingleMemoryGroup().memoryGroup.title.trim() == "") {
       SmartDialog.showToast("名称不能为空");
       return false;
     }
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.getMemoryAlgorithm == null) {
+    if (currentSmallCycleInfo?.getMemoryAlgorithm == null) {
       SmartDialog.showToast("必须选择一个记忆算法！");
       return false;
     }
 
-    if (cloneSingleMemoryGroup().currentSmallCycleInfo?.loopCycle == null) {
+    if (currentSmallCycleInfo?.loopCycle == null) {
       SmartDialog.showToast("循环周期不能为空！");
+      return false;
+    }
+    if (currentSmallCycleInfo?.shouldNewAndReviewCount == null || currentSmallCycleInfo?.learnedThirdNewAndReviewCount == null) {
+      SmartDialog.showToast("数量不能为空！");
       return false;
     }
     // TODO：检查循环周期是否存在变动，获取当前时间点以及对应的循环时间点，如果只存在一个对应的，则直接用这个对应的，如果存在多个对应的，则让用户选择一个对应的。
@@ -223,7 +238,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
       code200101: (String showMessage, QueryCurrentMemoryGroupSmallCycleInfoVo vo) async {
         // 新设置的循环周期
         final newCycleSettingAlgorithm = cloneSingleMemoryGroup().currentSmallCycleInfo!.getMemoryAlgorithm!.suggest_loop_cycle_algorithm!;
-        late final LoopCycle newCycle;
+        late final LoopCycle newLoopCycle;
         await AlgorithmParser.parse(
           stateFunc: () => SuggestLoopCycleState(
             algorithmWrapper: AlgorithmWrapper.fromJsonString(newCycleSettingAlgorithm),
@@ -232,7 +247,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
             externalResultHandler: null,
           ),
           onSuccess: (SuggestLoopCycleState state) async {
-            newCycle = state.result;
+            newLoopCycle = state.result;
           },
           onError: (AlgorithmException ec) async {
             throw ec;
@@ -241,10 +256,10 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
 
         // 当前周期所设置的循环周期
         // 这个为 null 说明当前不存在正在执行的小周期
-        final oldCycleSetting = vo.memory_group_small_cycle_info?.loop_cycle;
-        final LoopCycle? oldCycle = oldCycleSetting == null ? null : LoopCycle.fromText(text: oldCycleSetting);
+        final oldLoopCycleSetting = vo.memory_group_small_cycle_info?.loop_cycle;
+        final LoopCycle? oldLoopCycle = oldLoopCycleSetting == null ? null : LoopCycle.fromText(text: oldLoopCycleSetting);
 
-        final List<SmallCycle> targets = newCycle.nowBeforeWhich();
+        final List<SmallCycle> targets = newLoopCycle.nowBeforeWhich();
 
         SmallCycle? target;
         // 第几个可选的 00:00 前
@@ -257,8 +272,8 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
         // 如果有多个
         else {
           // 如果循环周期被修改过，则让用户选择要从哪个小周期开始
-          // 如果 oldCycle 为 null，也按照已修改的处理方式进行处理
-          if (!newCycle.equal(target: oldCycle)) {
+          // 如果 oldLoopCycle 为 null，也按照已修改的处理方式进行处理
+          if (!newLoopCycle.equal(target: oldLoopCycle)) {
             final controller = ScrollController();
             SmallCycle? tempSelected;
             DateTime? tempSelectedDateTime;
@@ -278,13 +293,13 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                       children: [
                         Expanded(
                           child: Text(
-                            "原循环周期：$oldCycleSetting",
+                            "原循环周期：$oldLoopCycleSetting",
                             style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                           ),
                         ),
                       ],
                     ),
-                    Row(children: [Expanded(child: Text("现循环周期：${newCycle.toText()}", style: TextStyle(color: Colors.green)))]),
+                    Row(children: [Expanded(child: Text("现循环周期：${newLoopCycle.toText()}", style: TextStyle(color: Colors.green)))]),
                     SizedBox(height: 10),
                     Row(children: [Expanded(child: Text("请点击橙色字体对区间进行选择", style: TextStyle(color: Colors.grey)))]),
                     Container(
@@ -300,7 +315,7 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              ...newCycle.completeSmallCycles.map(
+                              ...newLoopCycle.completeSmallCycles.map(
                                 (e) {
                                   final zeroList = e.cross0PointFromLastForNowCount();
                                   return Column(
@@ -390,12 +405,15 @@ class MemoryGroupGizmoEditPageAbController extends AbController {
           return;
         }
 
+        late final int loopCycleOrder;
+
         final newMemoryGroupSmallCycleInfo = Crt.memoryGroupSmartCycleInfoEntity(
           creator_user_id: Aber.find<GlobalAbController>().loggedInUser()!.id,
           memory_algorithm_id: cloneSingleMemoryGroup().currentSmallCycleInfo!.getMemoryAlgorithm!.id,
           memory_group_id: cloneSingleMemoryGroup().memoryGroup.id,
-          loop_cycle: newCycle.toText(),
+          loop_cycle: newLoopCycle.toText(),
           small_cycle_order: target!.order,
+          loop_cycle_order: newLoopCycle.getLoopCycleOrder(target!),
           should_small_cycle_end_time: selectedDateTime!,
           should_new_learn_count: shouldNewAndReviewCount!.newCount,
           should_review_count: shouldNewAndReviewCount!.reviewCount,

@@ -86,11 +86,11 @@ class PerformerQuery {
         (tbl) {
           final expr = tbl.memory_group_id.equals(mg.id) & tbl.study_status.equalsValue(FragmentMemoryInfoStudyStatus.reviewing);
           if (isExpire) {
-            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds);
+            return expr & lastNextPlanedShowTimeExpr.isSmallerThanValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds!);
           } else {
             return expr &
-                lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds) &
-                lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleEndSeconds);
+                lastNextPlanedShowTimeExpr.isBiggerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleStartSeconds!) &
+                lastNextPlanedShowTimeExpr.isSmallerOrEqualValue(inAppStageAbController.currentSmallCycleInfo!.getSmallCycleEndSeconds!);
           }
         },
       );

@@ -106,7 +106,7 @@ class CurrentCircleWidget extends StatelessWidget {
                 child: Text(c.cloneSingleMemoryGroup(abw).currentSmallCycleInfo?.getMemoryAlgorithm?.title ?? '点击选择'),
                 onPressed: () async {
                   await showSelectMemoryAlgorithmInMemoryGroupDialog(mgAndOtherAb: c.cloneSingleMemoryGroup);
-                  await c.cloneSingleMemoryGroup().currentSmallCycleInfo!.parseLoopCycle();
+                  await c.cloneSingleMemoryGroup().currentSmallCycleInfo?.read();
                   abw.refresh();
                   c.cloneSingleMemoryGroup.refreshForce();
                 },
@@ -164,7 +164,7 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('新碎片数量：'),
               Expanded(
                 child: Text(
-                  "${csi.learnedThirdNewAndReviewCount.newCount}/${csi.shouldNewAndReviewCount?.newCount ?? "-"}",
+                  "${csi.learnedThirdNewAndReviewCount?.newCount ?? "-"}/${csi.shouldNewAndReviewCount?.newCount ?? "-"}",
                 ),
               ),
               SizedBox(width: 10),
@@ -186,8 +186,8 @@ class CurrentCircleWidget extends StatelessWidget {
               const Text('复习碎片数量：'),
               Expanded(
                 child: Text(
-                  "${csi.learnedThirdNewAndReviewCount.reviewCount}/${csi.shouldNewAndReviewCount?.reviewCount ?? "-"}"
-                  "  (+${csi.learnedThirdNewAndReviewCount.newReviewCount})",
+                  "${csi.learnedThirdNewAndReviewCount?.reviewCount ?? "-"}/${csi.shouldNewAndReviewCount?.reviewCount ?? "-"}"
+                  "  (+${csi.learnedThirdNewAndReviewCount?.newReviewCount ?? "-"})",
                 ),
               ),
               SizedBox(width: 10),

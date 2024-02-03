@@ -15,6 +15,7 @@ CustomLogger logger = CustomLogger();
 enum LogLevel {
   normal,
   error,
+  warning,
 }
 
 class CustomLogger {
@@ -38,6 +39,8 @@ class CustomLogger {
         logger.d('show - $show\nprint - $print\nfromStackStrace:\n$outStackTrace', error: error, stackTrace: stackTrace);
       } else if (level == LogLevel.error) {
         logger.e('show - $show\nprint - $print\nfromStackStrace:\n$outStackTrace', error: error, stackTrace: stackTrace);
+      } else if (level == LogLevel.warning) {
+        logger.w('show - $show\nprint - $print\nfromStackStrace:\n$outStackTrace', error: error, stackTrace: stackTrace);
       } else {
         logger.e('未处理 logger.level: $level');
       }
@@ -56,6 +59,21 @@ class CustomLogger {
       error: error,
       stackTrace: stackTrace,
       level: LogLevel.normal,
+    );
+  }
+
+  void outWarning({
+    dynamic show,
+    dynamic print,
+    dynamic error,
+    StackTrace? stackTrace,
+  }) {
+    _out(
+      show: show,
+      print: print,
+      error: error,
+      stackTrace: stackTrace,
+      level: LogLevel.warning,
     );
   }
 
